@@ -1,4 +1,4 @@
-import { SignIn, Landing } from './pages/';
+import { SignIn, Landing, Test } from './pages/';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -12,6 +12,10 @@ const router = createBrowserRouter([
   {
     path: '/signin',
     element: <SignIn />,
+  },
+  {
+    path: '/test',
+    element: <Test />,
   },
 ]);
 
