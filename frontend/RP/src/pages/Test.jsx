@@ -1,12 +1,10 @@
-
-import {Navbar }  from '../components/Navbar';
 export const Test = () => {
   return (
-  <>
-    <Navbar />
-    <div className="container mx-auto">
-      <h1 className="text-3xl font-bold text-center mt-8">Test</h1>
+    <div className="flex align-middle justify-center">
+      <h1 className="bg-yellow-200 p-8">Jenny esta aqui</h1>
+      <p className="bg-blue-400 p-4">Lorem ispum</p>
     </div>
-  </>
-  );
-};
+  )
+}
+
+export  default Test;
