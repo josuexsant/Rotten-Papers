@@ -1,3 +1,3 @@
 export { Landing } from './Landing.jsx';
-export { SignIn } from './Signin.jsx';
-export { Test } from './Test.jsx';
+export { SignIn } from './SignIn.jsx';
+export { Test } from './Test.jsx'
