@@ -54,7 +54,6 @@ class Autores(models.Model):
     lastname2 = models.CharField(max_length=250)
  
     def __str__(self):
-        # Accede a todos los campos del modelo y formatea una cadena con ellos
         return (f"Name: {self.name}, "
                 f"lastname1: {self.lastname1}"
                 f"lastname2: {self.lastname2}")
@@ -68,7 +67,7 @@ class Genero(models.Model):
     genre = models.CharField(max_length=250)
 
     def __str__(self):
-        return (f"Genero: {self.genero}")
+        return (f"Genero: {self.genre}")
     
 
     class Meta:

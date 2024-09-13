@@ -13,7 +13,7 @@ class LibroView(viewsets.ModelViewSet):
 
 class AutorView(viewsets.ModelViewSet):
     serializer_class = AutorSerializer
-    queryset = Libros.objects.all()
+    queryset = Autores.objects.all()
 
 class GeneroView(viewsets.ModelViewSet):
     serializer_class = GeneroSerializer
