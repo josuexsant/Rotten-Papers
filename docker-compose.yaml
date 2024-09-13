@@ -3,7 +3,7 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend/RP
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -18,7 +18,7 @@ services:
 
   backend:
     build:
-      context: ./backend/rotten_papers
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -36,9 +36,9 @@ services:
     container_name: mysql_db
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: user
-      MYSQL_PASSWORD: userpassword
+      MYSQL_DATABASE: rotten_papers
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
     volumes:
       - ./database:/docker-entrypoint-initdb.d  # Volumen para inicializar la BD con el seed SQL
       - db_data:/var/lib/mysql  # Volumen para persistir los datos
