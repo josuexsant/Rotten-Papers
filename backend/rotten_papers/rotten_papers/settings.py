@@ -78,13 +78,14 @@ WSGI_APPLICATION = 'rotten_papers.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rotten_papers',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'rotten_papers',  
+        'USER': 'root',  
+        'PASSWORD': '1234', 
+        'HOST': 'mysql_db',  
+        'PORT': '3306',  
     }
 }
+
 
 
 # Password validation
