@@ -4,7 +4,7 @@ WORKDIR /app/rotten_papers
 
 COPY rotten_papers/requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip3 install --upgrade pip -r requirements.txt
 
 COPY rotten_papers/ ./
 

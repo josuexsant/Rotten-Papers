@@ -1,20 +1,19 @@
 import {Navbar } from '../components/Navbar';
-export const SignIn = () => {
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = new FormData(e.target);
-    const data = {
-      name: form.get('name'),
-      lastName1: form.get('lastName'),
-      lastName2: form.get('secondLastName'),
-      email: form.get('email'),
-      password: form.get('password'),
-    };
-    console.log(data);
-  };
+import { createUser } from "../api/api";
+import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
- 
+export function SignIn(){
+  
+  const { register, handleSubmit } = useForm() //Guardar los datos del form en variables 
+
+  const onSubmit = handleSubmit(async data =>{
+    console.log(data);
+    await createUser(data);
+  })
+  
+
   return (
     <>
     <Navbar />
@@ -33,19 +32,17 @@ export const SignIn = () => {
             </div>
 
             <div className="mt-8">
-              
               <div className="mt-6">
-                <form onSubmit={handleSubmit } method="POST" className="space-y-6">
+                <form onSubmit={ onSubmit } className="space-y-6">
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                       Nombre (s)
                     </label>
                     <div className="mt-1">
                       <input
-                        id="name"
-                        name="name"
+                        placeholder='Nombre'
                         type="text"
-                        required
+                        {...register('name', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -57,10 +54,8 @@ export const SignIn = () => {
                     </label>
                     <div className="mt-1">
                       <input
-                        id="lastName"
-                        name="lastName"
                         type="text"
-                        required
+                        {...register('lastname1', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -73,10 +68,8 @@ export const SignIn = () => {
                     </label>
                     <div className="mt-1">
                       <input
-                        id="secondLastName"
-                        name="secondLastName"
                         type="text"
-                        required
+                        {...register('lastname2', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -107,11 +100,9 @@ export const SignIn = () => {
                     </label>
                     <div className="mt-1">
                       <input
-                        id="email"
-                        name="email"
                         type="email"
                         autoComplete="email"
-                        required
+                        {...register('email', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -123,11 +114,9 @@ export const SignIn = () => {
                     </label>
                     <div className="mt-1">
                       <input
-                        id="password"
-                        name="password"
                         type="password"
                         autoComplete="current-password"
-                        required
+                        {...register('password', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -158,7 +147,6 @@ export const SignIn = () => {
                       Registrarse
                     </button>
                   </div>
-
                 </form>
               </div>
             </div>
