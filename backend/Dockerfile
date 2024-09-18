@@ -1,15 +1,16 @@
 # Use an official Python runtime as a parent image
-FROM python:3.6
+FROM python:3.11-slim
+
 
 # Adding backend directory to make absolute filepaths consistent across services
-WORKDIR /RP/backend
+WORKDIR /app
 
 # Install Python dependencies
-COPY requirements.txt /app/backend
-RUN pip3 install --upgrade pip -r requirements.txt
-
+COPY requirements.txt /app/
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 # Add the rest of the code
-COPY . /RP/backend
+COPY . /app
 
 # Make port 8000 available for the app
 EXPOSE 8000
