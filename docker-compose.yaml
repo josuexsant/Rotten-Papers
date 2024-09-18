@@ -39,9 +39,6 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/rotten_papers:/app/rotten_papers
-    environment:
-      - DATABASE_URL=mysql://root:password@mysql_db:3306/rotten_papers
-      - DEBUG=1
     depends_on:
       - db  # Ahora el backend depende de la base de datos
     networks:
