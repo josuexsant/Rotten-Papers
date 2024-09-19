@@ -1,0 +1,331 @@
+[33mcommit 1aeffa52768f18a8a08a5df0c5978ee1cca40ee7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mgab[m[33m, [m[1;31morigin/gab[m[33m)[m
+Merge: ab473eb c4cba5a
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Thu Sep 19 14:35:36 2024 -0600
+
+    All nice
+
+[33mcommit c4cba5a010898c430b17c04643dd4280378aab7a[m[33m ([m[1;32mmain[m[33m)[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Thu Sep 19 14:19:59 2024 -0600
+
+    front
+
+[33mcommit ab473ebe048699471cbd13b8f75457e1d851dffd[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Thu Sep 19 14:18:43 2024 -0600
+
+    config
+
+[33mcommit 822402b02e0c7d2f8b19eff80b4b070855100ec3[m[33m ([m[1;32maccess[m[33m)[m
+Merge: 40bf2c4 dc31d45
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Thu Sep 19 14:05:58 2024 -0600
+
+    Pull Request
+
+[33mcommit dc31d456436491e53cca2272159669ffc1d21fcd[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Thu Sep 19 13:47:48 2024 -0600
+
+    config
+
+[33mcommit 40bf2c46388fb45eab8599c8fc346a22bc97ffee[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 13:47:25 2024 -0600
+
+    imagen
+
+[33mcommit f00ab0d855bc735c2759b0b1619242cd4ac99fbf[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 13:19:30 2024 -0600
+
+    Interfaz web
+
+[33mcommit 2d1352683fa54adf9285e48d9cb2e6b698a78d36[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 13:10:59 2024 -0600
+
+    front
+
+[33mcommit 3636529161a6bc72de257b3a144fd27c5d265a2f[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 13:06:23 2024 -0600
+
+    Preparación al backend
+
+[33mcommit 1a47c80ce47d5ca7b3267bc59502bd0a4ffe4636[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 12:50:23 2024 -0600
+
+    front
+
+[33mcommit e7b7479440d674bbee8700954f32002d8f7f2245[m
+Merge: 8ad5f66 dca1d68
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 12:43:08 2024 -0600
+
+    Merge branch 'main' of https://github.com/josuexsant/Rotten-Papers
+
+[33mcommit cf097815254aa9f089657448956b9590bcf65c60[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 18 12:38:38 2024 -0600
+
+    Vista de libros y Modificación de archivos Docker
+
+[33mcommit dca1d68dbc3d6f2977210d57a65a59f10453fdd3[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 5d8d27e 27b387a
+Author: Alberto Josué Santamaría Morales <josuexsanta@gmail.com>
+Date:   Fri Sep 13 13:18:47 2024 -0600
+
+    Merge pull request #5 from josuexsant/dockerizando
+    
+    Dockerizando
+
+[33mcommit 27b387a148ecfe6df96a0f709ef460bf04516dd3[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Fri Sep 13 13:16:11 2024 -0600
+
+    intento 1
+
+[33mcommit 8ad5f66ccf5e77b68340390812893f9f622e43f7[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 13 13:14:05 2024 -0600
+
+    sda
+
+[33mcommit b69d6f40c08c9a2cb82c91fcff82ff63abbbb27a[m
+Merge: 6b18fc8 5d8d27e
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Fri Sep 13 12:43:16 2024 -0600
+
+    Merge branch 'main' of https://github.com/josuexsant/Rotten-Papers into dockerizando
+
+[33mcommit 6b18fc8bb4687c11addcf8eaea6c86535d0f520e[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Fri Sep 13 12:42:51 2024 -0600
+
+    cambios al seed sql
+
+[33mcommit 42dbcb940d91a6dbe451a3c8f87b7a0ad11d1a9b[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 13 12:41:27 2024 -0600
+
+    Archivo setting
+
+[33mcommit 5d8d27eb1b3a2325095b0917a76cbe64654972f1[m
+Merge: 81bdaf5 3be13a0
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 13 12:37:38 2024 -0600
+
+    Merge branch 'main' of https://github.com/josuexsant/Rotten-Papers
+
+[33mcommit 81bdaf504d8452d71413e02b0bcf1f99fbb892ee[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 13 12:36:26 2024 -0600
+
+    Front
+
+[33mcommit e49b1997f4c0a52c902d6e0f5a2db2c42454f522[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Fri Sep 13 12:35:05 2024 -0600
+
+    many changes
+
+[33mcommit 3be13a08d65320956aa68420142d3c15a4b42c40[m
+Author: Alberto Josué Santamaría Morales <josuexsanta@gmail.com>
+Date:   Fri Sep 13 12:32:25 2024 -0600
+
+    Update README.md
+
+[33mcommit 33ac68bd16c87d63a7484b17b51bc498ba36eefb[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 13 12:31:25 2024 -0600
+
+    Books
+
+[33mcommit 4511d09b6607dbd5975b9123a784e2352bfd9fa7[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Thu Sep 12 10:01:59 2024 -0600
+
+    Conexión a Front a Backend API-rest
+
+[33mcommit 6f843e36b85e4a0086de1118af7b9d5918222e2c[m[33m ([m[1;31morigin/access[m[33m)[m
+Merge: 270cb4b 8f863ba
+Author: ViriDianaBG <viridiana.benitezg@alumno.buap.mx>
+Date:   Wed Sep 11 14:57:53 2024 -0600
+
+    m
+
+[33mcommit 270cb4b12aebc33cc13ff11995f7967fb63872ae[m
+Author: ViriDianaBG <viridiana.benitezg@alumno.buap.mx>
+Date:   Wed Sep 11 14:50:14 2024 -0600
+
+    Página access
+
+[33mcommit 83f4a2e769a0079941f05852ecc64a2468a950bd[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 11 14:42:58 2024 -0600
+
+    front
+
+[33mcommit 8f863ba374d8379fc530dfbc0ffdabb7dfa66aa8[m
+Merge: 2cb071d da14e38
+Author: Alberto Josué Santamaría Morales <josuexsanta@gmail.com>
+Date:   Wed Sep 11 10:32:25 2024 -0600
+
+    Merge pull request #3 from josuexsant/dev
+    
+    Dev
+
+[33mcommit da14e3898a82efd1ae03397c2c99b545bd5c8cd1[m[33m ([m[1;31morigin/dev[m[33m)[m
+Merge: 930d4a6 ac15684
+Author: Alberto Josué Santamaría Morales <josuexsanta@gmail.com>
+Date:   Wed Sep 11 10:31:26 2024 -0600
+
+    Merge pull request #2 from josuexsant/landing
+    
+    Landing
+
+[33mcommit ac15684930640e31389cacdb35d87266303f0d06[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Wed Sep 11 10:25:14 2024 -0600
+
+    vite dockerized
+
+[33mcommit d9d90bb5ff48439e86323991001677df0e7bdbce[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Tue Sep 10 15:11:37 2024 -0600
+
+    some nice things added
+
+[33mcommit 5cf17eef0ff5afb201e1285fd98231dd6f67e108[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Tue Sep 10 14:56:18 2024 -0600
+
+    Creacion de Modelos
+
+[33mcommit b51c87003de548dced86c7a63e8c5be76d36624b[m[33m ([m[1;31morigin/signin[m[33m)[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Mon Sep 9 22:50:29 2024 -0600
+
+    navbar modified
+
+[33mcommit 1495ea051a7d5f95cd035f847c99e676747306e3[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Mon Sep 9 21:40:40 2024 -0600
+
+    forms sends json
+
+[33mcommit 2cb071d1d00c804d408fe7f85d8126a8daefc357[m
+Merge: 9834e3c 7891cb3
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Mon Sep 9 21:13:43 2024 -0600
+
+    Merge branch 'main' of https://github.com/josuexsant/Rotten-Papers
+
+[33mcommit 9834e3c1a0231b3f3933e244d267f87b46da5165[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Mon Sep 9 21:12:59 2024 -0600
+
+    some styles added
+
+[33mcommit f409b115c9a80022a2d105eef32f77d3017d3f40[m
+Merge: 2ea290d 930d4a6
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Mon Sep 9 15:27:30 2024 -0600
+
+    Tailwind working
+
+[33mcommit 7891cb33cd635de392e036bbe4b9a13056b88298[m
+Author: HDLGOJENN <hdlgojenn@gmail.com>
+Date:   Fri Sep 6 16:29:57 2024 -0600
+
+    db added
+
+[33mcommit 41ce9f4024667573a3444e176989c01130340eee[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 6 13:28:27 2024 -0600
+
+    archivo requirements.txt
+
+[33mcommit 930d4a66314eb5ea52b42f1304c2c33a5e0f9027[m
+Merge: ee523ae 6be421d
+Author: Alberto Josué Santamaría Morales <josuexsanta@gmail.com>
+Date:   Fri Sep 6 13:23:01 2024 -0600
+
+    Merge pull request #1 from josuexsant/gab
+    
+    Gab
+
+[33mcommit 6be421d44281539fb772adecdb9432ed6b079f48[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 6 12:09:07 2024 -0600
+
+    Endpoint rp/signin creado
+
+[33mcommit 65ee168711e3b58370ab0902ea5c8792bf0cb173[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 6 11:20:33 2024 -0600
+
+    Creación de archivos urls.py y serializers.py
+
+[33mcommit ac8455f0fd31eb5a15f46dd13dca19ec48ab3e87[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Fri Sep 6 11:16:33 2024 -0600
+
+    Configuración rest_framework y conexión a BD rotten-papers
+
+[33mcommit 4397342b3b454431c9185b5d369b0071ba73a19c[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 4 14:26:36 2024 -0600
+
+    Entorno de desarrollo del backend
+
+[33mcommit 2ea290d1e98bb947736ceaeb3f45bd9507a14579[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Wed Sep 4 13:49:12 2024 -0600
+
+    vite config changed
+
+[33mcommit de24eb1efc716c080a9e6f7b81082ec82f5430b8[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Wed Sep 4 12:07:05 2024 -0600
+
+    tailwind added
+
+[33mcommit 89dd1b7f9bce399dafbc1aba9630c4da8651f7e1[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Wed Sep 4 11:33:48 2024 -0600
+
+    gitignore
+
+[33mcommit 6d033def760f1079265fb93ab6c315708ed87159[m
+Author: gab <gabcam071118.rg@gmail.com>
+Date:   Tue Sep 3 14:55:48 2024 -0600
+
+    desarrolladores
+
+[33mcommit 8019892996ef82c4975b6c2fb71c30e7af3060bf[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Tue Sep 3 13:50:58 2024 -0600
+
+    backend added
+
+[33mcommit 9fd3a25f79aef13490fb7b3f4d6bf011c2451a68[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Tue Sep 3 13:47:36 2024 -0600
+
+    backend added
+
+[33mcommit ee523ae344ae16701256f51baae63f8d73989e39[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Tue Sep 3 12:02:04 2024 -0600
+
+    frontend added
+
+[33mcommit 141bc176ab95bb96770efbade6482600f09e6a3a[m
+Author: Josue Santamaria <josuexsanta@gmail.com>
+Date:   Tue Sep 3 11:55:50 2024 -0600
+
+    init
