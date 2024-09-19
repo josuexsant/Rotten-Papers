@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rotten_papers   # Definir una contraseña aquí
+      MYSQL_DATABASE: rotten_papers
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rotten_papers        # Definir una contraseña aquí
+    ports:
+      - "3306:3306"
+
+  django:
+    build:
+      context: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app  # Asegúrate de que esta ruta es correcta
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db                           # Hacer referencia al servicio `db`, no a localhost
+    environment:
+      - DATABASE_NAME=rotten_papers
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=yourpassword  # Asegúrate de coincidir con lo que definiste en MySQL
+      - DATABASE_HOST=db                # Cambiado de localhost a `db`
+      - DATABASE_PORT=3306
+    env_file:
+      - .env                           # Define variables adicionales en este archivo si es necesario
+
+  react:
+    build:
+      context: ./frontend/RP  # Asegúrate de que esta ruta es correcta
+    volumes:
+      - ./frontend/RP:/usr/src/app  # Asegúrate de que esta ruta es correcta
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql_data:
