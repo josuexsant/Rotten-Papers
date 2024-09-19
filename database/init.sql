@@ -1,8 +1,15 @@
 USE rotten_papers;
 
--- Elimina la tabla usuarios si existe
-DROP TABLE IF EXISTS usuarios;
-CREATE TABLE `usuarios`(
+DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS book_genre;
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS authors;
+DROP TABLE IF EXISTS preferences;
+DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE `users`(
     `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
     `lastname1` VARCHAR(255) NOT NULL,
@@ -12,83 +19,70 @@ CREATE TABLE `usuarios`(
     `photo` VARCHAR(255) NOT NULL
 );
 
--- Elimina la tabla genero si existe
-DROP TABLE IF EXISTS genero;
-CREATE TABLE `genero`(
+CREATE TABLE `genres`(
     `genre_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `genre` VARCHAR(255) NOT NULL
 );
 
--- Elimina la tabla Autores si existe
-DROP TABLE IF EXISTS Autores;
-CREATE TABLE `Autores`(
+CREATE TABLE `preferences`(
+    `preference_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `genre_id` INT UNSIGNED NOT NULL,
+    CONSTRAINT `preferences_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+    CONSTRAINT `preferences_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`genre_id`)
+);
+
+CREATE TABLE `authors`(
     `author_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
     `lastname1` VARCHAR(255),
     `lastname2` VARCHAR(255)
 );
 
--- Elimina la tabla Libros si existe
-DROP TABLE IF EXISTS Libros;
-CREATE TABLE `Libros`(
+CREATE TABLE `books`(
     `book_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(255) NOT NULL,
     `author_id` INT UNSIGNED NOT NULL,
     `synopsis` VARCHAR(255) NOT NULL,
     `genre_id` INT UNSIGNED NOT NULL,
     `cover` VARCHAR(255) NOT NULL,
-    `rating` FLOAT(2,1) NOT NULL, -- Ajustado a FLOAT con 1 decimal
-    CONSTRAINT `Libros_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `Autores`(`author_id`),
-    CONSTRAINT `Libros_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genero`(`genre_id`)
+    `rating` FLOAT(53) NOT NULL,
+    CONSTRAINT `books_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors`(`author_id`),
+    CONSTRAINT `books_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`genre_id`)
 );
 
--- Elimina la tabla Libro_genero si existe
-DROP TABLE IF EXISTS Libro_genero;
-CREATE TABLE `Libro_genero`(
+CREATE TABLE `book_genre`(
     `genreB_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `genre_id_id` INT UNSIGNED NOT NULL,
-    `book_id_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `Libro_genero_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genero`(`genre_id`),
-    CONSTRAINT `Libro_genero_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `Libros`(`book_id`)
+    `genre_id` INT UNSIGNED NOT NULL,
+    `book_id` INT UNSIGNED NOT NULL,
+    CONSTRAINT `book_genre_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`genre_id`),
+    CONSTRAINT `book_genre_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)
 );
 
--- Elimina la tabla resena si existe
-DROP TABLE IF EXISTS resena;
-CREATE TABLE `resena`(
+CREATE TABLE `reviews`(
     `review_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT UNSIGNED NOT NULL,
     `book_id` INT UNSIGNED NOT NULL,
     `rating` INT NOT NULL,
     `review` LONGTEXT NOT NULL,
-    CONSTRAINT `resena_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `Libros`(`book_id`),
-    CONSTRAINT `resena_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `usuarios`(`user_id`)
+    CONSTRAINT `reviews_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`),
+    CONSTRAINT `reviews_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)
 );
 
--- Elimina la tabla favoritos si existe
-DROP TABLE IF EXISTS favoritos;
-CREATE TABLE `favoritos`(
+CREATE TABLE `favorites`(
     `favorite_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT UNSIGNED NOT NULL,
     `book_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `favoritos_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `usuarios`(`user_id`),
-    CONSTRAINT `favoritos_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `Libros`(`book_id`)
+    CONSTRAINT `favorites_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
+    CONSTRAINT `favorites_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)
 );
 
--- Elimina la tabla preferencias si existe
-DROP TABLE IF EXISTS preferencias;
-CREATE TABLE `preferencias`(
-    `preference_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT UNSIGNED NOT NULL,
-    `genre_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `preferencias_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `usuarios`(`user_id`),
-    CONSTRAINT `preferencias_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genero`(`genre_id`)
-);
+/* INSERTS -------------------*/
 
-
-INSERT INTO usuarios (name,lastname1,lastname2,email,password,photo) VALUES 
+INSERT INTO users (name,lastname1,lastname2,email,password,photo) VALUES 
 ('Josue','Santamaria','Morales','josue@gmail.com','1234','C:Pictures\foto.jpg');
 
-INSERT INTO genero (genre) VALUES 
+INSERT INTO genres (genre) VALUES 
 ('Novela de caballerías'),
 ('Satírica'),
 ('Aventuras'),
@@ -109,10 +103,10 @@ INSERT INTO genero (genre) VALUES
 ('Histórico'),
 ('Fantasía');
 
-INSERT INTO preferencias (user_id,genre_id) VALUES 
+INSERT INTO preferences (user_id,genre_id) VALUES 
 (1,1);
 
-INSERT INTO Autores (name,lastname1,lastname2) VALUES 
+INSERT INTO authors (name,lastname1,lastname2) VALUES 
 ('Miguel', 'de Cervantes', null),
 ('Oscar', 'Wilde', null),
 ('León', 'Tolstói', null),
@@ -131,7 +125,7 @@ INSERT INTO Autores (name,lastname1,lastname2) VALUES
 ('George', 'Orwell', null),
 ('Ken', 'Follett', null);
 
-INSERT INTO Libros (title,author_id,synopsis,genre_id,cover,rating) VALUES 
+INSERT INTO books (title,author_id,synopsis,genre_id,cover,rating) VALUES 
 ('Don Quijote de la Mancha', 1, 'Aventuras de un caballero idealista que busca revivir la caballería andante.', 3, 'cover1.jpg', 0),
 ('El retrato de Dorian Gray', 2, 'Un hombre cuya juventud eterna esconde su corrupción moral.', 4, 'cover2.jpg', 0),
 ('Ana Karenina', 3, 'Una mujer noble atrapada en una red de relaciones amorosas conflictivas.', 6, 'cover3.jpg', 0),
@@ -151,7 +145,7 @@ INSERT INTO Libros (title,author_id,synopsis,genre_id,cover,rating) VALUES
 ('Los pilares de la tierra', 17, 'La construcción de una catedral en la Inglaterra medieval entrelaza la vida de varios personajes.', 18, 'cover17.jpg', 0);
 
  
-INSERT INTO Libro_genero (genre_id, book_id) VALUES 
+INSERT INTO book_genre (genre_id, book_id) VALUES 
 (1, 1),  
 (2, 1),  
 (3, 1),  
