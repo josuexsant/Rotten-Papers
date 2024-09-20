@@ -1,9 +1,11 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Link } from 'react-router-dom'
 
 const navigation = [
-  { name: 'Home', href: '#', current: true },
+  { name: 'Home', href: '/', current: false },
   { name: 'Mis favoritos', href: '#', current: false },
+  { name: 'Acceder', href: '/test', current: false },
 ]
 
 function classNames(...classes) {
@@ -60,6 +62,7 @@ export const Navbar = () => {
                     </svg>
                   </button>
                 </form>
+                
               </div>
             </div>
           </div>
