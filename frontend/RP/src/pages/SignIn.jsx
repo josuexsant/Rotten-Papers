@@ -163,5 +163,3 @@ export function SignIn(){
     </>
   )
 };
-
-export default SignIn;

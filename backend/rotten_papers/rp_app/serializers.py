@@ -3,25 +3,25 @@ from .models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuarios
+        model = Users
         fields = '__all__'
 
 class LibroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Libros
+        model = Books
         fields = '__all__'
     
 class AutorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Autores
+        model = Authors
         fields = '__all__'
 
 class GeneroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Genero
+        model = Genres
         fields = '__all__'
 
 class LibrogeneroSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Librogenero
+        model = Book_Genre
         fields = '__all__'

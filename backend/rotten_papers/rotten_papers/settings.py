@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'rotten_papers',  
         'USER': 'root',  
         'PASSWORD': '1234', 
-        'HOST': 'mysql_db',  
+        'HOST': 'db',  
         'PORT': '3306',  
     }
 }

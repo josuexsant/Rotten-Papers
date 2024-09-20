@@ -1,3 +1,4 @@
+
 USE rotten_papers;
 
 DROP TABLE IF EXISTS favorites;
@@ -9,72 +10,72 @@ DROP TABLE IF EXISTS preferences;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS users;
 
-CREATE TABLE `users`(
-    `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(255) NOT NULL,
-    `lastname1` VARCHAR(255) NOT NULL,
-    `lastname2` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `photo` VARCHAR(255) NULL
+CREATE TABLE users(
+    user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    lastname1 VARCHAR(255) NOT NULL,
+    lastname2 VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    photo VARCHAR(255) NULL
 );
 
-CREATE TABLE `genres`(
-    `genre_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `genre` VARCHAR(255) NOT NULL
+CREATE TABLE genres(
+    genre_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    genre VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE `preferences`(
-    `preference_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT UNSIGNED NOT NULL,
-    `genre_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `preferences_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
-    CONSTRAINT `preferences_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`genre_id`)
+CREATE TABLE preferences(
+    preference_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    genre_id INT UNSIGNED NOT NULL,
+    CONSTRAINT preferences_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT preferences_genre_id_foreign FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 
-CREATE TABLE `authors`(
-    `author_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(255) NOT NULL,
-    `lastname1` VARCHAR(255),
-    `lastname2` VARCHAR(255)
+CREATE TABLE authors(
+    author_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    lastname1 VARCHAR(255),
+    lastname2 VARCHAR(255)
 );
 
-CREATE TABLE `books`(
-    `book_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `title` VARCHAR(255) NOT NULL,
-    `author_id` INT UNSIGNED NOT NULL,
-    `synopsis` VARCHAR(255) NOT NULL,
-    `genre_id` INT UNSIGNED NOT NULL,
-    `cover` VARCHAR(255) NOT NULL,
-    `rating` FLOAT(53) NOT NULL,
-    CONSTRAINT `books_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors`(`author_id`),
-    CONSTRAINT `books_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`genre_id`)
+CREATE TABLE books(
+    book_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author_id INT UNSIGNED NOT NULL,
+    synopsis VARCHAR(255) NOT NULL,
+    genre_id INT UNSIGNED NOT NULL,
+    cover VARCHAR(255) NOT NULL,
+    rating FLOAT(53) NOT NULL,
+    CONSTRAINT books_author_id_foreign FOREIGN KEY (author_id) REFERENCES authors(author_id),
+    CONSTRAINT books_genre_id_foreign FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 
-CREATE TABLE `book_genre`(
-    `genreB_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `genre_id` INT UNSIGNED NOT NULL,
-    `book_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `book_genre_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`genre_id`),
-    CONSTRAINT `book_genre_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)
+CREATE TABLE book_genre(
+    genreB_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    genre_id INT UNSIGNED NOT NULL,
+    book_id INT UNSIGNED NOT NULL,
+    CONSTRAINT book_genre_genre_id_foreign FOREIGN KEY (genre_id) REFERENCES genres(genre_id),
+    CONSTRAINT book_genre_book_id_foreign FOREIGN KEY (book_id) REFERENCES books(book_id)
 );
 
-CREATE TABLE `reviews`(
-    `review_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT UNSIGNED NOT NULL,
-    `book_id` INT UNSIGNED NOT NULL,
-    `rating` INT NOT NULL,
-    `review` LONGTEXT NOT NULL,
-    CONSTRAINT `reviews_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`),
-    CONSTRAINT `reviews_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)
+CREATE TABLE reviews(
+    review_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    book_id INT UNSIGNED NOT NULL,
+    rating INT NOT NULL,
+    review LONGTEXT NOT NULL,
+    CONSTRAINT reviews_book_id_foreign FOREIGN KEY (book_id) REFERENCES books(book_id),
+    CONSTRAINT reviews_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE `favorites`(
-    `favorite_id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT UNSIGNED NOT NULL,
-    `book_id` INT UNSIGNED NOT NULL,
-    CONSTRAINT `favorites_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
-    CONSTRAINT `favorites_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)
+CREATE TABLE favorites(
+    favorite_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    book_id INT UNSIGNED NOT NULL,
+    CONSTRAINT favorites_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT favorites_book_id_foreign FOREIGN KEY (book_id) REFERENCES books(book_id)
 );
 
 /* INSERTS -------------------*/
@@ -164,4 +165,4 @@ INSERT INTO book_genre (genre_id, book_id) VALUES
 (16, 11), 
 (17, 11), 
 (18, 10), 
-(19, 15); 
+(19, 15);
