@@ -3,25 +3,40 @@ from .models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuarios
+        model = Users
         fields = '__all__'
 
-class LibroSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Libros
+        model = Books
         fields = '__all__'
     
-class AutorSerializer(serializers.ModelSerializer):
+class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Autores
+        model = Authors
         fields = '__all__'
 
-class GeneroSerializer(serializers.ModelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Genero
+        model = Genres
         fields = '__all__'
 
-class LibrogeneroSerializer(serializers.ModelSerializer):
+class BookGenreSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Librogenero
+        model = BookGenre
+        fields = '__all__'
+
+class PreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Preferences
+        fields = '__all__'
+
+class ReviewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reviews
+        fields = '__all__'
+
+class FavoritesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorites
         fields = '__all__'

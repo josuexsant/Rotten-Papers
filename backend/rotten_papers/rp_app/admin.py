@@ -1,8 +1,12 @@
 from django.contrib import admin
-from .models import Libros, Autores, Genero, Librogenero        
+# admin.py
+from .models import Books, Authors, Genres, BookGenre, Preferences, Reviews, Favorites
 
 # Register your models here.
-admin.site.register(Libros)
-admin.site.register(Autores)
-admin.site.register(Genero)
-admin.site.register(Librogenero)
+admin.site.register(Books)
+admin.site.register(Authors)
+admin.site.register(Genres)
+admin.site.register(BookGenre)
+admin.site.register(Preferences)
+admin.site.register(Reviews)
+admin.site.register(Favorites)

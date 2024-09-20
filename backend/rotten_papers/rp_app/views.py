@@ -1,24 +1,35 @@
 from rest_framework import viewsets
 from .serializers import *
 from .models import *
-# Create your views here.
 
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    queryset = Usuarios.objects.all()
+    queryset = Users.objects.all()
 
-class LibroView(viewsets.ModelViewSet):
-    serializer_class = LibroSerializer
-    queryset = Libros.objects.all()
+class BookView(viewsets.ModelViewSet):
+    serializer_class = BookSerializer
+    queryset = Books.objects.all()
 
-class AutorView(viewsets.ModelViewSet):
-    serializer_class = AutorSerializer
-    queryset = Autores.objects.all()
+class AuthorView(viewsets.ModelViewSet):
+    serializer_class = AuthorSerializer
+    queryset = Authors.objects.all()
 
-class GeneroView(viewsets.ModelViewSet):
-    serializer_class = GeneroSerializer
-    queryset = Genero.objects.all()
+class GenreView(viewsets.ModelViewSet):
+    serializer_class = GenreSerializer
+    queryset = Genres.objects.all()
 
-class LibrogeneroView(viewsets.ModelViewSet):
-    serializer_class = LibrogeneroSerializer
-    queryset = Librogenero.objects.all()
+class BookGenreView(viewsets.ModelViewSet):
+    serializer_class = BookGenreSerializer
+    queryset = BookGenre.objects.all()
+
+class PreferencesView(viewsets.ModelViewSet):
+    serializer_class = PreferencesSerializer
+    queryset = Preferences.objects.all()
+
+class ReviewsView(viewsets.ModelViewSet):
+    serializer_class = ReviewsSerializer
+    queryset = Reviews.objects.all()
+
+class FavoritesView(viewsets.ModelViewSet):
+    serializer_class = FavoritesSerializer
+    queryset = Favorites.objects.all()
