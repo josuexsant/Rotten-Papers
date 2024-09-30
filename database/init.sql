@@ -1,3 +1,4 @@
+-- SQLBook: Code
 USE rotten_papers;
 
 DROP TABLE IF EXISTS favorites;
