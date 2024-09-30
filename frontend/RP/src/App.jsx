@@ -1,4 +1,4 @@
-import { SignIn, Landing, Test, Access } from './pages/';
+import { SignIn, Landing, Test, Access, Login } from './pages/';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
     path: '/access',
     element: <Access />,
   },
+  {
+    path: '/login',
+    element: <Login />,
+  }
 ]);
 
 const App = () => {

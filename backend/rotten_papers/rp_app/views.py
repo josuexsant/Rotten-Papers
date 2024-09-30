@@ -33,3 +33,4 @@ class ReviewsView(viewsets.ModelViewSet):
 class FavoritesView(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
+    

@@ -7,8 +7,8 @@ export const Access = () => {
     <>
       <Navbar />
       <div className="bg-white">
-        <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
-          <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
+        <div className="mx-auto max-w-7xl">
+          <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
             <svg
               viewBox="0 0 1024 1024"
               aria-hidden="true"
@@ -41,12 +41,12 @@ export const Access = () => {
                 Descrubre y lee más
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-y-4 lg:justify-center">
-                <a
-                  href="#"
+                <Link
+                  to="/login"
                   className="w-48 rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-center"
                 >
                   Iniciar sesión
-                </a>
+                </Link>
                 <Link
                   to="/signin"
                   className="w-48 rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-center"
@@ -58,7 +58,7 @@ export const Access = () => {
             <div className="relative mt-16 flex justify-center items-center h-auto lg:mt-8">
               <img
                 alt="Portada de libros"
-                src={MyImage}
+                src={ MyImage }
                 className="w-[80%] max-w-[60rem] h-auto rounded-md bg-white/5 ring-1 ring-white/10" // Ajusta el tamaño con `w-[80%]` y `max-w-[60rem]`
               />
             </div>
