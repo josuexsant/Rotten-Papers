@@ -82,6 +82,7 @@ INSERT INTO users (name,lastname1,lastname2,email,password,photo) VALUES
 ('Josue','Santamaria','Morales','josue@gmail.com','1234','C:Pictures\foto.jpg');
 
 
+
 INSERT INTO users(name, lastname1, lastname2, email, password,photo) VALUES
 ('Viridiana','Benitez','Gonzalez', 'viri@gmail.com', '1234','C:Pictures\foto.jpg'),
 ('Mariel','Cervantes','Hernandez', 'mariel@gmail.com', '1234','C:Pictures\foto.jpg'),
