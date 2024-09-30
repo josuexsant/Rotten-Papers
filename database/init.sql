@@ -77,10 +77,22 @@ CREATE TABLE `favorites`(
     CONSTRAINT `favorites_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)
 );
 
-/* INSERTS -------------------*/
 
 INSERT INTO users (name,lastname1,lastname2,email,password,photo) VALUES 
 ('Josue','Santamaria','Morales','josue@gmail.com','1234','C:Pictures\foto.jpg');
+
+
+INSERT INTO users(name, lastname1, lastname2, email, password,photo) VALUES
+('Viridiana','Benitez','Gonzalez', 'viri@gmail.com', '1234','C:Pictures\foto.jpg'),
+('Mariel','Cervantes','Hernandez', 'mariel@gmail.com', '1234','C:Pictures\foto.jpg'),
+('Fernando','Quiroz','Castillo', 'fer@gmail.com', '1234','C:Pictures\foto.jpg'),
+('Gabriel','Romero','Luna', 'gabriel@gmail.com', '1234','C:Pictures\foto.jpg'),
+('Jennifer','Hidalgo','Castro', 'jenni@gmail.com', '1234','C:Pictures\foto.jpg');
+
+
+
+
+
 
 INSERT INTO genres (genre) VALUES 
 ('Novela de caballerías'),
@@ -165,3 +177,6 @@ INSERT INTO book_genre (genre_id, book_id) VALUES
 (17, 11), 
 (18, 10), 
 (19, 15); 
+
+INSERT INTO favorites(user_id,book_id) VALUES
+(1,1),(1,2),(1,3),(1,4),(2,5),(2,6),(2,7),(2,8),(3,9),(3,10),(3,11),(3,12),(4,13),(4,14),(4,15),(4,16),(5,17),(5,1),(5,2),(5,3),(6,4),(6,5),(6,6),(6,7);
