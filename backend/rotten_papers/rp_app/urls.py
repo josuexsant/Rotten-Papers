@@ -13,5 +13,6 @@ router.register(r'reviews', views.ReviewsView, 'Reviews')
 router.register(r'favorites', views.FavoritesView, 'Favorites')
 
 urlpatterns = [
-    path('rp/', include(router.urls))
+    path('rp/', include(router.urls)),
+    path('home/', views.HomeView.as_view(), name ='home')
 ]

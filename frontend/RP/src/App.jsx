@@ -3,6 +3,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
+import ProtectedRoute from './helpers/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -14,8 +15,12 @@ const router = createBrowserRouter([
     element: <SignIn />,
   },
   {
-    path: '/test',
-    element: <Test />,
+    path: '/test', //Ruta protegida
+    element: (
+      <ProtectedRoute>
+        <Test />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/access',

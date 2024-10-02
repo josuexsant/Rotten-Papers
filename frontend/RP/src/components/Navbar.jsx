@@ -1,11 +1,12 @@
+import { useState } from 'react'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { useAuth } from "../hooks/useAuth";
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const navigation = [
   { name: 'Home', href: '/', current: false },
   { name: 'Mis favoritos', href: '#', current: false },
-  { name: 'Acceder', href: '/access', current: false },
 ]
 
 function classNames(...classes) {
@@ -13,6 +14,14 @@ function classNames(...classes) {
 }
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated , signout } = useAuth();
+
+  const handleSignout = async () => {
+    await signout();
+    navigate("/"); // Navegar a la página de inicio después de cerrar sesión
+  };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -66,6 +75,7 @@ export const Navbar = () => {
               </div>
             </div>
           </div>
+          { isAuthenticated ? (
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
@@ -75,7 +85,7 @@ export const Navbar = () => {
                   <span className="sr-only">Open user menu</span>
                   <img
                     alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src='https://www.svgrepo.com/show/81103/avatar.svg'
                     className="h-8 w-8 rounded-full"
                   />
                 </MenuButton>
@@ -95,13 +105,24 @@ export const Navbar = () => {
                   </a>
                 </MenuItem>
                 <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                  <button className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100"
+                  onClick={handleSignout}>
                     Cerrar sesión
-                  </a>
+                  </button>
                 </MenuItem>
               </MenuItems>
             </Menu>
           </div>
+          ) : (
+            <div className="hidden sm:ml-6 sm:block">
+              <Link
+                to="/access"
+                className="bg-indigo-500 text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Acceder
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

@@ -58,7 +58,7 @@ export const Access = () => {
             <div className="relative mt-16 flex justify-center items-center h-auto lg:mt-8">
               <img
                 alt="Portada de libros"
-                src={ MyImage }
+                src='https://www.svgrepo.com/show/492788/book-and-person-winter.svg'
                 className="w-[80%] max-w-[60rem] h-auto rounded-md bg-white/5 ring-1 ring-white/10" // Ajusta el tamaño con `w-[80%]` y `max-w-[60rem]`
               />
             </div>
