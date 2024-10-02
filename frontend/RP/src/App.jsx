@@ -1,8 +1,5 @@
-import { SignIn, Landing, Test, Access, Login } from './pages/';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from 'react-router-dom';
+import { SignIn, Landing, Test, Access, Favorites, Login } from './pages/';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './helpers/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -30,6 +27,10 @@ const router = createBrowserRouter([
     path: '/login',
     element: <Login />,
   }
+  {
+    path: '/favorites',
+    element: <Favorites />,
+  },
 ]);
 
 const App = () => {
