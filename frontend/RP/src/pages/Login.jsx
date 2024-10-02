@@ -1,30 +1,39 @@
-import {Navbar } from '../components/Navbar';
-import { createUser } from "../api/api";
-import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom';
+import { Navbar } from "../components/Navbar";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { useEffect } from "react";
 
-export function Login(){
-  
-  const { register, handleSubmit } = useForm() //Guardar los datos del form en variables 
+export function Login() {
+  const navigate = useNavigate();
+  const { signin, isAuthenticated } = useAuth();
 
-  const onSubmit = handleSubmit(async data =>{
-    console.log(data);
-    await createUser(data);
-  })
-  
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await signin();
+  };
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="min-h-full flex">
         <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
-             
-              <h2 className="text-3xl font-extrabold text-gray-900">Iniciar Sesion</h2>
+              <h2 className="text-3xl font-extrabold text-gray-900">
+                Iniciar Sesion
+              </h2>
               <p className="mt-2 text-sm text-gray-600">
-                ¿Eres Nuevo?{' '}
-                <Link to="/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
+                ¿Eres Nuevo?{" "}
+                <Link
+                  to="/signin"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
                   Registrate aquí
                 </Link>
               </p>
@@ -32,35 +41,39 @@ export function Login(){
 
             <div className="mt-8">
               <div className="mt-6">
-                <form onSubmit={ onSubmit } className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Correo electrónico
                     </label>
                     <div className="mt-1">
                       <input
                         type="email"
                         autoComplete="email"
-                        {...register('email', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Contraseña
                     </label>
                     <div className="mt-1">
                       <input
                         type="password"
                         autoComplete="current-password"
-                        {...register('password', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
-                
+
                   <div>
                     <button
                       type="submit"
@@ -83,7 +96,7 @@ export function Login(){
         </div>
       </div>
     </>
-  )
-};
+  );
+}
 
 export default Login;
