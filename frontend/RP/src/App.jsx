@@ -1,8 +1,5 @@
-import { SignIn, Landing, Test, Access } from './pages/';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from 'react-router-dom';
+import { SignIn, Landing, Test, Access, Favorites } from './pages/';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
   {
@@ -20,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: '/access',
     element: <Access />,
+  },
+  {
+    path: '/favorites',
+    element: <Favorites />,
   },
 ]);
 

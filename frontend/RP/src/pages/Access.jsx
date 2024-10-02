@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import MyImage from '../assets/portadaLibros.svg';
 import { Navbar } from '../components/Navbar';
 
 export const Access = () => {
@@ -8,7 +7,7 @@ export const Access = () => {
       <Navbar />
       <div className="bg-white">
         <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
-          <div className="relative isolate overflow-hidden bg-gray-900 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
+          <div className="relative isolate overflow-hidden bg-custom-blue-3 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
             <svg
               viewBox="0 0 1024 1024"
               aria-hidden="true"
@@ -34,11 +33,11 @@ export const Access = () => {
               </h2>
 
               <br />
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <h2 className="text-3xl font-sans tracking-tight text-white sm:text-4xl">
                 Abre un libro, abre tu mente
               </h2>
-              <p className="mt-6 text-lg leading-8 text-gray-300">
-                Descrubre y lee más
+              <p className="mt-6 text-lg leading-8 text-custom-blue-4">
+                Descubre y lee más
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-y-4 lg:justify-center">
                 <a
@@ -58,7 +57,7 @@ export const Access = () => {
             <div className="relative mt-16 flex justify-center items-center h-auto lg:mt-8">
               <img
                 alt="Portada de libros"
-                src={MyImage}
+                src="https://img.freepik.com/free-vector/hand-drawn-flat-design-stack-books-illustration_23-2149320038.jpg?t=st=1727840060~exp=1727843660~hmac=9e69c3dfb1e1b705aa07202ab017ea9b515a2ded9a155173a6c874fa70b60616&w=1380"
                 className="w-[80%] max-w-[60rem] h-auto rounded-md bg-white/5 ring-1 ring-white/10" // Ajusta el tamaño con `w-[80%]` y `max-w-[60rem]`
               />
             </div>
