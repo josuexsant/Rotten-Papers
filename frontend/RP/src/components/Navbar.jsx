@@ -1,18 +1,51 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link } from 'react-router-dom'
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
+import React, { useState } from "react";
+
 
 const navigation = [
-  { name: 'Home', href: '/', current: false },
-  { name: 'Mis favoritos', href: '#', current: false },
-  { name: 'Acceder', href: '/test', current: false },
-]
+  { name: "Home", href: "/", current: false },
+  { name: "Mis favoritos", href: "#", current: false },
+  { name: "Acceder", href: "/test", current: false },
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export const Navbar = () => {
+  const [query, setQuery] = useState("");
+  const [books, setBooks] = useState([]);
+
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.length > 1) {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/search-books/?q=${value}`
+        );
+        const data = await response.json();
+        setBooks(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      setBooks([]);
+    }
+  };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -21,8 +54,14 @@ export const Navbar = () => {
             <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block h-6 w-6 group-data-[open]:hidden" />
-              <XMarkIcon aria-hidden="true" className="hidden h-6 w-6 group-data-[open]:block" />
+              <Bars3Icon
+                aria-hidden="true"
+                className="block h-6 w-6 group-data-[open]:hidden"
+              />
+              <XMarkIcon
+                aria-hidden="true"
+                className="hidden h-6 w-6 group-data-[open]:block"
+              />
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-between">
@@ -39,30 +78,48 @@ export const Navbar = () => {
                   <a
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={item.current ? "page" : undefined}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
+                      item.current
+                        ? "bg-gray-900 text-white"
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
                     {item.name}
                   </a>
                 ))}
-                <form className="relative">
+                <form className="relative" onSubmit={(e) => e.preventDefault()}>
                   <input
                     id="search"
                     name="search"
+                    value={query}
+                    onChange={handleSearch}
                     className="block w-full pr-10 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Buscar"
-                    type="search"
+                    type="text"
                   />
-                  <button type="submit" className="absolute right-0 top-0 mt-2 mr-2">
-                    <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#434343"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+                  <button
+                    type="submit"
+                    className="absolute right-0 top-0 mt-2 mr-2"
+                  >
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#434343"
+                      >
+                        <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+                      </svg>
                     </svg>
                   </button>
                 </form>
-                
               </div>
             </div>
           </div>
@@ -85,17 +142,26 @@ export const Navbar = () => {
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
                 <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                  >
                     Editar perfil
                   </a>
                 </MenuItem>
                 <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                  >
                     Eliminar cuenta
                   </a>
                 </MenuItem>
                 <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                  >
                     Cerrar sesión
                   </a>
                 </MenuItem>
@@ -112,10 +178,12 @@ export const Navbar = () => {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? 'page' : undefined}
+              aria-current={item.current ? "page" : undefined}
               className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
+                item.current
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                "block rounded-md px-3 py-2 text-base font-medium"
               )}
             >
               {item.name}
@@ -124,7 +192,7 @@ export const Navbar = () => {
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
-}
+  );
+};
 
 export default Navbar;
