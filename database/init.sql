@@ -182,3 +182,21 @@ INSERT INTO book_genre (genre_id, book_id) VALUES
 
 INSERT INTO favorites(user_id,book_id) VALUES
 (1,1),(1,2),(1,3),(1,4),(2,5),(2,6),(2,7),(2,8),(3,9),(3,10),(3,11),(3,12),(4,13),(4,14),(4,15),(4,16),(5,17),(5,1),(5,2),(5,3),(6,4),(6,5),(6,6),(6,7);
+
+update books set cover = 'https://www.marcialpons.es/media/img/portadas/2023/4/18/9788408270881jfif' where author_id = 1;
+update books set cover = 'https://www.udllibros.com/imagenes/9788494/978849490630.JPG' where author_id = 2;
+update books set cover = 'https://1.bp.blogspot.com/-fnWJBX6WwF0/VKeVYB6C3xI/AAAAAAAAB5Y/u7KVFfL5cDE/s1600/portada-anna-karenina.jpg' where author_id = 3;
+update books set cover = 'https://www.planetadelibros.com.pe/usuaris/libros/fotos/252/original/portada_el-principito_antoine-de-saint-exupery_201703281853.jpg' where author_id = 4;
+update books set cover = 'https://m.media-amazon.com/images/I/516hWPJbM4L.jpg' where author_id = 5;
+update books set cover = 'https://imagessl8.casadellibro.com/a/l/t7/88/9788490628188.jpg' where author_id = 6;
+update books set cover = 'https://i0.wp.com/www.epubgratis.org/wp-content/uploads/2015/02/Hamlet-William-Shakespeare-portada.jpg?fit=683%2C1024&ssl=1' where author_id = 7;
+update books set cover = 'https://imagessl0.casadellibro.com/a/l/t0/50/9788496778450.jpg' where author_id = 8;
+update books set cover = 'https://1.bp.blogspot.com/-Zcm4iTwFe1E/X8Eg053VhmI/AAAAAAAAAJw/fHaw95b8uis8HsS-MOj4jOqAfZv2maA0gCNcBGAsYHQ/s1500/LA%2BODISEA.jpg' where author_id = 9;
+update books set cover = 'https://tse1.mm.bing.net/th?id=OIP.zIQEKVs0PRt67CIU0xoMsAHaLN&pid=Api' where author_id = 10;
+update books set cover = 'https://i.pinimg.com/736x/5e/59/4a/5e594a4ebc8154796dcfc0167dc00f02.jpg' where author_id = 11;
+update books set cover = 'https://mestasediciones.com/wp-content/uploads/2020/06/C61-Cumbres-borrascosas.jpg' where author_id = 12;
+update books set cover = 'https://imagessl7.casadellibro.com/a/l/t0/77/9788420689777.jpg' where author_id = 13;
+update books set cover = 'http://2.bp.blogspot.com/-pw1GPhWhKPI/UZDzbpsQQ_I/AAAAAAAAA4k/IkYw54JcZSU/s1600/mil+soles.jpg' where author_id = 14;
+update books set cover = 'https://2.bp.blogspot.com/-dH0ax_YE0Iw/WWkTgb-RnYI/AAAAAAAAC6Q/71_ywbeDmEEya0E2-qM00WVnmTyakfuKgCLcBGAs/s1600/978-987-718-482-2_1.png' where author_id = 15;
+update books set cover = 'https://pendulo.com/imagenes_grandes/9788466/978846634635.GIF' where author_id = 16;
+update books set cover = 'https://tse4.mm.bing.net/th?id=OIP.G_tS6cMXzR0JgkQPu6xEjQAAAA&pid=Api' where author_id = 17;

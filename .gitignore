@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 # Migration files
-__pycache__
+__pycache__/
 
 #Entorno virtual
 venv/
