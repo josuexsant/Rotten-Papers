@@ -43,8 +43,8 @@ export const Favorites = () => {
     <>
       <Navbar showAccessButton={false} />
 
-      <div className="bg-gray-800 py-12 text-center">
-        <h1 className="text-4xl font-semibold text-white">Mis Favoritos</h1>
+      <div className="bg-gray-800 py-4 text-center">
+        <h1 className="text-2xl font-embed text-white">Mis Favoritos</h1>
       </div>
 
       <div className="bg-white">

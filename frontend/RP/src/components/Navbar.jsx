@@ -40,7 +40,7 @@ export const Navbar = () => {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-between">
             <div className="flex flex-shrink-0 items-center">
-              <Link to="/" className="text-white font-fredoka ont-bold text-xl">
+              <Link to="/" className="text-white font-fredoka text-3xl">
                 Rotten Papers
               </Link>
             </div>
@@ -55,7 +55,7 @@ export const Navbar = () => {
                       item.current
                         ? 'bg-gray-900 text-white'
                         : 'text-custom-light-blue hover:bg-custom-dark-blue hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium'
+                      'rounded-md px-3 py-2 text-base font-embed'
                     )}
                   >
                     {item.name}
@@ -70,7 +70,7 @@ export const Navbar = () => {
                       <input
                         id="search"
                         name="search"
-                        className="block  w-full pr-10 py-1 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sx"
+                        className="block  w-full pr-10 py-1 border border-gray-300 rounded-full leading-3 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                         placeholder="Buscar"
                         type="search"
                       />
