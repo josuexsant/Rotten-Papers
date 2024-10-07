@@ -8,9 +8,8 @@ import {
   MenuItems,
 } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react'
-import { useAuth } from "../hooks/useAuth";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const navigation = [
   { name: 'Mis favoritos', href: '/favorites', current: false },
@@ -22,13 +21,27 @@ function classNames(...classes) {
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const { isAuthenticated , signout } = useAuth();
+  const { isAuthenticated, signout } = useAuth();
 
   const handleSignout = async () => {
     await signout();
-    navigate("/"); // Navegar a la página de inicio después de cerrar sesión
+    navigate('/'); // Navegar a la página de inicio después de cerrar sesión
   };
 
+  const eliminarCuenta = async () => {
+    if (
+      window.confirm(
+        '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.'
+      )
+    ) {
+      // Lógica para eliminar la cuenta
+      console.log('Cuenta eliminada');
+      await signout();
+      navigate('/login');
+    } else {
+      console.log('Eliminación de cuenta cancelada');
+    }
+  };
   return (
     <Disclosure as="nav" className="bg-custom-blue">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -104,50 +117,52 @@ export const Navbar = () => {
               </div>
             </div>
           </div>
-          { isAuthenticated ? (
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {/* Profile dropdown */}
-            <Menu as="div" className="relative ml-3">
-              <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    alt=""
-                    src='https://www.svgrepo.com/show/81103/avatar.svg'
-                    className="h-8 w-8 rounded-full"
-                  />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-                  >
-                    Editar perfil
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-                  >
-                    Eliminar cuenta
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <button className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100"
-                  onClick={handleSignout}>
-                    Cerrar sesión
-                  </button>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
-          </div>
+          {isAuthenticated ? (
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              {/* Profile dropdown */}
+              <Menu as="div" className="relative ml-3">
+                <div>
+                  <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <span className="absolute -inset-1.5" />
+                    <span className="sr-only">Open user menu</span>
+                    <img
+                      alt=""
+                      src="https://www.svgrepo.com/show/81103/avatar.svg"
+                      className="h-8 w-8 rounded-full"
+                    />
+                  </MenuButton>
+                </div>
+                <MenuItems
+                  transition
+                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                >
+                  <MenuItem>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                    >
+                      Editar perfil
+                    </a>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
+                      onClick={eliminarCuenta}
+                    >
+                      Eliminar cuenta
+                    </button>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      className="block px-4 py-2 text-sm text-gray-700 focus:bg-gray-100"
+                      onClick={handleSignout}
+                    >
+                      Cerrar sesión
+                    </button>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            </div>
           ) : (
             <div className="hidden sm:ml-6 sm:block">
               <Link
