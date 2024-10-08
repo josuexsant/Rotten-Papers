@@ -25,6 +25,7 @@ dist-ssr
 
 # Migration files
 __pycache__/
+*.pyc
 
 #Entorno virtual
 venv/
