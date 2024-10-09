@@ -11,9 +11,22 @@ class HomeView(APIView):
        content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}
        return Response(content)
 
-class UserView(viewsets.ModelViewSet):
+class RegisterView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    queryset = Users.objects.all()
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    
+class LoginView(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+class LogoutView(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 class BookView(viewsets.ModelViewSet):
     serializer_class = BookSerializer
