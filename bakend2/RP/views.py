@@ -21,6 +21,17 @@ def login(request):
   serializer = UserSerializer(instance=user)
   return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_200_OK)
 
+
+# Delete user
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_user(request):
+  user = request.user
+  user.delete()
+  return Response({'message': 'User deleted'}, status=status.HTTP_200_OK)
+
+
 # Register
 @api_view(['POST'])
 def register(request):
@@ -38,6 +49,7 @@ def register(request):
   
   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # Logout
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -46,6 +58,7 @@ def logout(request):
   request.user.auth_token.delete()
   return Response({'message': 'logged out'}, status=status.HTTP_200_OK)
 
+
 # Home
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -53,19 +66,22 @@ def logout(request):
 def home(request):
   return Response("Welcome {}".format(request.user.username), status=status.HTTP_200_OK)
 
+
 # Get books
 @api_view(['GET'])
 def books(request):
     queryset = Books.objects.all()
     serializer = BookSerializer(queryset, many=True)
     return Response(serializer.data)
-  
+
+
 # Get Author
 @api_view(['GET'])
 def author(request):
     queryset = Authors.objects.all()
     serializer = AuthorSerializer(queryset, many=True)
     return Response(serializer.data)
+  
   
 # Manage favorites
 @api_view(['GET', 'POST', 'DELETE'])
@@ -93,7 +109,7 @@ def favorites(request):
     else:
         return Response({'message': 'Book is already in favorites'}, status=status.HTTP_200_OK)
 
-    # DELETE FAVORITE ----------------------
+  # DELETE FAVORITE ----------------------
   elif request.method == 'DELETE':
       book_id = request.data.get('book_id')
       book = get_object_or_404(Books, book_id=book_id)

@@ -78,11 +78,8 @@ CREATE TABLE `favorites`(
     CONSTRAINT `favorites_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`)
 );
 
-
 INSERT INTO users (name,lastname1,lastname2,email,password,photo) VALUES 
 ('Josue','Santamaria','Morales','josue@gmail.com','1234','C:Pictures\foto.jpg');
-
-
 
 INSERT INTO users(name, lastname1, lastname2, email, password,photo) VALUES
 ('Viridiana','Benitez','Gonzalez', 'viri@gmail.com', '1234','C:Pictures\foto.jpg'),
@@ -90,11 +87,6 @@ INSERT INTO users(name, lastname1, lastname2, email, password,photo) VALUES
 ('Fernando','Quiroz','Castillo', 'fer@gmail.com', '1234','C:Pictures\foto.jpg'),
 ('Gabriel','Romero','Luna', 'gabriel@gmail.com', '1234','C:Pictures\foto.jpg'),
 ('Jennifer','Hidalgo','Castro', 'jenni@gmail.com', '1234','C:Pictures\foto.jpg');
-
-
-
-
-
 
 INSERT INTO genres (genre) VALUES 
 ('Novela de caballerías'),

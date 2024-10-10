@@ -10,5 +10,6 @@ urlpatterns = [
     re_path('home', views.home),
     re_path('books', views.books),
     re_path('author', views.author),
-    re_path('favorites', views.favorites)
+    re_path('favorites', views.favorites),
+    re_path('delete_user', views.delete_user)
 ]
