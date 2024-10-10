@@ -8,4 +8,7 @@ urlpatterns = [
     re_path('register', views.register),
     re_path('logout', views.logout),
     re_path('home', views.home),
+    re_path('books', views.books),
+    re_path('author', views.author),
+    re_path('favorites', views.favorites)
 ]
