@@ -2,19 +2,19 @@ import axios from "axios";
 
 
 const users = axios.create({
-    baseURL: 'http://127.0.0.1:8000/rp/signin/'
+    baseURL: 'http://127.0.0.1:8000/signin/'
 })
 
 const books = axios.create({
-    baseURL: 'http://127.0.0.1:8000/rp/books/'
+    baseURL: 'http://127.0.0.1:8000/books/'
 })
 
 const author = axios.create({
-    baseURL: 'http://127.0.0.1:8000/rp/author/'
+    baseURL: 'http://127.0.0.1:8000/author/'
 })
 
 const login = axios.create({
-        baseURL: 'http://127.0.0.1:8000/rp/login/'
+        baseURL: 'http://127.0.0.1:8000/login/'
 })
 
 export const createUser = (user) => users.post('/', user);
