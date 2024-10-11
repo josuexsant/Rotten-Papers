@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    "corsheaders",
     'RP',
 ]
 
@@ -70,7 +71,10 @@ DATABASES = {
         'NAME': 'rotten_papers',  
         'USER': 'root',  
         'PASSWORD': '1234', 
-        'HOST': 'localhost',  
+        # Si usas el backend con Docker, descomenta la siguiente línea
+        'HOST': 'mysql_db',
+        # Si usas el backend en local, descomenta la siguiente línea
+        #'HOST': 'localhost',
         'PORT': '3306',  
     }
 }
@@ -116,3 +120,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080"
+]
