@@ -14,7 +14,7 @@ from .models import *
 @api_view(['POST'])
 def login(request):
   print(request.data)
-  user = get_object_or_404(User, username=request.data['username'])
+  user = get_object_or_404(User, email=request.data['email'])
   if not user.check_password(request.data['password']):
     return Response({'message': 'wrong password'}, status=status.HTTP_400_BAD_REQUEST)
   token, created = Token.objects.get_or_create(user=user)
@@ -35,12 +35,21 @@ def delete_user(request):
 # Register
 @api_view(['POST'])
 def register(request):
+  username = request.data.get('username')
+  email = request.data.get('email')
+  
+  if User.objects.filter(username=username).exists():
+    return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+  
+  if User.objects.filter(email=email).exists():
+    return Response({'message': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+  
   serializer = UserSerializer(data=request.data)
   
   if serializer.is_valid():
     serializer.save()
     
-    user = User.objects.get(username=request.data['username'])
+    user = User.objects.get(username=username)
     user.set_password(request.data['password'])
     user.save()
     

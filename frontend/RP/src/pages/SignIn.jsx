@@ -9,7 +9,23 @@ export function SignIn() {
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
-    await createUser(data);
+
+    fetch('http://localhost:8000/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        toast.success('Usuario registrado correctamente');
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        toast.error('Error al registrar el usuario');
+      });
   });
 
   return (
@@ -47,7 +63,7 @@ export function SignIn() {
                       <input
                         placeholder="Nombre"
                         type="text"
-                        {...register('name', { required: true })}
+                        {...register('first_name', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -58,35 +74,35 @@ export function SignIn() {
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Apellido paterno
+                      Apellidos
                     </label>
                     <div className="mt-1">
                       <input
                         placeholder="Apellido paterno"
                         type="text"
-                        {...register('lastname1', { required: true })}
+                        {...register('last_name', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
                   </div>
 
-                  <div>
+ <                div>
                     <label
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Apellido materno
+                      Nombre de usuario
                     </label>
                     <div className="mt-1">
                       <input
-                        placeholder="Apellido materno"
+                        placeholder="Nombre"
                         type="text"
-                        {...register('lastname2', { required: true })}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        {...register('username', { required: true })}
+                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
                   </div>
-
+            
                   <div>
                     <label
                       htmlFor="gender"
