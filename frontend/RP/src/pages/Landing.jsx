@@ -1,8 +1,10 @@
 import { Navbar } from "../components/Navbar";
 import { getAllbooks } from "../api/api";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Landing = () => {
+  const navigate = useNavigate();
   const [Books, setBooks] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [message, setMessage] = useState("Descubre más...");
@@ -15,6 +17,12 @@ export const Landing = () => {
   }, []);
 
   const handleLike = (bookId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     const confirmed = window.confirm(
       "¿Estás seguro de que quieres agregar este libro a favoritos?"
     );
@@ -23,7 +31,7 @@ export const Landing = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Token ${localStorage.getItem("token")}`,
+          Authorization: `Token ${token}`,
         },
         body: JSON.stringify({ book_id: bookId }),
       })
