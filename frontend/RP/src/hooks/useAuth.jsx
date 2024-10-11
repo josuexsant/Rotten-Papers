@@ -10,22 +10,45 @@ export const AuthProvider = ({ children }) => {
     () => localStorage.getItem('username') || null
   );
 
-  const signin = async (newUsername = 'user') => {
-    console.log('signin');
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simula un retraso
-    setIsAuthenticated(true);
-    setUsername(newUsername);
-    localStorage.setItem('isAuthenticated', JSON.stringify(true));
-    localStorage.setItem('username', newUsername);
+  const signin = async (credentials) => {
+    fetch('http://localhost:8000/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', data.user.username);
+        setIsAuthenticated(true);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
   };
 
-
   const signout = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simula un retraso
-    setIsAuthenticated(false);
-    setUsername(null);
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('username');
+    fetch('http://localhost:8000/logout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+        setUsername(null);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
   };
 
   useEffect(() => {

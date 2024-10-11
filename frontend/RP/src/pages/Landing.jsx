@@ -1,42 +1,51 @@
 import { Navbar } from '../components/Navbar';
-import { getAllbooks, getAuthor } from '../api/api';
+import { getAllbooks } from '../api/api';
 import { useEffect, useState } from 'react';
 
 export const Landing = () => {
   const [Books, setBooks] = useState([]);
-  const [author, setAuthor] = useState([]);
+  const [username, setUsername] = useState(localStorage.getItem('username'));
+  const [message, setMessage] = useState('Descubre más...');
 
   useEffect(() => {
-    async function loudbooks() {
+    const storedUsername = localStorage.getItem('username');
+    console.log('Stored username:', storedUsername); // Verificar el valor almacenado
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (username && username !== 'null') {
+      setMessage(`Bienvenido ${username}`);
+    } else {
+      setMessage('Descubre más...');
+    }
+  }, [username]);
+
+  useEffect(() => {
+    async function loadBooks() {
       const res = await getAllbooks();
       setBooks(res.data);
     }
-    loudbooks();
-
-    async function loudauthor() {
-      const res = await getAuthor();
-      setAuthor(res.data);
-    }
-    loudauthor();
+    loadBooks();
   }, []);
 
   return (
     <>
       <Navbar />
       <div className="bg-white">
-        {/* Agregar el texto "Descubre más..." aquí */}
         <div className="text-center text-lg font-semibold mt-4">
-          Descubre más...
+          {message}
         </div>
 
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="sr-only">Products</h2>
 
-          {/* Contenedor principal con esquinas redondeadas y color bg-gray-800 */}
           <div className="rounded-lg shadow-lg p-6 bg-gray-800">
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {Books.map((book) => (
-                <a key={book.id} href={'#'} className="group flex flex-col">
+                <a key={book.book_id} href={'#'} className="group flex flex-col">
                   <div className="flex flex-row overflow-hidden h-64">
                     <div className="w-1/2">
                       <img
@@ -64,14 +73,11 @@ export const Landing = () => {
                           ))}
                         </div>
                       </div>
-                      {/* Sinopsis sin fondo */}
                       <div className="mt-4 flex-1 overflow-hidden">
                         <p className="text-sm text-gray-300 max-h-16 overflow-hidden group-hover:max-h-full group-hover:overflow-auto transition-all duration-300 ease-in-out">
                           {book.synopsis}
                         </p>
                       </div>
-
-                      {/* Corazón que se rellena al hacer hover */}
                       <div className="mt-4 flex justify-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
