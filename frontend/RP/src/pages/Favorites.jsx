@@ -1,35 +1,63 @@
-import { useEffect, useState } from 'react';
-import { getAllbooks } from '../api/api';
-import { Navbar } from '../components/Navbar';
+import { useEffect, useState } from "react";
+import { Navbar } from "../components/Navbar";
 
 export const Favorites = () => {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [username, setUsername] = useState(localStorage.getItem("username"));
 
   useEffect(() => {
-    async function loadBooks() {
-      const res = await getAllbooks();
-      setBooks(res.data);
-      setFilteredBooks(res.data);
-    }
-    loadBooks();
+    fetch("http://localhost:8000/favorites/", {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setBooks(data);
+        setFilteredBooks(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
-
+  
   const handleRemove = (bookId) => {
     const confirmed = window.confirm(
-      '¿Estás seguro de que quieres eliminar este libro de favoritos?'
+      "¿Estás seguro de que quieres eliminar este libro de favoritos?"
     );
     if (confirmed) {
-      const updatedBooks = books.filter((book) => book.id !== bookId);
-      setBooks(updatedBooks);
-      setFilteredBooks(updatedBooks);
+      fetch(`http://localhost:8000/favorites/`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ book_id: bookId }),
+      })
+        .then((response) => {
+          console.log(response);
+          if (response.ok) {
+            const updatedBooks = books.filter(
+              (book) => book.book_id !== bookId
+            );
+            setBooks(updatedBooks);
+            setFilteredBooks(updatedBooks);
+          } else {
+            console.error("Error al eliminar el libro");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    if (event.target.value === '') {
+    if (event.target.value === "") {
       setFilteredBooks(books);
     } else {
       const filtered = books.filter((book) =>
@@ -44,7 +72,9 @@ export const Favorites = () => {
       <Navbar showAccessButton={false} />
 
       <div className="bg-gray-800 py-12 text-center">
-        <h1 className="text-4xl font-semibold text-white">Mis Favoritos</h1>
+        <h1 className="text-4xl font-semibold text-white">
+          Tus Favoritos {username}
+        </h1>
       </div>
 
       <div className="bg-white">
@@ -62,7 +92,7 @@ export const Favorites = () => {
           <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
             {filteredBooks.map((book) => (
               <div
-                key={book.id}
+                key={book.book_id}
                 className="group flex flex-col bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
               >
                 {/* Imagen de portada del libro con tamaño rectangular vertical */}
@@ -99,7 +129,7 @@ export const Favorites = () => {
                 {/* Botón de eliminar */}
                 <div className="mt-4 flex justify-center mb-4">
                   <button
-                    onClick={() => handleRemove(book.id)}
+                    onClick={() => handleRemove(book.book_id)}
                     className="text-gray-500 hover:text-red-600 transition-all duration-300 ease-in-out"
                   >
                     <span className="flex items-center">

@@ -3,9 +3,11 @@ import { createUser } from '../api/api';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 export function SignIn() {
   const { register, handleSubmit } = useForm(); //Guardar los datos del form en variables
+  const navigate = useNavigate();
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
@@ -26,6 +28,9 @@ export function SignIn() {
         console.error('Error:', error);
         toast.error('Error al registrar el usuario');
       });
+
+    navigate('/login');
+    
   });
 
   return (

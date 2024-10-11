@@ -1,25 +1,54 @@
-import { Navbar } from '../components/Navbar';
-import { getAllbooks } from '../api/api';
-import { useEffect, useState } from 'react';
+import { Navbar } from "../components/Navbar";
+import { getAllbooks } from "../api/api";
+import { useEffect, useState } from "react";
 
 export const Landing = () => {
   const [Books, setBooks] = useState([]);
-  const [username, setUsername] = useState(localStorage.getItem('username'));
-  const [message, setMessage] = useState('Descubre más...');
+  const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [message, setMessage] = useState("Descubre más...");
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    console.log('Stored username:', storedUsername); // Verificar el valor almacenado
+    const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername);
     }
   }, []);
 
+  const handleLike = (bookId) => {
+    const confirmed = window.confirm(
+      "¿Estás seguro de que quieres agregar este libro a favoritos?"
+    );
+    if (confirmed) {
+      fetch(`http://localhost:8000/favorites/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ book_id: bookId }),
+      })
+        .then((response) => {
+          console.log(response);
+          if (response.ok) {
+            const updatedBooks = Books.map((book) =>
+              book.book_id === bookId ? { ...book, favorite: true } : book
+            );
+            setBooks(updatedBooks);
+          } else {
+            console.error("Error al agregar el libro a favoritos");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  };
+
   useEffect(() => {
-    if (username && username !== 'null') {
+    if (username && username !== "null") {
       setMessage(`Bienvenido ${username}`);
     } else {
-      setMessage('Descubre más...');
+      setMessage("Descubre más...");
     }
   }, [username]);
 
@@ -35,9 +64,7 @@ export const Landing = () => {
     <>
       <Navbar />
       <div className="bg-white">
-        <div className="text-center text-lg font-semibold mt-4">
-          {message}
-        </div>
+        <div className="text-center text-lg font-semibold mt-4">{message}</div>
 
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="sr-only">Products</h2>
@@ -45,11 +72,11 @@ export const Landing = () => {
           <div className="rounded-lg shadow-lg p-6 bg-gray-800">
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {Books.map((book) => (
-                <a key={book.book_id} href={'#'} className="group flex flex-col">
+                <div key={book.book_id} className="group flex flex-col">
                   <div className="flex flex-row overflow-hidden h-64">
                     <div className="w-1/2">
                       <img
-                        alt={'book'}
+                        alt={"book"}
                         src={book.cover}
                         className="h-full w-full object-cover object-center group-hover:opacity-75 rounded-lg"
                       />
@@ -79,24 +106,26 @@ export const Landing = () => {
                         </p>
                       </div>
                       <div className="mt-4 flex justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={2}
-                          stroke="currentColor"
-                          className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                          />
-                        </svg>
+                        <button onClick={() => handleLike(book.book_id)}>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>
