@@ -38,9 +38,7 @@ const router = createBrowserRouter([
   {
     path: "/reviews/:id",
     element: (
-      <ProtectedRoute>
         <Reviews />
-      </ProtectedRoute>
     ),
   },  
 ]);

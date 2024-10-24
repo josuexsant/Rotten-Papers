@@ -13,6 +13,7 @@ urlpatterns = [
     re_path('favorites', views.favorites),
     re_path('delete_user', views.delete_user),
     re_path(r'^reviews/(?P<book_id>\d+)/$', views.reviews),
+    re_path('user_reviews/', views.get_reviews_user),
     re_path('reviews', views.reviews),
     re_path('book', views.book),
     re_path('author', views.author)
