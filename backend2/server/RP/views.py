@@ -86,7 +86,7 @@ def books(request):
 
 # Get Author
 @api_view(['GET'])
-def author(request):
+def authors(request):
     queryset = Authors.objects.all()
     serializer = AuthorSerializer(queryset, many=True)
     return Response(serializer.data)
@@ -133,3 +133,55 @@ def favorites(request):
   else:
       return Response({'message': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
+#REVIEWS ----------------------
+@api_view(['GET', 'POST', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def reviews(request):
+  user = request.user
+
+  # GET REVIEWS ----------------------
+  if request.method == 'GET':
+    reviews = Reviews.objects.filter(user_id=user.pk)
+    serializer = ReviewsSerializer(reviews, many=True)
+    return Response(serializer.data)
+  
+  # POST REVIEWS ----------------------
+  elif request.method == 'POST': 
+      data = request.data.copy()
+      data['user_id'] = user.pk
+      serializer = ReviewsSerializer(data=data)
+
+      if serializer.is_valid():
+          serializer.save()
+          user.save() 
+            
+          return Response({'message': 'Review added successfully'}, status=status.HTTP_201_CREATED)
+      else:
+          return Response({'message': 'Review not added'}, status=status.HTTP_400_BAD_REQUEST)
+      
+      #DELETE REVIEW ----------------------
+  elif request.method == 'DELETE':
+      review_id = request.data.get('review_id')
+      review = get_object_or_404(Reviews, review_id=review_id)
+      
+      if review:
+          review.delete()
+          return Response({'message': 'Review removed successfully'}, status=status.HTTP_200_OK)
+      else: 
+          return Response({'message': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)  
+      
+@api_view(['GET'])
+def book(request):
+    book_id = request.query_params.get('book_id')
+    book = get_object_or_404(Books, book_id=book_id)
+    serializer = BookSerializer(book)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# Get Author
+@api_view(['GET'])
+def author(request):
+    author_id = request.query_params.get('author_id')
+    author = get_object_or_404(Authors, author_id=author_id)
+    serializer = AuthorSerializer(author)
+    return Response(serializer.data, status=status.HTTP_200_OK)

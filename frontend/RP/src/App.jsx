@@ -1,4 +1,4 @@
-import { SignIn, Landing, Test, Access, Favorites, Login } from "./pages/";
+import { SignIn, Landing, Test, Access, Favorites, Login, Reviews } from "./pages/";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./helpers/ProtectedRoute";
 
@@ -35,6 +35,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/reviews/:id",
+    element: (
+      <ProtectedRoute>
+        <Reviews />
+      </ProtectedRoute>
+    ),
+  },  
 ]);
 
 const App = () => {
