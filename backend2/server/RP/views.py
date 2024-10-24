@@ -135,17 +135,22 @@ def favorites(request):
     
 #REVIEWS ----------------------
 @api_view(['GET', 'POST', 'DELETE'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def reviews(request):
   user = request.user
 
   # GET REVIEWS ----------------------
   if request.method == 'GET':
-    reviews = Reviews.objects.filter(user_id=user.pk)
-    serializer = ReviewsSerializer(reviews, many=True)
-    return Response(serializer.data)
-  
+        book_id = request.query_params.get('book_id')
+        if book_id:
+            reviews = Reviews.objects.filter(book_id=book_id)
+            if reviews.exists():
+                serializer = ReviewsSerializer(reviews, many=True)
+                return Response(serializer.data)
+            else:
+                return Response({"message": "Aún no tienes reseñas para este libro."})
+        else:
+            return Response({"error": "Por favor proporciona un book_id válido."}, status=400)
+
   # POST REVIEWS ----------------------
   elif request.method == 'POST': 
       data = request.data.copy()
@@ -184,4 +189,14 @@ def author(request):
     author_id = request.query_params.get('author_id')
     author = get_object_or_404(Authors, author_id=author_id)
     serializer = AuthorSerializer(author)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+#Get Reviews de Usuario Autenticado
+@api_view(['GET'])
+def get_reviews_user(request):
+    user_id = request.user.id
+    print(f"Usuario autenticado: {user_id}")
+    book_id = request.query_params.get('book_id')
+    review = Reviews.objects.filter(user_id=user_id, book_id=book_id)
+    serializer = ReviewsSerializer(review, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
