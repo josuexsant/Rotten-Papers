@@ -80,7 +80,8 @@ export const Landing = () => {
           <div className="rounded-lg shadow-lg p-6 bg-gray-800">
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {Books.map((book) => (
-                <div key={book.book_id} className="group flex flex-col">
+                <div key={book.book_id} className="group flex flex-col" onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
+>
                   <div className="flex flex-row overflow-hidden h-64">
                     <div className="w-1/2">
                       <img
