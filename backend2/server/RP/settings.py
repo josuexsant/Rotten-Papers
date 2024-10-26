@@ -71,11 +71,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'rotten_papers',  
         'USER': 'root',  
-        'PASSWORD': '', 
+        'PASSWORD': '1234', 
         # Si usas el backend con Docker, descomenta la siguiente línea
         'HOST': 'mysql_db',
         # Si usas el backend en local, descomenta la siguiente línea
-        'HOST': 'localhost',
+        #'HOST': 'localhost',
         'PORT': '3306',  
     }
 }
