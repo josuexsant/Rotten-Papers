@@ -59,7 +59,14 @@ export const Reviews = () => {
 
           //Obtener reviews de todos los usuarios
           const ReviewsresponseAll = await fetch(
-            `http://localhost:8000/reviews/?book_id=${params.id}`
+            `http://localhost:8000/reviews/?book_id=${params.id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("token")}`,
+              },
+            }
           );
           if (!ReviewsresponseAll.ok) {
             throw new Error("Error fetching book details");
@@ -122,7 +129,7 @@ export const Reviews = () => {
 
       <div className="bg-gray-800 py-2 text-center">
         <h1 className="text-2xl font-semibold text-white">
-          Reseñas {username}
+          Reseñas
         </h1>
       </div>
 
