@@ -135,6 +135,8 @@ def favorites(request):
     
 #REVIEWS ----------------------
 @api_view(['GET', 'POST', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def reviews(request):
   user = request.user
 
@@ -193,6 +195,8 @@ def author(request):
 
 #Get Reviews de Usuario Autenticado
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_reviews_user(request):
     user_id = request.user.id
     print(f"Usuario autenticado: {user_id}")

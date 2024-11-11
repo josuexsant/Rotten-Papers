@@ -32,24 +32,32 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signout = async () => {
-    fetch('http://localhost:8000/logout/', {
-      method: 'POST',
+    const token = localStorage.getItem("token");
+  
+    fetch("http://localhost:8000/Logout/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to sign out");
+        }
+        return response.json();
+      })
       .then((data) => {
-        console.log('Success:', data);
-        localStorage.removeItem('token');
+        console.log("Success:", data);
+        localStorage.removeItem("token");
         setIsAuthenticated(false);
         setUsername(null);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
-
   };
+  
 
   useEffect(() => {
     localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
