@@ -4,13 +4,29 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export function SignIn() {
   const { register, handleSubmit } = useForm(); //Guardar los datos del form en variables
   const navigate = useNavigate();
+  //Mensajes de error
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = (data) => {
+    if (data.password !== data.confirmPassword) {
+      setPasswordError("Las contraseñas no coinciden");
+    } else {
+      setPasswordError("");
+    }
+  };
+
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
+
+    if(validatePassword(data) === false){
+      return;
+    }
 
     fetch("http://localhost:8000/register/", {
       method: "POST",
@@ -148,6 +164,7 @@ export function SignIn() {
                   </div>
 
                   <div className="space-y-1">
+                    <p>{passwordError}</p>
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
