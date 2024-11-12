@@ -155,28 +155,22 @@ def reviews(request):
 
   # POST REVIEWS ----------------------
   elif request.method == 'POST': 
-      data = request.data.copy()
-      data['user_id'] = user.pk
-      serializer = ReviewsSerializer(data=data)
+    book_id = request.data.get('book_id')
+    review_text = request.data.get('review')
+    rating = request.data.get('rating')
 
-      if serializer.is_valid():
-          serializer.save()
-          user.save() 
-            
-          return Response({'message': 'Review added successfully'}, status=status.HTTP_201_CREATED)
-      else:
-          return Response({'message': 'Review not added'}, status=status.HTTP_400_BAD_REQUEST)
-      
-      #DELETE REVIEW ----------------------
-  elif request.method == 'DELETE':
-      review_id = request.data.get('review_id')
-      review = get_object_or_404(Reviews, review_id=review_id)
-      
-      if review:
-          review.delete()
-          return Response({'message': 'Review removed successfully'}, status=status.HTTP_200_OK)
-      else: 
-          return Response({'message': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)  
+    book = get_object_or_404(Books, book_id=book_id)
+
+    user_instance = get_object_or_404(Users, pk=user.pk)
+    review = Reviews.objects.create(
+      user=user_instance,
+      book=book,
+      review=review_text,
+      rating=rating
+    )
+
+    serializer = ReviewsSerializer(review)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
       
 @api_view(['GET'])
 def book(request):

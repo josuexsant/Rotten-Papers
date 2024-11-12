@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   const signout = async () => {
     const token = localStorage.getItem("token");
   
-    fetch("http://localhost:8000/Logout/", {
+    fetch("http://localhost:8000/logout/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

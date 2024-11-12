@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export const Reviews = () => {
-  const username = useState(localStorage.getItem("username"));
+  const { isAuthenticated } = useAuth();
+  const [username] = useState(localStorage.getItem("username"));
   const [book, setBook] = useState(null);
   const [author, setAuthor] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -87,6 +89,43 @@ export const Reviews = () => {
     return <div className="">Loading...</div>; // Mientras los datos del libro y el autor se cargan
   }
 
+  const createReview = (e) => {
+    e.preventDefault();
+    console.log("Creando reseña...");
+    const reviewText = e.target.elements["review-text"].value;
+    const reviewRating = 5; // Aquí puedes obtener el rating de alguna manera, por ejemplo, de un input
+
+    const reviewData = {
+      book_id: params.id,
+      review: reviewText,
+      rating: reviewRating,
+    };
+
+    console.log(reviewData);
+
+    fetch(`http://localhost:8000/reviews/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(reviewData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Error creating review");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setReviews((prevReviews) => [...prevReviews, data]);
+        setFilteredReviews((prevReviews) => [...prevReviews, data]);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const handleLike = (bookId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -128,9 +167,7 @@ export const Reviews = () => {
       <Navbar showAccessButton={false} />
 
       <div className="bg-gray-800 py-2 text-center">
-        <h1 className="text-2xl font-semibold text-white">
-          Reseñas
-        </h1>
+        <h1 className="text-2xl font-semibold text-white">Reseñas</h1>
       </div>
 
       <div className="container mx-auto my-10 px-4 max-w-8x1">
@@ -144,28 +181,32 @@ export const Reviews = () => {
             />
 
             {/* Botón Favoritos */}
-            <button
-              onClick={() => handleLike(book.book_id)}
-              className="rounded-full mb-1 py-2 flex mt-4 justify-center bg-gray-700 text-white  hover:bg-gray-900 w-2/4 "
-            >
-              <p className="flex items-start mr-2 font-fredoka">Favoritos</p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
+
+            <div>
+              <button
+                onClick={() => handleLike(book.book_id)}
+                className="rounded-full mb-1 py-2 flex mt-4 justify-center bg-gray-700 text-white  hover:bg-gray-900 w-2/4 "
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                />
-              </svg>
-            </button>
+                <p className="flex items-start mr-2 font-fredoka">Favoritos</p>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  />
+                </svg>
+              </button>
+            </div>
 
             {/* Estrellas de calificación Pero no es dinamico aún*/}
+
             <div className="flex items-center mb-2">
               {[...Array(5)].map((_, index) => (
                 <svg
@@ -184,32 +225,49 @@ export const Reviews = () => {
                 <strong> {book.rating} </strong>
               </p>
             </div>
+
             <p className="font-fredoka italic mb-4 text-lg">
               ¡Califica este libro!
             </p>
 
+            {isAuthenticated ? (
+              <form action="" onSubmit={createReview}>
+                <textarea
+                  id="review-text"
+                  name="review-text"
+                  rows="4"
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  placeholder="Escribe tu reseña aquí..."
+                ></textarea>
+                <button
+                  type="submit"
+                  className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="h-6 w-6 text-black hover:fill-white transition-all duration-300 ease-in-out"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 3.487a2.25 2.25 0 1 1 3.182 3.182L7.392 19.32a4.5 4.5 0 0 1-1.89 1.13l-3.034.91a.75.75 0 0 1-.926-.926l.91-3.035a4.5 4.5 0 0 1 1.13-1.89L16.862 3.487zM15.11 5.239l3.182 3.182"
+                    />
+                  </svg>
+                  {/*Falta crear botón para crear reseña*/}
+                  <p className="ml-3">Crea una reseña</p>
+                </button>
+              </form>
+            ) : (
+              <p className="ml-3">
+                Necesitas iniciar sesión para crear una reseña
+              </p>
+            )}
+
             {/* Botón Añadir Reseña */}
-            <button
-              onClick={() => navigate(`/`)}
-              className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-6 w-6 text-black hover:fill-white transition-all duration-300 ease-in-out"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 3.487a2.25 2.25 0 1 1 3.182 3.182L7.392 19.32a4.5 4.5 0 0 1-1.89 1.13l-3.034.91a.75.75 0 0 1-.926-.926l.91-3.035a4.5 4.5 0 0 1 1.13-1.89L16.862 3.487zM15.11 5.239l3.182 3.182"
-                />
-              </svg>
-              {/*Falta crear botón para crear reseña*/}
-              <p className="ml-3">Crea una reseña</p>
-            </button>
           </div>
 
           {/* Columna derecha: Detalles del libro */}

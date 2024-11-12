@@ -25,7 +25,7 @@ export const Navbar = () => {
 
   const handleSignout = async () => {
     await signout();
-    navigate('/'); // Navegar a la página de inicio después de cerrar sesión
+    navigate('/');
   };
 
   const eliminarCuenta = async () => {
