@@ -166,11 +166,11 @@ export const Reviews = () => {
     <>
       <Navbar showAccessButton={false} />
 
-      <div className="bg-gray-800 py-2 text-center">
-        <h1 className="text-2xl font-semibold text-white">Reseñas</h1>
+      <div className="mt-8 text-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Reseñas</h1>
       </div>
 
-      <div className="container mx-auto my-10 px-4 max-w-8x1">
+      <div className="container mx-auto my-6 px-4 max-w-8x1">
         <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Columna izquierda: Imagen, estrellas, botones etc*/}
           <div className="w-full md:w-1/3 p-4 flex flex-col items-center md:items-center">

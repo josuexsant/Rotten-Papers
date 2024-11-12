@@ -6,7 +6,7 @@ export const Access = () => {
     <>
       <Navbar />
       <div className="bg-white">
-        <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
+        <div className="mx-auto max-w-7xl sm:px-6 sm:py-6 lg:px-8">
           <div className="relative isolate overflow-hidden bg-custom-blue-3 px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
             <svg
               viewBox="0 0 1024 1024"
@@ -54,7 +54,7 @@ export const Access = () => {
                 </Link>
               </div>
             </div>
-            <div className="relative mt-16 flex justify-center items-center h-auto lg:mt-8">
+            <div className="relative my-16 flex justify-center items-center h-auto lg:mt-8">
               <img
                 alt="Portada de libros"
                 src="https://img.freepik.com/free-vector/hand-drawn-flat-design-stack-books-illustration_23-2149320038.jpg?t=st=1727840060~exp=1727843660~hmac=9e69c3dfb1e1b705aa07202ab017ea9b515a2ded9a155173a6c874fa70b60616&w=1380"
