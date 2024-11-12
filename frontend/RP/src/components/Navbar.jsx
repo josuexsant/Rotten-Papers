@@ -6,17 +6,17 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
-} from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+} from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const navigation = [
-  { name: 'Mis favoritos', href: '/favorites', current: false },
+  { name: "Mis favoritos", href: "/favorites", current: false },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export const Navbar = () => {
@@ -25,21 +25,21 @@ export const Navbar = () => {
 
   const handleSignout = async () => {
     await signout();
-    navigate('/');
+    navigate("/");
   };
 
   const eliminarCuenta = async () => {
     if (
       window.confirm(
-        '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.'
+        "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer."
       )
     ) {
       // Lógica para eliminar la cuenta
-      console.log('Cuenta eliminada');
+      console.log("Cuenta eliminada");
       await signout();
-      navigate('/login');
+      navigate("/login");
     } else {
-      console.log('Eliminación de cuenta cancelada');
+      console.log("Eliminación de cuenta cancelada");
     }
   };
   return (
@@ -72,12 +72,12 @@ export const Navbar = () => {
                   <a
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={item.current ? "page" : undefined}
                     className={classNames(
                       item.current
-                        ? 'bg-gray-900 text-white'
-                        : 'text-custom-light-blue hover:bg-custom-dark-blue hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium'
+                        ? "bg-gray-900 text-white"
+                        : "text-custom-light-blue hover:bg-custom-dark-blue hover:text-white",
+                      "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
                     {item.name}
@@ -183,17 +183,27 @@ export const Navbar = () => {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? 'page' : undefined}
+              aria-current={item.current ? "page" : undefined}
               className={classNames(
                 item.current
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium'
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                "block rounded-md px-3 py-2 text-base font-medium"
               )}
             >
               {item.name}
             </DisclosureButton>
           ))}
+
+          {!isAuthenticated && (
+            <DisclosureButton
+              as={Link}
+              to="/access"
+              className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              Acceder
+            </DisclosureButton>
+          )}
         </div>
       </DisclosurePanel>
     </Disclosure>
