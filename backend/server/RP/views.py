@@ -147,7 +147,11 @@ def reviews(request):
             reviews = Reviews.objects.filter(book_id=book_id)
             if reviews.exists():
                 serializer = ReviewsSerializer(reviews, many=True)
-                return Response(serializer.data)
+                reviews_data = serializer.data
+                for review in reviews_data:
+                    user = User.objects.get(id=review['user'])
+                    review['user'] = user.username
+                return Response(reviews_data)
             else:
                 return Response({"message": "Aún no tienes reseñas para este libro."})
         else:

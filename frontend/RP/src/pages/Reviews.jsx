@@ -306,74 +306,86 @@ export const Reviews = () => {
               <h2 className="text-2xl font-semibold mb-4">
                 Calificación y reseñas
               </h2>
+
+              {/** Seccion de mis reseñas */}
               <div>
                 <h3 className="font-medium ml-5 mb-3">Mis reseñas</h3>
-                <hr className="border-gray-300 mb-5" />
               </div>
-              <div>
-                {/* Verifica si hay reseñas */}
-                {filteredReviews.length > 0 ? (
-                  filteredReviews.map((review) => (
-                    <div
-                      key={review.review_id}
-                      className="flex bg-white shadow-lg rounded-3xl p-3 mb-6"
-                    >
-                      <div className="w-1/4 flex flex-col items-center">
-                        <img
-                          /* Aquí obvio se cambia la dirección de la imagen */
-                          src="https://www.svgrepo.com/show/81103/avatar.svg"
-                          alt="Foto del usuario"
-                          className="w-20 h-30 rounded-full object-cover"
-                        />
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            {/* Aquí deberías agregar la lógica para obtener el nombre de usuario */}
-                            {username}
-                          </p>
-                        </div>
-                      </div>
 
-                      {/* Reseña y calificación */}
-                      <div className="w-4/6">
-                        <div className="flex items-center mb-2">
-                          {[...Array(5)].map((_, index) => (
-                            <svg
-                              key={index}
-                              className={`h-5 w-5 ${
-                                index < review.rating
-                                  ? "text-yellow-500"
-                                  : "text-gray-300"
-                              }`}
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
-                            </svg>
-                          ))}
-                          <p className="text-gray-700 ml-2">
-                            <strong>{review.rating}</strong>
-                          </p>
-                        </div>
-                        <div>
-                          {/*Aqui falta hacerlo dinámico*/}
-                          <p className="text-gray-700">{review.review}</p>
-                        </div>
-                      </div>
+              {isAuthenticated ? (
+                <>
+                  <div>
+                    {/* Verifica si hay reseñas */}
+                    {filteredReviews.length > 0 ? (
+                      filteredReviews.map((review) => (
+                        <div
+                          key={review.review_id}
+                          className="flex bg-white shadow-lg rounded-3xl p-3 mb-6"
+                        >
+                          <div className="w-1/4 flex flex-col items-center">
+                            <img
+                              /* Aquí obvio se cambia la dirección de la imagen */
+                              src="https://www.svgrepo.com/show/81103/avatar.svg"
+                              alt="Foto del usuario"
+                              className="w-20 h-30 rounded-full object-cover"
+                            />
+                            <div>
+                              <p className="font-semibold text-gray-900">
+                                {/* Aquí deberías agregar la lógica para obtener el nombre de usuario */}
+                                {username}
+                              </p>
+                            </div>
+                          </div>
 
-                      {/* Fecha de publicación (puedes actualizarla con el campo de fecha real si lo tienes) */}
-                      <div className="w-1/6 text-right">
-                        <p className="text-gray-500 text-sm">22/10/23</p>
+                          {/* Reseña y calificación */}
+                          <div className="w-4/6">
+                            <div className="flex items-center mb-2">
+                              {[...Array(5)].map((_, index) => (
+                                <svg
+                                  key={index}
+                                  className={`h-5 w-5 ${
+                                    index < review.rating
+                                      ? "text-yellow-500"
+                                      : "text-gray-300"
+                                  }`}
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+                                </svg>
+                              ))}
+                              <p className="text-gray-700 ml-2">
+                                <strong>{review.rating}</strong>
+                              </p>
+                            </div>
+                            <div>
+                              {/*Aqui falta hacerlo dinámico*/}
+                              <p className="text-gray-700">{review.review}</p>
+                            </div>
+                          </div>
+
+                          {/* Fecha de publicación (puedes actualizarla con el campo de fecha real si lo tienes) */}
+                          <div className="w-1/6 text-right">
+                            <p className="text-gray-500 text-sm">22/10/23</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      // Mensaje cuando no hay reseñas
+                      <div className="text-center text-gray-500">
+                        <p>Aún no tienes reseñas para este libro.</p>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  // Mensaje cuando no hay reseñas
-                  <div className="text-center text-gray-500">
-                    <p>Aún no tienes reseñas para este libro.</p>
+                    )}
                   </div>
-                )}
-              </div>
+                </>
+              ) : (
+                <p className="text-gray-700">
+                  Necesitas iniciar sesión para ver tus reseñas.
+                </p>
+              )}
+
+              <hr className="border-gray-300 mb-5" />
               <div>
                 {/*Falta agregar esta parte...*/}
                 <h3 className="font-medium ml-5 mb-3">
