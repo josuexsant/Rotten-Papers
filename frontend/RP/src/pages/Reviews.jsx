@@ -164,6 +164,39 @@ export const Reviews = () => {
     }
   };
 
+  const handleRemoveReview = (review_id) => {
+    const confirmed = window.confirm(
+      "¿Estás seguro de que quieres eliminar esta reseña?"
+    );
+    if (confirmed) {
+      fetch(`http://localhost:8000/reviews/`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ review_id: review_id }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(response);
+            const updatedReviews = reviews.filter(
+              (review) => review.review_id !== review_id
+            );
+            setReviews(updatedReviews);
+            setFilteredReviews(updatedReviews);
+          } else {
+            response.text().then((text) => {
+              console.error("Error al eliminar la reseña:", text);
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  };
+
   return (
     <>
       <Navbar showAccessButton={false} />
@@ -382,7 +415,10 @@ export const Reviews = () => {
                           </button>
 
                           {/* Botón para eliminar reseña */}
-                          <button className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 ">
+                          <button
+                            className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
+                            onClick={() => handleRemoveReview(review.review_id)}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               height="24px"

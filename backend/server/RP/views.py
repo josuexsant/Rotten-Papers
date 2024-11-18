@@ -175,6 +175,16 @@ def reviews(request):
 
     serializer = ReviewsSerializer(review)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+  elif request.method == 'DELETE':
+      review_id = request.data.get('review_id')
+      review = get_object_or_404(Reviews, review_id=review_id)
+      review.delete()
+      return Response({'message': 'Review deleted'}, status=status.HTTP_200_OK)
+  else:
+      return Response({'message': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+  
+  
       
 @api_view(['GET'])
 def book(request):
