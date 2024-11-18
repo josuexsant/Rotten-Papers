@@ -73,9 +73,9 @@ DATABASES = {
         'USER': 'root',  
         'PASSWORD': '1234', 
         # Si usas el backend con Docker, descomenta la siguiente línea
-        'HOST': 'mysql_db',
+        #'HOST': 'mysql_db',
         # Si usas el backend en local, descomenta la siguiente línea
-        #'HOST': 'localhost',
+        'HOST': 'localhost',
         'PORT': '3306',  
     }
 }
@@ -125,4 +125,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    "http://54.80.164.49:8080"
 ]
