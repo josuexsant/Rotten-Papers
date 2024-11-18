@@ -36,12 +36,7 @@ export function EditProfile() {
           Authorization: `Token ${token}`, // Usar el token en el encabezado de la solicitud
         },
         body: JSON.stringify(data), // Enviar los datos aquí
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Success:', data);
-          toast.success('Perfil actualizado correctamente');
-        });
+      });
 
       if (!response.ok) {
         throw new Error('Error al llamar al API: ' + response.statusText);
@@ -51,7 +46,7 @@ export function EditProfile() {
       console.log('Perfil actualizado correctamente:', result);
 
       toast.success('Perfil actualizado correctamente');
-      navigate('/profile');
+      navigate('/');
     } catch (error) {
       console.error('Error en la solicitud:', error);
       toast.error('Error al actualizar el perfil');

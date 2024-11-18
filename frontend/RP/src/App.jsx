@@ -6,6 +6,7 @@ import {
   Favorites,
   Login,
   Reviews,
+  EditProfile,
 } from './pages/';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './helpers/ProtectedRoute';
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
     element: <Reviews />,
   },
   {
-    path: '/editprofile',
+    path: '/editProfile',
     element: (
       <ProtectedRoute>
         <EditProfile />
