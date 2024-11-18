@@ -1,18 +1,26 @@
-import { SignIn, Landing, Test, Access, Favorites, Login, Reviews } from "./pages/";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ProtectedRoute from "./helpers/ProtectedRoute";
+import {
+  SignIn,
+  Landing,
+  Test,
+  Access,
+  Favorites,
+  Login,
+  Reviews,
+} from './pages/';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ProtectedRoute from './helpers/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Landing />,
   },
   {
-    path: "/signin",
+    path: '/signin',
     element: <SignIn />,
   },
   {
-    path: "/test", //Ruta protegida
+    path: '/test', //Ruta protegida
     element: (
       <ProtectedRoute>
         <Test />
@@ -20,15 +28,15 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/access",
+    path: '/access',
     element: <Access />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <Login />,
   },
   {
-    path: "/favorites",
+    path: '/favorites',
     element: (
       <ProtectedRoute>
         <Favorites />,
@@ -36,11 +44,17 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/reviews/:id",
+    path: '/reviews/:id',
+    element: <Reviews />,
+  },
+  {
+    path: '/editprofile',
     element: (
-        <Reviews />
+      <ProtectedRoute>
+        <EditProfile />
+      </ProtectedRoute>
     ),
-  },  
+  },
 ]);
 
 const App = () => {
