@@ -1,11 +1,12 @@
 import { Navbar } from "../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function Login() {
   const navigate = useNavigate();
   const { signin, isAuthenticated } = useAuth();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -44,6 +45,7 @@ export function Login() {
             </div>
 
             <div className="mt-8">
+              <p className="text-red-400">{error}</p>
               <div className="mt-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>

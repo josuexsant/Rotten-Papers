@@ -20,16 +20,18 @@ export const Reviews = () => {
   useEffect(() => {
     const fetchBookDetails = async () => {
       if (params.id) {
-        //console.log(params.id);  Id obtenido de libro en pagina Landing
+        console.log(params.id);
+        const id = params.id;
         try {
           const response = await fetch(
-            `http://127.0.0.1:8000/book/?book_id=${params.id}`
+            `http://127.0.0.1:8000/book/?book_id=${id}`
           );
           if (!response.ok) {
             throw new Error("Error fetching book details");
           }
           const data = await response.json();
           setBook(data);
+          console.log(data);
 
           // Obtener el autor usando author_id
           const authorResponse = await fetch(
@@ -94,7 +96,7 @@ export const Reviews = () => {
     console.log("Creando reseña...");
     const reviewText = e.target.elements["review-text"].value;
     const reviewRating = 5; // Aquí puedes obtener el rating de alguna manera, por ejemplo, de un input
-
+    //  TODO : Hay que agregar la fecha a la db
     const reviewData = {
       book_id: params.id,
       review: reviewText,
@@ -165,11 +167,6 @@ export const Reviews = () => {
   return (
     <>
       <Navbar showAccessButton={false} />
-
-      <div className="mt-8 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800">Reseñas</h1>
-      </div>
-
       <div className="container mx-auto my-6 px-4 max-w-8x1">
         <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Columna izquierda: Imagen, estrellas, botones etc*/}
@@ -296,7 +293,7 @@ export const Reviews = () => {
             </div>
             <p className="text-gray-700 font-serif mb-40">{book.synopsis}</p>
             <div>
-              {/*Falta hacerlo dinámico*/}
+              {/* TODO:Falta hacerlo dinámico*/}
               <p className="mb-4">
                 Generos: | Accion | Ficción | Aventura | Pasión | Romance |
               </p>
@@ -320,7 +317,7 @@ export const Reviews = () => {
                       filteredReviews.map((review) => (
                         <div
                           key={review.review_id}
-                          className="flex bg-white shadow-lg rounded-3xl p-3 mb-6"
+                          className="flex bg-slate-50 rounded-3xl p-3 mb-6"
                         >
                           <div className="w-1/4 flex flex-col items-center">
                             <img
@@ -369,6 +366,34 @@ export const Reviews = () => {
                           <div className="w-1/6 text-right">
                             <p className="text-gray-500 text-sm">22/10/23</p>
                           </div>
+
+                          {/* Botón para editar reseña */}
+                          <button className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 ">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="24px"
+                              viewBox="0 -960 960 960"
+                              width="24px"
+                              fill="#000000"
+                            >
+                              <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" />
+                            </svg>
+                            <p className="ml-3">Editar reseña</p>
+                          </button>
+
+                          {/* Botón para eliminar reseña */}
+                          <button className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 ">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="24px"
+                              viewBox="0 -960 960 960"
+                              width="24px"
+                              fill="#000000"
+                            >
+                              <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                            </svg>
+                            <p className="ml-3">Elimnar reseña</p>
+                          </button>
                         </div>
                       ))
                     ) : (
@@ -391,7 +416,6 @@ export const Reviews = () => {
                 <h3 className="font-medium ml-5 mb-3">
                   Reseñas de la comunidad
                 </h3>
-                <hr className="border-gray-300 mb-5" />
               </div>
               <div>
                 {/* Verifica si hay reseñas */}
@@ -399,7 +423,7 @@ export const Reviews = () => {
                   filteredAllReviews.map((reviews) => (
                     <div
                       key={reviews.review_id}
-                      className="flex bg-white shadow-lg rounded-3xl p-3 mb-6"
+                      className="flex bg-slate-50 rounded-3xl p-3 mb-6"
                     >
                       <div className="w-1/4 flex flex-col items-center">
                         <img

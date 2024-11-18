@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 export const Favorites = () => {
+  const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,14 +73,14 @@ export const Favorites = () => {
     <>
       <Navbar showAccessButton={false} />
 
-      <div className="bg-gray-800 py-12 text-center">
-        <h1 className="text-4xl font-semibold text-white">
-          Tus Favoritos {username}
+      <div className="py-10 text-center">
+        <h1 className="text-4xl font-semibold text-gray-800">
+          Tus Favoritos
         </h1>
       </div>
 
       <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
           <div className="mb-6 flex justify-center">
             <input
               type="text"
@@ -91,9 +93,11 @@ export const Favorites = () => {
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
             {filteredBooks.map((book) => (
+              
               <div
                 key={book.book_id}
                 className="group flex flex-col bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
+                onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
               >
                 {/* Imagen de portada del libro con tamaño rectangular vertical */}
                 <div className="w-full h-72 overflow-hidden">

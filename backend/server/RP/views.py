@@ -16,7 +16,7 @@ def login(request):
   print(request.data)
   user = get_object_or_404(User, email=request.data['email'])
   if not user.check_password(request.data['password']):
-    return Response({'message': 'wrong password'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'message': 'Contraseña incorrecta'}, status=status.HTTP_400_BAD_REQUEST)
   token, created = Token.objects.get_or_create(user=user)
   serializer = UserSerializer(instance=user)
   return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_200_OK)
