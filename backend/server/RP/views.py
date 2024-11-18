@@ -39,10 +39,10 @@ def register(request):
   email = request.data.get('email')
   
   if User.objects.filter(username=username).exists():
-    return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'message': 'El nombre de usuario ya está en uso.'}, status=status.HTTP_400_BAD_REQUEST)
   
   if User.objects.filter(email=email).exists():
-    return Response({'message': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'message': 'El correo electronico ya está en uso'}, status=status.HTTP_400_BAD_REQUEST)
   
   serializer = UserSerializer(data=request.data)
   

@@ -7,6 +7,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: '1234'
       MYSQL_DATABASE: rotten_papers
+      MYSQL_CHARSET: 'utf8mb4'
+      MYSQL_COLLATION: 'utf8mb4_unicode_ci'
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ./database:/docker-entrypoint-initdb.d  
       - db_data:/var/lib/mysql

@@ -1,6 +1,4 @@
 import { Navbar } from "../components/Navbar";
-import { createUser } from "../api/api";
-import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -11,9 +9,27 @@ export function SignIn() {
   const navigate = useNavigate();
   //Mensajes de error
   const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
-const validatePassword = (e) => {
-    if (data.password !== data.confirmPassword) {
+  const passwordIsValid = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return regex.test(password);
+  };
+
+  const handlePasswordChange = (event) => {
+    const password = event.target.value;
+    console.log(password);
+    if (!passwordIsValid(password)) {
+      setPasswordError(
+        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número"
+      );
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const validatePassword = (data) => {
+    if (data.password !== document.getElementById("confirmPassword").value) {
       setPasswordError("Las contraseñas no coinciden");
       return false;
     } else {
@@ -22,32 +38,46 @@ const validatePassword = (e) => {
     }
   };
 
-
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-
-    if(validatePassword(data) === false){
+    if (validatePassword(data) === false) {
       return;
     }
 
+    if (!data.email.includes("@")) {
+      setEmailError("El correo electrónico no es válido");
+      return;
+    } else {
+      setEmailError("");
+    }
+
     fetch("http://localhost:8000/register/", {
-      method: "POST",
+      method: "POST", 
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        toast.success("Usuario registrado correctamente");
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.message || "Error al registrar el usuario");
+          });
+        }
+        return response.json();
+      })
+      .then((body) => {
+        if (body.token && body.user) {
+          toast.success("Usuario registrado correctamente");
+          navigate("/login");
+        } else {
+          console.error("Error:", body);
+          toast.error("Error al registrar el usuario");
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
-        toast.error("Error al registrar el usuario");
+        toast.error(error.message || "Error al registrar el usuario");
       });
-
-    navigate("/login");
   });
 
   return (
@@ -166,7 +196,7 @@ const validatePassword = (e) => {
                   </div>
 
                   <div className="space-y-1">
-                    <p>{passwordError}</p>
+                    <p className="text-red-500">{passwordError}</p>
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -177,9 +207,14 @@ const validatePassword = (e) => {
                       <input
                         type="password"
                         autoComplete="current-password"
+                        onChange={handlePasswordChange}
                         {...register("password", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
+                      <p className="text-gray-400">
+                        La contraseña debe ser minimo 8 caracteres y una
+                        mayuscula{" "}
+                      </p>
                     </div>
                   </div>
 
@@ -203,6 +238,8 @@ const validatePassword = (e) => {
                   </div>
 
                   <div>
+                    <p className="text-red-500 mb-4">{emailError}</p>
+
                     <button
                       type="submit"
                       className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-custom-blue hover:bg-custom-dark-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
