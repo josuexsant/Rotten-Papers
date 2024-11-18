@@ -10,6 +10,8 @@ export const AuthProvider = ({ children }) => {
     () => localStorage.getItem("username") || null
   );
 
+  const [error, setError] = useState("");
+
   const signin = async (credentials) => {
     fetch("http://localhost:8000/login/", {
       method: "POST",
@@ -20,13 +22,14 @@ export const AuthProvider = ({ children }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
+        //console.log("Success:", data);
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.user.username);
         setIsAuthenticated(true);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        //console.error("Error:", error);
+        setError("Usuario o contraseña incorrectos");
       });
   };
 
@@ -64,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, username, signin, signout }}
+      value={{ isAuthenticated, username, signin, signout, error }}
     >
       {children}
     </AuthContext.Provider>

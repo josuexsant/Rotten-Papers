@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 
 export function Login() {
   const navigate = useNavigate();
-  const { signin, isAuthenticated } = useAuth();
-  const [error, setError] = useState("");
-
+  const { signin, isAuthenticated, error } = useAuth();
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
@@ -45,7 +43,7 @@ export function Login() {
             </div>
 
             <div className="mt-8">
-              <p className="text-red-400">{error}</p>
+              <p className="text-red-500">{error}</p>
               <div className="mt-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>

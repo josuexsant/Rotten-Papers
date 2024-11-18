@@ -12,11 +12,13 @@ export function SignIn() {
   //Mensajes de error
   const [passwordError, setPasswordError] = useState("");
 
-  const validatePassword = (data) => {
+const validatePassword = (e) => {
     if (data.password !== data.confirmPassword) {
       setPasswordError("Las contraseñas no coinciden");
+      return false;
     } else {
       setPasswordError("");
+      return true;
     }
   };
 
