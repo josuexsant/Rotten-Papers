@@ -5,4 +5,4 @@ export { Access } from './Access.jsx';
 export { Favorites } from './Favorites.jsx';
 export { Login } from './Login.jsx';
 export { Reviews } from './Reviews.jsx';
-
+export { EditProfile } from './EditProfile.jsx';

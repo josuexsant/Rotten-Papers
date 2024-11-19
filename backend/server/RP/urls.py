@@ -16,6 +16,6 @@ urlpatterns = [
     re_path('user_reviews/', views.get_reviews_user),
     re_path('reviews', views.reviews),
     re_path('book', views.book),
-    re_path('author', views.author)
-    
+    re_path('author', views.author),
+    re_path('editProfile', views.editProfile),
 ]

@@ -212,3 +212,24 @@ def get_reviews_user(request):
     review = Reviews.objects.filter(user_id=user_id, book_id=book_id)
     serializer = ReviewsSerializer(review, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+# Vista para editar el perfil
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def editProfile(request):
+    print("Datos recibidos en el backend:", request.data)  # Ver los datos que llegan al backend
+    user = request.user
+
+    # Obtener los datos de la solicitud
+    username = request.data.get('username')
+    
+    if username and User.objects.filter(username=username).exclude(id=user.id).exists():
+        return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Actualizar los datos
+    user.username = username if username else user.username
+    user.save()
+
+    serializer = UserSerializer(user)
+    return Response({"user": serializer.data, "message": "User updated successfully"}, status=status.HTTP_200_OK)
