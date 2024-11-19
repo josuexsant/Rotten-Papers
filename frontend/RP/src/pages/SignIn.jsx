@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { host } from "../api/api";
 
 export function SignIn() {
   const { register, handleSubmit } = useForm(); //Guardar los datos del form en variables
@@ -50,7 +51,7 @@ export function SignIn() {
       setEmailError("");
     }
 
-    fetch("http://localhost:8000/register/", {
+    fetch(`${host}/register/`, {
       method: "POST", 
       headers: {
         "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import { Navbar } from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { host } from "../api/api";
 
 export const Reviews = () => {
   const { isAuthenticated } = useAuth();
@@ -23,9 +24,7 @@ export const Reviews = () => {
         console.log(params.id);
         const id = params.id;
         try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/book/?book_id=${id}`
-          );
+          const response = await fetch(`${host}/book/?book_id=${id}`);
           if (!response.ok) {
             throw new Error("Error fetching book details");
           }
@@ -35,7 +34,7 @@ export const Reviews = () => {
 
           // Obtener el autor usando author_id
           const authorResponse = await fetch(
-            `http://127.0.0.1:8000/author/?author_id=${data.author}`
+            `${host}/author/?author_id=${data.author}`
           );
           if (!authorResponse.ok) {
             throw new Error("Error fetching author details");
@@ -45,7 +44,7 @@ export const Reviews = () => {
 
           //Obtener reviews del usuario logueado
           const Reviewsresponse = await fetch(
-            `http://localhost:8000/user_reviews/?book_id=${params.id}`,
+            `${host}/user_reviews/?book_id=${params.id}`,
             {
               method: "GET",
               headers: {
@@ -63,7 +62,7 @@ export const Reviews = () => {
 
           //Obtener reviews de todos los usuarios
           const ReviewsresponseAll = await fetch(
-            `http://localhost:8000/reviews/?book_id=${params.id}`,
+            `${host}/reviews/?book_id=${params.id}`,
             {
               method: "GET",
               headers: {
@@ -105,7 +104,7 @@ export const Reviews = () => {
 
     console.log(reviewData);
 
-    fetch(`http://localhost:8000/reviews/`, {
+    fetch(`${host}/reviews/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -139,7 +138,7 @@ export const Reviews = () => {
       "¿Estás seguro de que quieres agregar este libro a favoritos?"
     );
     if (confirmed) {
-      fetch(`http://localhost:8000/favorites/`, {
+      fetch(`${host}/favorites/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -169,7 +168,7 @@ export const Reviews = () => {
       "¿Estás seguro de que quieres eliminar esta reseña?"
     );
     if (confirmed) {
-      fetch(`http://localhost:8000/reviews/`, {
+      fetch(`${host}/reviews/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

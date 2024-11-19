@@ -2,6 +2,7 @@ import { Navbar } from "../components/Navbar";
 import { getAllbooks } from "../api/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { host } from "../api/api";
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export const Landing = () => {
       "¿Estás seguro de que quieres agregar este libro a favoritos?"
     );
     if (confirmed) {
-      fetch(`http://localhost:8000/favorites/`, {
+      fetch(`${host}/favorites/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

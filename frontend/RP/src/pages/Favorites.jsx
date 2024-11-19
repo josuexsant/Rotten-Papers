@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { host } from "../api/api";
 
 export const Favorites = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export const Favorites = () => {
   const [username, setUsername] = useState(localStorage.getItem("username"));
 
   useEffect(() => {
-    fetch("http://localhost:8000/favorites/", {
+    fetch(`${host}/favorites/`, {
       method: "GET",
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
@@ -31,7 +32,7 @@ export const Favorites = () => {
       "¿Estás seguro de que quieres eliminar este libro de favoritos?"
     );
     if (confirmed) {
-      fetch(`http://localhost:8000/favorites/`, {
+      fetch(`${host}/favorites/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

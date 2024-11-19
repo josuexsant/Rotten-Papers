@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-
+import { host } from "../api/api";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState("");
 
   const signin = async (credentials) => {
-    fetch("http://localhost:8000/login/", {
+    fetch(`${host}/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signout = async () => {
-    fetch("http://localhost:8000/logout/", {
+    fetch(`${host}/logout/`, {
       method: "POST",
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,

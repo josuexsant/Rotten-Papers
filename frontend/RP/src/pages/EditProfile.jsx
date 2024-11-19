@@ -2,6 +2,7 @@ import { Navbar } from '../components/Navbar';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { host } from '../api/api';
 
 export function EditProfile() {
   const {
@@ -29,7 +30,7 @@ export function EditProfile() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/editProfile/', {
+      const response = await fetch(`${host}/editProfile/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,25 +1,29 @@
 import axios from "axios";
+// Host para usar en local
+export const host = 'http://127.0.0.1:8000';
 
+// Host para hacer deploy
+//cosnt host = 'https://backend:8000';
 
 const users = axios.create({
-    baseURL: 'http://127.0.0.1:8000/signin/'
+    baseURL: `${host}/signin/`
 })
 
 const books = axios.create({
-    baseURL: 'http://127.0.0.1:8000/books/'
+    baseURL: `${host}/books/`
 })
 
 const author = axios.create({
-    baseURL: 'http://127.0.0.1:8000/author/'
+    baseURL: `${host}/author/`
 })
 
 const login = axios.create({
-        baseURL: 'http://127.0.0.1:8000/login/'
+    baseURL: `${host}/login/`
 })
 
 const reviews = axios.create({
-    baseURL: 'http://127.0.0.1:8000/reviews/'
-})  
+    baseURL: `${host}/reviews/`
+})
 
 
 export const createUser = (user) => users.post('/', user);
