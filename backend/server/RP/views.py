@@ -37,6 +37,8 @@ def delete_user(request):
 def register(request):
   username = request.data.get('username')
   email = request.data.get('email')
+  first_name = request.data.get('first_name')
+  last_name = request.data.get('last_name')
   
   if User.objects.filter(username=username).exists():
     return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
@@ -51,6 +53,8 @@ def register(request):
     
     user = User.objects.get(username=username)
     user.set_password(request.data['password'])
+    user.first_name = first_name
+    user.last_name = last_name
     user.save()
     
     token = Token.objects.create(user=user)
@@ -209,16 +213,19 @@ def get_reviews_user(request):
 @permission_classes([IsAuthenticated])
 def editProfile(request):
     print("Datos recibidos en el backend:", request.data)  # Ver los datos que llegan al backend
+
     user = request.user
 
     # Obtener los datos de la solicitud
     username = request.data.get('username')
+    first_name = request.data.get('first_name')
     
     if username and User.objects.filter(username=username).exclude(id=user.id).exists():
         return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
     # Actualizar los datos
     user.username = username if username else user.username
+    user.first_name = first_name if first_name else user.first_name
     user.save()
 
     serializer = UserSerializer(user)

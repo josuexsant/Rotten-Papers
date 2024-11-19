@@ -1,51 +1,50 @@
-import { Navbar } from "../components/Navbar";
-import { createUser } from "../api/api";
-import { useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Navbar } from '../components/Navbar';
+import { createUser } from '../api/api';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export function SignIn() {
   const { register, handleSubmit } = useForm(); //Guardar los datos del form en variables
   const navigate = useNavigate();
   //Mensajes de error
-  const [passwordError, setPasswordError] = useState("");
+  const [passwordError, setPasswordError] = useState('');
 
   const validatePassword = (data) => {
     if (data.password !== data.confirmPassword) {
-      setPasswordError("Las contraseñas no coinciden");
+      setPasswordError('Las contraseñas no coinciden');
     } else {
-      setPasswordError("");
+      setPasswordError('');
     }
   };
-
 
   const onSubmit = handleSubmit(async (data) => {
     console.log(data);
 
-    if(validatePassword(data) === false){
+    if (validatePassword(data) === false) {
       return;
     }
 
-    fetch("http://localhost:8000/register/", {
-      method: "POST",
+    fetch('http://localhost:8000/register/', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
-        toast.success("Usuario registrado correctamente");
+        console.log('Success:', data);
+        toast.success('Usuario registrado correctamente');
       })
       .catch((error) => {
-        console.error("Error:", error);
-        toast.error("Error al registrar el usuario");
+        console.error('Error:', error);
+        toast.error('Error al registrar el usuario');
       });
 
-    navigate("/login");
+    navigate('/login');
   });
 
   return (
@@ -59,7 +58,7 @@ export function SignIn() {
                 Crear una cuenta
               </h2>
               <p className="mt-2 text-sm text-gray-600">
-                ¿Ya tienes una cuenta?{" "}
+                ¿Ya tienes una cuenta?{' '}
                 <a
                   href="#"
                   className="font-medium text-custom-blue hover:text-custom-blue-4"
@@ -83,7 +82,7 @@ export function SignIn() {
                       <input
                         placeholder="Nombre"
                         type="text"
-                        {...register("first_name", { required: true })}
+                        {...register('first_name', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -94,13 +93,13 @@ export function SignIn() {
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Apellidos
+                      Apellido paterno
                     </label>
                     <div className="mt-1">
                       <input
                         placeholder="Apellido paterno"
                         type="text"
-                        {...register("last_name", { required: true })}
+                        {...register('last_name', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -117,7 +116,7 @@ export function SignIn() {
                       <input
                         placeholder="Nombre"
                         type="text"
-                        {...register("username", { required: true })}
+                        {...register('username', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -157,7 +156,7 @@ export function SignIn() {
                         placeholder="Correo electrónico"
                         type="email"
                         autoComplete="email"
-                        {...register("email", { required: true })}
+                        {...register('email', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -175,7 +174,7 @@ export function SignIn() {
                       <input
                         type="password"
                         autoComplete="current-password"
-                        {...register("password", { required: true })}
+                        {...register('password', { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>

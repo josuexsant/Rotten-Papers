@@ -13,10 +13,6 @@ export function EditProfile() {
 
   const onSubmit = handleSubmit(async (data) => {
     console.log('Datos enviados al backend:', data); // Agregar esta línea para verificar
-    if (!data.username) {
-      console.error('El nombre de usuario es requerido');
-      return; // Detener el envío si el campo username está vacío
-    }
 
     // Obtener el token desde el localStorage
     const token = localStorage.getItem('token');
@@ -64,7 +60,7 @@ export function EditProfile() {
                 Editar Perfil
               </h2>
               <p className="mt-2 text-sm text-gray-600">
-                ¿Deseas cambiar tu nombre de usuario?
+                ¿Deseas cambiar tu nombre de usuario o apellido?
               </p>
             </div>
 
@@ -95,6 +91,35 @@ export function EditProfile() {
                   {errors.username && (
                     <span className="text-sm text-red-500">
                       {errors.username.message}
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="first_name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Apellido paterno
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      placeholder="Apellido paterno"
+                      type="text"
+                      {...register('first_name', {
+                        required: 'El apellido paterno es obligatorio',
+                        minLength: {
+                          value: 3,
+                          message:
+                            'El apellido paterno debe tener al menos 3 caracteres',
+                        },
+                      })}
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                    />
+                  </div>
+                  {errors.first_name && (
+                    <span className="text-sm text-red-500">
+                      {errors.first_name.message}
                     </span>
                   )}
                 </div>
