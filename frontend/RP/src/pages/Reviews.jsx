@@ -94,8 +94,8 @@ export const Reviews = () => {
     e.preventDefault();
     console.log("Creando reseña...");
     const reviewText = e.target.elements["review-text"].value;
-    const reviewRating = 5; // Aquí puedes obtener el rating de alguna manera, por ejemplo, de un input
-    //  TODO : Hay que agregar la fecha a la db
+    const reviewRating = 5; 
+    
     const reviewData = {
       book_id: params.id,
       review: reviewText,
@@ -137,6 +137,7 @@ export const Reviews = () => {
     const confirmed = window.confirm(
       "¿Estás seguro de que quieres agregar este libro a favoritos?"
     );
+
     if (confirmed) {
       fetch(`${host}/favorites/`, {
         method: "POST",

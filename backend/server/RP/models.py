@@ -73,8 +73,8 @@ class Reviews(models.Model):
 class Users(models.Model):
     user_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    lastname1 = models.CharField(max_length=255)
+    lastname2 = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     photo = models.CharField(max_length=255)
