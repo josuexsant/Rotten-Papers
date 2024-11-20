@@ -10,7 +10,7 @@ export function SignIn() {
   const navigate = useNavigate();
   //Mensajes de error
   const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState("");
 
   const passwordIsValid = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -19,7 +19,6 @@ export function SignIn() {
 
   const handlePasswordChange = (event) => {
     const password = event.target.value;
-    console.log(password);
     if (!passwordIsValid(password)) {
       setPasswordError(
         "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número"
@@ -29,7 +28,22 @@ export function SignIn() {
     }
   };
 
+  const handleConfirmPasswordChange = (event) => {
+    const confirmPassword = event.target.value;
+    if (confirmPassword !== document.getElementById("password").value) {
+      setPasswordError("Las contraseñas no coinciden");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   const validatePassword = (data) => {
+    if (!passwordIsValid(data.password)) {
+      setPasswordError(
+        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número"
+      );
+      return false;
+    }
     if (data.password !== document.getElementById("confirmPassword").value) {
       setPasswordError("Las contraseñas no coinciden");
       return false;
@@ -41,44 +55,46 @@ export function SignIn() {
 
   const onSubmit = handleSubmit(async (data) => {
     if (validatePassword(data) === false) {
+      setError("Contraseña no valida.");
       return;
     }
 
     if (!data.email.includes("@")) {
-      setEmailError("El correo electrónico no es válido");
+      setError("El correo electrónico no es válido");
       return;
     } else {
-      setEmailError("");
+      setError("");
     }
 
-    fetch(`${host}/register/`, {
-      method: "POST", 
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.message || "Error al registrar el usuario");
-          });
-        }
-        return response.json();
-      })
-      .then((body) => {
-        if (body.token && body.user) {
-          toast.success("Usuario registrado correctamente");
-          navigate("/login");
-        } else {
-          console.error("Error:", body);
-          toast.error("Error al registrar el usuario");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        toast.error(error.message || "Error al registrar el usuario");
+    try {
+      const response = await fetch(`${host}/register/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Error al registrar el usuario");
+      }
+
+      const body = await response.json();
+
+      if (body.token && body.user) {
+        toast.success("Usuario registrado correctamente");
+        navigate("/login");
+      } else {
+        console.error("Error:", body);
+        setError(body.message || "Error al registrar el usuario");
+        toast.error("Error al registrar el usuario");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error.message || "Error al registrar el usuario");
+      toast.error(error.message || "Error al registrar el usuario");
+    }
   });
 
   return (
@@ -92,7 +108,7 @@ export function SignIn() {
                 Crear una cuenta
               </h2>
               <p className="mt-2 text-sm text-gray-600">
-                ¿Ya tienes una cuenta?{' '}
+                ¿Ya tienes una cuenta?{" "}
                 <a
                   href="#"
                   className="font-medium text-custom-blue hover:text-custom-blue-4"
@@ -116,7 +132,7 @@ export function SignIn() {
                       <input
                         placeholder="Nombre"
                         type="text"
-                        {...register('first_name', { required: true })}
+                        {...register("first_name", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -133,7 +149,7 @@ export function SignIn() {
                       <input
                         placeholder="Apellido paterno"
                         type="text"
-                        {...register('last_name', { required: true })}
+                        {...register("last_name", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -150,7 +166,7 @@ export function SignIn() {
                       <input
                         placeholder="Nombre de usuario"
                         type="text"
-                        {...register('username', { required: true })}
+                        {...register("username", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -190,7 +206,7 @@ export function SignIn() {
                         placeholder="Correo electrónico"
                         type="email"
                         autoComplete="email"
-                        {...register('email', { required: true })}
+                        {...register("email", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
@@ -199,7 +215,7 @@ export function SignIn() {
                   <div className="space-y-1">
                     <p className="text-red-500">{passwordError}</p>
                     <label
-                      htmlFor="password"
+                        onChange={handleConfirmPasswordChange}
                       className="block text-sm font-medium text-gray-700"
                     >
                       Contraseña
@@ -233,13 +249,14 @@ export function SignIn() {
                         type="password"
                         autoComplete="current-password"
                         required
+                        onChange={handlePasswordChange}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-red-500 mb-4">{emailError}</p>
+                    <p className="text-red-500 mb-4">{error}</p>
 
                     <button
                       type="submit"
