@@ -231,8 +231,8 @@ def editProfile(request):
   # Obtener los datos de la solicitud
   user_data = {
       'username': request.data.get('username'),
-      'first_name': request.data.get('first_name'),
-      'last_name': request.data.get('last_name'),
+      'lastname1': request.data.get('lastname1'),
+      'lastname2': request.data.get('lastname2'),
       'email': request.data.get('email'),
   }
   

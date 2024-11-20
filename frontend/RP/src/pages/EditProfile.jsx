@@ -99,7 +99,7 @@ export function EditProfile() {
 
                 <div>
                   <label
-                    htmlFor="first_name"
+                    htmlFor="lastname1"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Nombre
@@ -108,7 +108,7 @@ export function EditProfile() {
                     <input
                       placeholder="Nombre"
                       type="text"
-                      {...register('first_name', {
+                      {...register('lastname1', {
                         required: 'El nombre es obligatorio',
                         minLength: {
                           value: 3,
@@ -124,7 +124,34 @@ export function EditProfile() {
                     </span>
                   )}
                 </div>
-
+ <div>
+                  <label
+                    htmlFor="lastname2"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Apellidos
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      placeholder="Apellido paterno"
+                      type="text"
+                      {...register('lastname2', {
+                        required: 'El apellido es obligatorio',
+                        minLength: {
+                          value: 3,
+                          message:
+                            'El apellido debe tener al menos 3 caracteres',
+                        },
+                      })}
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                    />
+                  </div>
+                  {errors.last_name && (
+                    <span className="text-sm text-red-500">
+                      {errors.last_name.message}
+                    </span>
+                  )}
+                </div>
                 <div>
                   <label
                     htmlFor="email"
@@ -154,34 +181,7 @@ export function EditProfile() {
                   )}
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="first_name"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Apellido paterno
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      placeholder="Apellido paterno"
-                      type="text"
-                      {...register('last_name', {
-                        required: 'El apellido es obligatorio',
-                        minLength: {
-                          value: 3,
-                          message:
-                            'El apellido debe tener al menos 3 caracteres',
-                        },
-                      })}
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
-                    />
-                  </div>
-                  {errors.last_name && (
-                    <span className="text-sm text-red-500">
-                      {errors.last_name.message}
-                    </span>
-                  )}
-                </div>
+               
 
                 <div>
                   <button

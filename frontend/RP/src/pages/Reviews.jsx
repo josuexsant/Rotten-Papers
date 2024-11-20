@@ -200,7 +200,7 @@ export const Reviews = () => {
   return (
     <>
       <Navbar showAccessButton={false} />
-      <div className="container mx-auto my-6 px-4 max-w-8x1">
+      <div className=" container mx-auto my-6 px-4 max-w-8x1">
         <div className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Columna izquierda: Imagen, estrellas, botones etc*/}
           <div className="w-full md:w-1/3 p-4 flex flex-col items-center md:items-center">
@@ -215,7 +215,7 @@ export const Reviews = () => {
             <div>
               <button
                 onClick={() => handleLike(book.book_id)}
-                className="rounded-full mb-1 py-2 flex mt-4 justify-center bg-gray-700 text-white  hover:bg-gray-900 w-2/4 "
+                className="rounded-full m-1 p-3 flex justify-center bg-custom-blue text-white  hover:bg-gray-500 "
               >
                 <p className="flex items-start mr-2 font-fredoka">Favoritos</p>
                 <svg
@@ -266,12 +266,12 @@ export const Reviews = () => {
                   id="review-text"
                   name="review-text"
                   rows="4"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  className="p-2 border border-gray-300 bg-slate-50 rounded-lg w-max"
                   placeholder="Escribe tu reseña aquí..."
                 ></textarea>
                 <button
                   type="submit"
-                  className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
+                  className="rounded-full mb-1 p-4 flex mt-4 justify-center bg-custom-blue text-white hover:bg-gray-300"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +279,7 @@ export const Reviews = () => {
                     viewBox="0 0 24 24"
                     strokeWidth={2}
                     stroke="currentColor"
-                    className="h-6 w-6 text-black hover:fill-white transition-all duration-300 ease-in-out"
+                    className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
                   >
                     <path
                       strokeLinecap="round"
