@@ -37,6 +37,8 @@ def delete_user(request):
 def register(request):
   username = request.data.get('username')
   email = request.data.get('email')
+  first_name = request.data.get('first_name')
+  last_name = request.data.get('last_name')
   
   if User.objects.filter(username=username).exists():
     return Response({'message': 'El nombre de usuario ya está en uso.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -51,6 +53,8 @@ def register(request):
     
     user = User.objects.get(username=username)
     user.set_password(request.data['password'])
+    user.first_name = first_name
+    user.last_name = last_name
     user.save()
     
     token = Token.objects.create(user=user)
@@ -218,18 +222,30 @@ def get_reviews_user(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def editProfile(request):
-    print("Datos recibidos en el backend:", request.data)  # Ver los datos que llegan al backend
-    user = request.user
+  import logging
+  logger = logging.getLogger(__name__)
+  logger.info("Datos recibidos en el backend: %s", request.data)  # Ver los datos que llegan al backend
 
-    # Obtener los datos de la solicitud
-    username = request.data.get('username')
-    
-    if username and User.objects.filter(username=username).exclude(id=user.id).exists():
-        return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
+  user = request.user
 
-    # Actualizar los datos
-    user.username = username if username else user.username
-    user.save()
+  # Obtener los datos de la solicitud
+  user_data = {
+      'username': request.data.get('username'),
+      'first_name': request.data.get('first_name'),
+      'last_name': request.data.get('last_name'),
+      'email': request.data.get('email'),
+  }
+  
+  if user_data['username'] and User.objects.filter(username=user_data['username']).exclude(id=user.id).exists():
+    return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = UserSerializer(user)
-    return Response({"user": serializer.data, "message": "User updated successfully"}, status=status.HTTP_200_OK)
+  if(user_data['email'] and User.objects.filter(email=user_data['email']).exclude(id=user.id).exists()):
+    return Response({'message': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+  # Actualizar los datos
+  for attr, value in user_data.items():
+      if value:
+          setattr(user, attr, value)
+  user.save()
+
+  serializer = UserSerializer(user)
+  return Response({"user": serializer.data, "message": "User updated successfully"}, status=status.HTTP_200_OK)
