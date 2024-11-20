@@ -3,7 +3,7 @@ import axios from "axios";
 export const host = 'http://127.0.0.1:8000';
 
 // Host para hacer deploy
-//cosnt host = 'https://backend:8000';
+//export const host = 'https://backend:8000';
 
 const users = axios.create({
     baseURL: `${host}/signin/`
