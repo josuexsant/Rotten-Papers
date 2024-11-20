@@ -110,7 +110,7 @@ export function SignIn() {
               <p className="mt-2 text-sm text-gray-600">
                 ¿Ya tienes una cuenta?{" "}
                 <a
-                  href="#"
+                  href="/login"
                   className="font-medium text-custom-blue hover:text-custom-blue-4"
                 >
                   Iniciar sesión aquí
@@ -215,7 +215,7 @@ export function SignIn() {
                   <div className="space-y-1">
                     <p className="text-red-500">{passwordError}</p>
                     <label
-                        onChange={handleConfirmPasswordChange}
+                      onChange={handleConfirmPasswordChange}
                       className="block text-sm font-medium text-gray-700"
                     >
                       Contraseña
