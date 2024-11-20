@@ -17,41 +17,26 @@ export const Landing = () => {
     }
   }, []);
 
-  const handleLike = (bookId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    const confirmed = window.confirm(
-      "¿Estás seguro de que quieres agregar este libro a favoritos?"
-    );
-    if (confirmed) {
-      fetch(`${host}/favorites/`, {
+  const handleLike = async (book_id) => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/favorites/', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
+          Authorization: `Token ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ book_id: bookId }),
-      })
-        .then((response) => {
-          console.log(response);
-          if (response.ok) {
-            const updatedBooks = Books.map((book) =>
-              book.book_id === bookId ? { ...book, favorite: true } : book
-            );
-            setBooks(updatedBooks);
-          } else {
-            console.error("Error al agregar el libro a favoritos");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        body: JSON.stringify({ book_id }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to like book");
+      }
+
+      console.log("Book liked");
+    } catch (error) {
+      console.error("Error:", error);
     }
-  };
+  }
 
   useEffect(() => {
     if (username && username !== "null") {
@@ -121,7 +106,12 @@ export const Landing = () => {
                         </p>
                       </div>
                       <div className="mt-4 flex justify-center">
-                        <button onClick={() => handleLike(book.book_id)}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleLike(book.book_id);
+                          }}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="24px"
