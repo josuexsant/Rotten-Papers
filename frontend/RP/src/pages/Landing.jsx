@@ -73,16 +73,21 @@ export const Landing = () => {
     <>
       <Navbar />
       <div className="bg-white">
-        <div className="text-center text-lg font-semibold mt-4">{message}</div>
+        <div className="text-center text-gray-800 text-3xl font-semibold my-4">
+          {message}
+        </div>
 
-        <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <div className="mx-auto max-w-2xl px-4 sm:px-2 sm:max-w-4xl sm: lg:max-w-7xl lg:px-8">
           <h2 className="sr-only">Products</h2>
 
-          <div className="rounded-lg shadow-lg p-3 bg-gray-800">
-            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          <div className="rounded-lg p-3 bg-white">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
               {Books.map((book) => (
-                <div key={book.book_id} className="group flex flex-col" onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
->
+                <div
+                  key={book.book_id}
+                  className="group flex flex-col bg-slate-50 rounded-xl shadow-md"
+                  onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
+                >
                   <div className="flex flex-row overflow-hidden h-64">
                     <div className="w-1/2">
                       <img
@@ -93,7 +98,7 @@ export const Landing = () => {
                     </div>
                     <div className="p-4 w-1/2 flex flex-col justify-between">
                       <div>
-                        <p className="mt-1 text-lg font-medium text-gray-100">
+                        <p className="mt-1 text-lg font-medium text-gray-800">
                           {book.title}
                         </p>
                         <div className="flex items-center mt-2">
@@ -111,7 +116,7 @@ export const Landing = () => {
                         </div>
                       </div>
                       <div className="mt-4 flex-1 overflow-hidden">
-                        <p className="text-sm text-gray-300 max-h-16 overflow-hidden group-hover:max-h-full group-hover:overflow-auto transition-all duration-300 ease-in-out">
+                        <p className="text-sm text-gray-800 max-h-16 overflow-hidden group-hover:max-h-full group-hover:overflow-auto transition-all duration-300 ease-in-out">
                           {book.synopsis}
                         </p>
                       </div>
@@ -119,17 +124,12 @@ export const Landing = () => {
                         <button onClick={() => handleLike(book.book_id)}>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                            className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#EA3323"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                            />
+                            <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
                           </svg>
                         </button>
                       </div>
