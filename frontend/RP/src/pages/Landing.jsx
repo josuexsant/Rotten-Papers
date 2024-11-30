@@ -9,6 +9,34 @@ export const Landing = () => {
   const [Books, setBooks] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [message, setMessage] = useState("Descubre más...");
+  const [likedBooks, setLikedBook] = useState([]);
+  const [newFav, setNewFav] = useState(false);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await fetch(`${host}/favorites/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to like book");
+        }
+
+        const data = await response.json();
+        setLikedBook(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, [newFav]);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -17,7 +45,30 @@ export const Landing = () => {
     }
   }, []);
 
+  const handleRemove = async (bookId) => {
+    fetch(`${host}/favorites/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ book_id: bookId }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.ok) {
+          setNewFav(!newFav);
+        } else {
+          console.error("Error al eliminar el libro");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const handleLike = async (book_id) => {
+    alert("Se ha añadido a tus favoritos...");
     try {
       const response = await fetch(`${host}/favorites/`, {
         method: "POST",
@@ -31,12 +82,12 @@ export const Landing = () => {
       if (!response.ok) {
         throw new Error("Failed to like book");
       }
-
+      setNewFav(!newFav);
       console.log("Book liked");
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
   useEffect(() => {
     if (username && username !== "null") {
@@ -71,7 +122,7 @@ export const Landing = () => {
                 <div
                   key={book.book_id}
                   className="group flex flex-col bg-slate-50 rounded-xl shadow-md"
-                  onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
+                  // Redirige al hacer clic
                 >
                   <div className="flex flex-row overflow-hidden h-64">
                     <div className="w-1/2">
@@ -90,7 +141,11 @@ export const Landing = () => {
                           {[...Array(5)].map((_, index) => (
                             <svg
                               key={index}
-                              className="h-5 w-5 text-yellow-500"
+                              className={`h-5 w-5 ${
+                                index < book.rating
+                                  ? "text-yellow-500"
+                                  : "text-gray-300"
+                              }`}
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
                               fill="currentColor"
@@ -106,22 +161,44 @@ export const Landing = () => {
                         </p>
                       </div>
                       <div className="mt-4 flex justify-center">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleLike(book.book_id);
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            height="24px"
-                            viewBox="0 -960 960 960"
-                            width="24px"
-                            fill="#EA3323"
+                        {likedBooks
+                          .map((book) => book.book_id)
+                          .includes(book.book_id) ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemove(book.book_id);
+                              alert("Se ha borrado el libro de favoritos...");
+                            }}
                           >
-                            <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
-                          </svg>
-                        </button>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="24px"
+                              viewBox="0 -960 960 960"
+                              width="24px"
+                              fill="#EA3323"
+                            >
+                              <path d="m 480 -120 l -58 -52 q -101 -91 -167 -157 T 150 -447.5 Q 111 -500 95.5 -544 T 80 -634 q 0 -94 63 -157 t 157 -63 q 52 0 99 22 t 81 62 q 34 -40 81 -62 t 99 -22 q 94 0 157 63 t 63 157 q 0 46 -15.5 90 T 810 -447.5 Q 771 -395 705 -329 T 538 -172 l -58 52 Z Z Z" />
+                            </svg>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLike(book.book_id);
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="24px"
+                              viewBox="0 -960 960 960"
+                              width="24px"
+                              fill="#EA3323"
+                            >
+                              <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
+                            </svg>
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
