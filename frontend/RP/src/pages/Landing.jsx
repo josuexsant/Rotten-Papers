@@ -3,9 +3,11 @@ import { getAllbooks } from "../api/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { host } from "../api/api";
+import { useAuth } from "../hooks/useAuth";
 
 export const Landing = () => {
   const navigate = useNavigate();
+  const isAuthenticated = useAuth;
   const [Books, setBooks] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [message, setMessage] = useState("Descubre más...");
@@ -108,7 +110,7 @@ export const Landing = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-white">
+      <div className="bg-white">x
         <div className="text-center text-gray-800 text-3xl font-semibold my-4">
           {message}
         </div>
@@ -124,7 +126,7 @@ export const Landing = () => {
                   className="group flex flex-col bg-slate-50 rounded-xl shadow-md"
                   // Redirige al hacer clic
                 >
-                  <div className="flex flex-row overflow-hidden h-64">
+                  <div className="flex flex-row overflow-hidden h-72">
                     <div className="w-1/2">
                       <img
                         alt={"book"}
@@ -138,6 +140,7 @@ export const Landing = () => {
                           {book.title}
                         </p>
                         <div className="flex items-center mt-2">
+                          <p className="text-gray-500">{book.rating}</p>
                           {[...Array(5)].map((_, index) => (
                             <svg
                               key={index}
@@ -156,7 +159,7 @@ export const Landing = () => {
                         </div>
                       </div>
                       <div className="mt-4 flex-1 overflow-hidden">
-                        <p className="text-sm text-gray-800 max-h-16 overflow-hidden group-hover:max-h-full group-hover:overflow-auto transition-all duration-300 ease-in-out">
+                        <p className="text-sm text-gray-800 h-auto overflow-hidden group-hover:max-h-full group-hover:overflow-auto transition-all duration-300 ease-in-out">
                           {book.synopsis}
                         </p>
                       </div>
@@ -185,8 +188,13 @@ export const Landing = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleLike(book.book_id);
+                              if (isAuthenticated) {
+                                handleLike(book.book_id);
+                              } else {
+                                navigate("/login");
+                              }
                             }}
+                           
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
