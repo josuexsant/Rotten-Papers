@@ -18,6 +18,7 @@ export const Reviews = () => {
   const params = useParams(); //Para visualizar urls
   const navigate = useNavigate();
   const [rating, setRating] = useState(0);
+  const [reviewToEdit, setReviewToEdit] = useState(null);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -196,8 +197,10 @@ export const Reviews = () => {
     }
   };
 
-  const editReview = (review_id) => {
-    console.log(review_id);
+  const editReview = (review) => {
+    console.log(review.review_id);
+    setReviewToEdit(review.review);
+    console.log(reviewToEdit);
   };
 
   return (
@@ -408,7 +411,9 @@ export const Reviews = () => {
                           {/* Botón para editar reseña */}
                           <button
                             className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
-                            onClick={() => editReview(review.review_id)}
+                            onClick={
+                              () => editReview(review)
+                            }
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
