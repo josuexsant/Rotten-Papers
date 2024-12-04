@@ -7,7 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 
 export const Landing = () => {
   const navigate = useNavigate();
-  const isAuthenticated = useAuth;
+  const {isAuthenticated} = useAuth();
   const [Books, setBooks] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [message, setMessage] = useState("Descubre más...");
