@@ -20,6 +20,34 @@ export const Reviews = () => {
   const [rating, setRating] = useState(0);
   const [isEditing, setIsEditing] = useState(0);
   const [newRating, setNewRating] = useState(0);
+  const [newFav, setNewFav] = useState(false);
+  const [likedBooks, setLikedBook] = useState([]);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await fetch(`${host}/favorites/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to like book");
+        }
+
+        const data = await response.json();
+        setLikedBook(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, [newFav]);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -128,40 +156,47 @@ export const Reviews = () => {
       });
   };
 
-  const handleLike = (bookId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+  const handleRemove = async (bookId) => {
+    fetch(`${host}/favorites/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ book_id: bookId }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.ok) {
+          setNewFav(!newFav);
+        } else {
+          console.error("Error al eliminar el libro");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
-    const confirmed = window.confirm(
-      "¿Estás seguro de que quieres agregar este libro a favoritos?"
-    );
-
-    if (confirmed) {
-      fetch(`${host}/favorites/`, {
+  const handleLike = async (book_id) => {
+    alert("Se ha añadido a tus favoritos...");
+    try {
+      const response = await fetch(`${host}/favorites/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
+          Authorization: `Token ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ book_id: bookId }),
-      })
-        .then((response) => {
-          console.log(response);
-          if (response.ok) {
-            const updatedBooks = Books.map((book) =>
-              book.book_id === bookId ? { ...book, favorite: true } : book
-            );
-            setBooks(updatedBooks);
-          } else {
-            console.error("Error al agregar el libro a favoritos");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        body: JSON.stringify({ book_id }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to like book");
+      }
+      setNewFav(!newFav);
+      console.log("Book liked");
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -214,26 +249,52 @@ export const Reviews = () => {
             {/* Botón Favoritos */}
 
             <div>
-              <button
-                onClick={() => handleLike(book.book_id)}
-                className="rounded-full m-1 p-3 flex justify-center bg-custom-blue text-white  hover:bg-gray-500 "
-              >
-                <p className="flex items-start mr-2 font-fredoka">Favoritos</p>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="h-6 w-6 text-white hover:fill-white transition-all duration-300 ease-in-out"
+              {likedBooks.map((book) => book.book_id).includes(book.book_id) ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemove(book.book_id);
+                    alert("Se ha borrado el libro de favoritos...");
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                  />
-                </svg>
-              </button>
+                  <div className="flex flex-row items-center align-middle justify-between">
+                    <p className="mx-1">¡Te gusta!</p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#EA3323"
+                    >
+                      <path d="m 480 -120 l -58 -52 q -101 -91 -167 -157 T 150 -447.5 Q 111 -500 95.5 -544 T 80 -634 q 0 -94 63 -157 t 157 -63 q 52 0 99 22 t 81 62 q 34 -40 81 -62 t 99 -22 q 94 0 157 63 t 63 157 q 0 46 -15.5 90 T 810 -447.5 Q 771 -395 705 -329 T 538 -172 l -58 52 Z Z Z" />
+                    </svg>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isAuthenticated) {
+                      handleLike(book.book_id);
+                    } else {
+                      navigate("/login");
+                    }
+                  }}
+                >
+                  <div className="flex flex-row items-center align-middle justify-between">
+                    <p className  ="mx-1">¡Dale me gusta!</p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#EA3323"
+                    >
+                      <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
+                    </svg>
+                  </div>
+                </button>
+              )}
             </div>
 
             {/* Estrellas de calificación Pero no es dinamico aún*/}
@@ -409,30 +470,40 @@ export const Reviews = () => {
                                         rating: newRating,
                                       };
                                       console.log(reviewData);
-                                      const response = fetch(`${host}/reviews/`, {
-                                        method: "PUT",
-                                        headers: {
-                                          "Content-Type": "application/json",
-                                          Authorization: `Token ${localStorage.getItem("token")}`,
+                                      const response = fetch(
+                                        `${host}/reviews/`,
+                                        {
+                                          method: "PUT",
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                            Authorization: `Token ${localStorage.getItem(
+                                              "token"
+                                            )}`,
                                           },
                                           body: JSON.stringify(reviewData),
-                                          })
-                                          .then((response) => {
-                                            if (!response.ok) {
-                                              throw new Error("Error updating review");
-                                            }
-                                            return response.json();
-                                          })
-                                          .then((data) => {
-                                            const updatedReviews = reviews.map((r) =>
-                                              r.review_id === review.review_id ? data : r
+                                        }
+                                      )
+                                        .then((response) => {
+                                          if (!response.ok) {
+                                            throw new Error(
+                                              "Error updating review"
                                             );
-                                            setReviews(updatedReviews);
-                                            setFilteredReviews(updatedReviews);
-                                          })
-                                          .catch((error) => {
-                                            console.error("Error:", error);
-                                          });
+                                          }
+                                          return response.json();
+                                        })
+                                        .then((data) => {
+                                          const updatedReviews = reviews.map(
+                                            (r) =>
+                                              r.review_id === review.review_id
+                                                ? data
+                                                : r
+                                          );
+                                          setReviews(updatedReviews);
+                                          setFilteredReviews(updatedReviews);
+                                        })
+                                        .catch((error) => {
+                                          console.error("Error:", error);
+                                        });
                                       // Add logic to handle review update here
                                       setIsEditing(0); // Reset editing state
                                       setNewRating(0); // Reset new rating state
@@ -451,8 +522,7 @@ export const Reviews = () => {
                                     >
                                       Guardar
                                     </button>
-                                   <button
-                                  
+                                    <button
                                       className="rounded-full mb-1 p-4 flex mt-4 justify-center bg-custom-blue text-white hover:bg-gray-300"
                                       onClick={() => {
                                         setNewRating(0);
