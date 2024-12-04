@@ -100,7 +100,7 @@ export const Navbar = () => {
                     className={classNames(
                       item.current
                         ? "bg-gray-900 text-white"
-                        : "text-custom-light-blue hover:bg-custom-dark-blue hover:text-white",
+                        : "text-custom-light-blue hover:bg-custom-dark-blue transition-all duration-300 ease-in-out hover:text-white",
                       "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
@@ -111,7 +111,7 @@ export const Navbar = () => {
                 {/* Icono de lupa con barra de búsqueda desplegable */}
                 <div className="relative group flex items-center">
                   {/* Barra de búsqueda que se despliega al hacer hover */}
-                  <div className="w-0 group-hover:w-64 transition-all duration-700 ease-in-out overflow-hidden">
+                  <div className="w-0 group-hover:w-64 transition-all duration-500 ease-in-out overflow-hidden">
                     <form>
                       <input
                         id="search"
@@ -191,7 +191,7 @@ export const Navbar = () => {
             <div className="hidden sm:ml-6 sm:block">
               <Link
                 to="/access"
-                className="bg-indigo-500 text-white px-3 py-2 rounded-md text-sm font-medium"
+                className="bg-white text-custom-blue hover:bg-custom-dark-blue hover:text-white transition-all duration-300 ease-in-out px-3 py-2 rounded-md text-sm font-medium"
               >
                 Acceder
               </Link>

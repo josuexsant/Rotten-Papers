@@ -41,7 +41,7 @@ export function EditProfile() {
 
       const result = await response.json();
       console.log('Perfil actualizado correctamente:', result);
-
+      localStorage.setItem('username', data.username);
       toast.success('Perfil actualizado correctamente');
       navigate('/');
     } catch (error) {

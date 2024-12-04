@@ -87,6 +87,17 @@ INSERT INTO users(name, lastname1, lastname2, email, password,photo) VALUES
 ('Fernando','Quiroz','Castillo', 'fer@gmail.com', '1234','C:Pictures\foto.jpg'),
 ('Gabriel','Romero','Luna', 'gabriel@gmail.com', '1234','C:Pictures\foto.jpg'),
 ('Jennifer','Hidalgo','Castro', 'jenni@gmail.com', '1234','C:Pictures\foto.jpg');
+INSERT INTO users(name, lastname1, lastname2, email, password, photo) VALUES
+('Laura', 'Martinez', 'Lopez', 'laura@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Carlos', 'Gomez', 'Perez', 'carlos@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Ana', 'Rodriguez', 'Sanchez', 'ana@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Luis', 'Hernandez', 'Garcia', 'luis@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Marta', 'Diaz', 'Martinez', 'marta@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Jorge', 'Lopez', 'Gonzalez', 'jorge@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Sara', 'Perez', 'Rodriguez', 'sara@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('David', 'Sanchez', 'Hernandez', 'david@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Elena', 'Garcia', 'Diaz', 'elena@gmail.com', '1234', 'C:Pictures\foto.jpg'),
+('Pablo', 'Martinez', 'Lopez', 'pablo@gmail.com', '1234', 'C:Pictures\foto.jpg');
 
 INSERT INTO genres (genre) VALUES 
 ('Novela de caballerías'),
@@ -115,8 +126,8 @@ INSERT INTO preferences (user_id,genre_id) VALUES
 INSERT INTO authors (name,lastname1,lastname2) VALUES 
 ('Miguel', 'de Cervantes', null),
 ('Oscar', 'Wilde', null),
-('León', 'Tolstói', null),
-('Antoine', 'de Saint-Exupéry', null),
+('Leon', 'Tolstoi', null),
+('Antoine', 'de Saint-Exupery', null),
 ('Franz', 'Kafka', null),
 ('William', 'Faulkner', null),
 ('William', 'Shakespeare', null),
@@ -124,7 +135,7 @@ INSERT INTO authors (name,lastname1,lastname2) VALUES
 ('Homero', null, null),
 ('John', 'Steinbeck', null),
 ('J. D.', 'Salinger', null),
-('Emily', 'Brontë', null),
+('Emily', 'Bronte', null),
 ('F. Scott', 'Fitzgerald', null),
 ('Khaled', 'Hosseini', null),
 ('Lewis', 'Carroll', null),
@@ -172,8 +183,6 @@ INSERT INTO book_genre (genre_id, book_id) VALUES
 (18, 10), 
 (19, 15); 
 
-INSERT INTO favorites(user_id,book_id) VALUES
-(1,1),(1,2),(1,3),(1,4),(2,5),(2,6),(2,7),(2,8),(3,9),(3,10),(3,11),(3,12),(4,13),(4,14),(4,15),(4,16),(5,17),(5,1),(5,2),(5,3),(6,4),(6,5),(6,6),(6,7);
 
 update books set cover = 'https://www.marcialpons.es/media/img/portadas/2023/4/18/9788408270881jfif' where author_id = 1;
 update books set cover = 'https://www.udllibros.com/imagenes/9788494/978849490630.JPG' where author_id = 2;
