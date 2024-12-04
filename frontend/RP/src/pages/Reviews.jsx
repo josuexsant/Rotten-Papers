@@ -86,7 +86,7 @@ export const Reviews = () => {
       }
     };
     fetchBookDetails();
-  }, [params.id]);
+  }, [params.id, filteredReviews, filteredAllReviews]);
 
   if (!book || !author || !reviews || !AllReviews) {
     return <div className="">Loading...</div>; // Mientras los datos del libro y el autor se cargan
