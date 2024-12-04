@@ -17,6 +17,7 @@ export const Reviews = () => {
   const [Books, setBooks] = useState([]);
   const params = useParams(); //Para visualizar urls
   const navigate = useNavigate();
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -94,12 +95,10 @@ export const Reviews = () => {
     e.preventDefault();
     console.log("Creando reseña...");
     const reviewText = e.target.elements["review-text"].value;
-    const reviewRating = 5; 
-    
     const reviewData = {
       book_id: params.id,
       review: reviewText,
-      rating: reviewRating,
+      rating: rating,
     };
 
     console.log(reviewData);
@@ -197,6 +196,10 @@ export const Reviews = () => {
     }
   };
 
+  const editReview = (review_id) => {
+    console.log(review_id);
+  };
+
   return (
     <>
       <Navbar showAccessButton={false} />
@@ -237,12 +240,16 @@ export const Reviews = () => {
 
             {/* Estrellas de calificación Pero no es dinamico aún*/}
 
+            <p className="font-fredoka italic mb-2 text-lg">
+              ¡Califica este libro!
+            </p>
             <div className="flex items-center mb-2">
               {[...Array(5)].map((_, index) => (
                 <svg
                   key={index}
-                  className={`h-8 w-7 ${
-                    index < book.rating ? "text-yellow-500" : "text-gray-300"
+                  onClick={() => setRating(index + 1)}
+                  className={`h-8 w-7 cursor-pointer ${
+                    index < rating ? "text-yellow-500" : "text-gray-300"
                   }`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -252,13 +259,9 @@ export const Reviews = () => {
                 </svg>
               ))}
               <p className="text-gray-700 ml-3 text-2xl top-3">
-                <strong> {book.rating} </strong>
+                <strong> {rating} </strong>
               </p>
             </div>
-
-            <p className="font-fredoka italic mb-4 text-lg">
-              ¡Califica este libro!
-            </p>
 
             {isAuthenticated ? (
               <form action="" onSubmit={createReview}>
@@ -324,6 +327,7 @@ export const Reviews = () => {
                 <strong> {book.rating} / 5 </strong>
               </p>
             </div>
+
             <p className="text-gray-700 font-serif mb-40">{book.synopsis}</p>
             <div>
               {/* TODO:Falta hacerlo dinámico*/}
@@ -353,6 +357,7 @@ export const Reviews = () => {
                           className="flex bg-slate-50 rounded-3xl p-3 mb-6"
                         >
                           <div className="w-1/4 flex flex-col items-center">
+                            <p>{review.review_id}</p>
                             <img
                               /* Aquí obvio se cambia la dirección de la imagen */
                               src="https://www.svgrepo.com/show/81103/avatar.svg"
@@ -401,7 +406,10 @@ export const Reviews = () => {
                           </div>
 
                           {/* Botón para editar reseña */}
-                          <button className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 ">
+                          <button
+                            className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
+                            onClick={() => editReview(review.review_id)}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               height="24px"

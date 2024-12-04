@@ -110,8 +110,8 @@ export const Landing = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-white">x
-        <div className="text-center text-gray-800 text-3xl font-semibold my-4">
+      <div className="bg-white">
+        <div className="text-center text-gray-600 text-3xl font-semibold my-4">
           {message}
         </div>
 
@@ -131,12 +131,20 @@ export const Landing = () => {
                       <img
                         alt={"book"}
                         src={book.cover}
-                        className="h-full w-full object-cover object-center group-hover:opacity-75 rounded-lg"
+                        className="h-full w-full object-cover object-center group-hover:opacity-25 rounded-lg"
+                        onClick={() => navigate(`/reviews/${book.book_id}`)}
                       />
+                      <div className="relative group">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="text-white text-lg">
+                            Ver detalles
+                          </span>
+                        </div>
+                      </div>
                     </div>
                     <div className="p-4 w-1/2 flex flex-col justify-between">
                       <div>
-                        <p className="mt-1 text-lg font-medium text-gray-800">
+                        <p className="mt-1 text-lg font-medium text-gray-600">
                           {book.title}
                         </p>
                         <div className="flex items-center mt-2">
@@ -174,15 +182,18 @@ export const Landing = () => {
                               alert("Se ha borrado el libro de favoritos...");
                             }}
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="24px"
-                              viewBox="0 -960 960 960"
-                              width="24px"
-                              fill="#EA3323"
-                            >
-                              <path d="m 480 -120 l -58 -52 q -101 -91 -167 -157 T 150 -447.5 Q 111 -500 95.5 -544 T 80 -634 q 0 -94 63 -157 t 157 -63 q 52 0 99 22 t 81 62 q 34 -40 81 -62 t 99 -22 q 94 0 157 63 t 63 157 q 0 46 -15.5 90 T 810 -447.5 Q 771 -395 705 -329 T 538 -172 l -58 52 Z Z Z" />
-                            </svg>
+                            <div className="flex flex-row items-center align-middle justify-between">
+                              <p className="mx-1">¡Te gusta!</p>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24px"
+                                viewBox="0 -960 960 960"
+                                width="24px"
+                                fill="#EA3323"
+                              >
+                                <path d="m 480 -120 l -58 -52 q -101 -91 -167 -157 T 150 -447.5 Q 111 -500 95.5 -544 T 80 -634 q 0 -94 63 -157 t 157 -63 q 52 0 99 22 t 81 62 q 34 -40 81 -62 t 99 -22 q 94 0 157 63 t 63 157 q 0 46 -15.5 90 T 810 -447.5 Q 771 -395 705 -329 T 538 -172 l -58 52 Z Z Z" />
+                              </svg>
+                            </div>
                           </button>
                         ) : (
                           <button
@@ -194,7 +205,6 @@ export const Landing = () => {
                                 navigate("/login");
                               }
                             }}
-                           
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
