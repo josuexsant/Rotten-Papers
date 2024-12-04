@@ -355,7 +355,6 @@ export const Reviews = () => {
                           className="flex bg-slate-50 rounded-3xl p-3 mb-6"
                         >
                           <div className="w-1/4 flex flex-col items-center">
-                            <p>{review.review_id}</p>
                             <img
                               /* Aquí obvio se cambia la dirección de la imagen */
                               src="https://www.svgrepo.com/show/81103/avatar.svg"
@@ -372,7 +371,6 @@ export const Reviews = () => {
 
                           {/* Reseña y calificación */}
                           <div className="w-4/6">
-                            
                             <div>
                               {/*Aqui falta hacerlo dinámico*/}
                               {isEditing === review.review_id ? (
@@ -408,10 +406,36 @@ export const Reviews = () => {
                                       const reviewData = {
                                         review_id: review.review_id,
                                         review: reviewText,
-                                        rating: rating,
+                                        rating: newRating,
                                       };
+                                      console.log(reviewData);
+                                      const response = fetch(`${host}/reviews/`, {
+                                        method: "PUT",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                          Authorization: `Token ${localStorage.getItem("token")}`,
+                                          },
+                                          body: JSON.stringify(reviewData),
+                                          })
+                                          .then((response) => {
+                                            if (!response.ok) {
+                                              throw new Error("Error updating review");
+                                            }
+                                            return response.json();
+                                          })
+                                          .then((data) => {
+                                            const updatedReviews = reviews.map((r) =>
+                                              r.review_id === review.review_id ? data : r
+                                            );
+                                            setReviews(updatedReviews);
+                                            setFilteredReviews(updatedReviews);
+                                          })
+                                          .catch((error) => {
+                                            console.error("Error:", error);
+                                          });
                                       // Add logic to handle review update here
                                       setIsEditing(0); // Reset editing state
+                                      setNewRating(0); // Reset new rating state
                                     }}
                                   >
                                     <textarea
@@ -427,53 +451,91 @@ export const Reviews = () => {
                                     >
                                       Guardar
                                     </button>
+                                   <button
+                                  
+                                      className="rounded-full mb-1 p-4 flex mt-4 justify-center bg-custom-blue text-white hover:bg-gray-300"
+                                      onClick={() => {
+                                        setNewRating(0);
+                                        setIsEditing(0);
+                                      }}
+                                    >
+                                      Cancelar
+                                    </button>
                                   </form>
                                 </>
                               ) : (
-                                
-                                <p className="text-gray-700">{review.review}</p>
+                                <>
+                                  <div className="flex items-center mb-2">
+                                    {[...Array(5)].map((_, index) => (
+                                      <svg
+                                        key={index}
+                                        className={`h-5 w-5 ${
+                                          index < review.rating
+                                            ? "text-yellow-500"
+                                            : "text-gray-300"
+                                        }`}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                      >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+                                      </svg>
+                                    ))}
+                                    <p className="text-gray-700 ml-2">
+                                      <strong>{review.rating}</strong>
+                                    </p>
+                                  </div>
+                                  <p className="text-gray-700">
+                                    {review.review}
+                                  </p>
+                                  {/* Fecha de publicación (puedes actualizarla con el campo de fecha real si lo tienes) */}
+                                  <div className="w-1/6 text-right">
+                                    <p className="text-gray-500 text-sm">
+                                      22/10/23
+                                    </p>
+                                  </div>
+
+                                  {/* Botón para editar reseña */}
+                                  <button
+                                    className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
+                                    onClick={() =>
+                                      setIsEditing(review.review_id)
+                                    }
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      height="24px"
+                                      viewBox="0 -960 960 960"
+                                      width="24px"
+                                      fill="#000000"
+                                    >
+                                      <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" />
+                                    </svg>
+                                    <p className="ml-3">Editar reseña</p>
+                                  </button>
+
+                                  {/* Botón para eliminar reseña */}
+                                  <button
+                                    className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
+                                    onClick={() =>
+                                      handleRemoveReview(review.review_id)
+                                    }
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      height="24px"
+                                      viewBox="0 -960 960 960"
+                                      width="24px"
+                                      fill="#000000"
+                                    >
+                                      <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                    </svg>
+                                    <p className="ml-3">Elimnar reseña</p>
+                                  </button>
+                                </>
                               )}
                             </div>
                           </div>
-
-                          {/* Fecha de publicación (puedes actualizarla con el campo de fecha real si lo tienes) */}
-                          <div className="w-1/6 text-right">
-                            <p className="text-gray-500 text-sm">22/10/23</p>
-                          </div>
-
-                          {/* Botón para editar reseña */}
-                          <button
-                            className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
-                            onClick={() => setIsEditing(review.review_id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="24px"
-                              viewBox="0 -960 960 960"
-                              width="24px"
-                              fill="#000000"
-                            >
-                              <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" />
-                            </svg>
-                            <p className="ml-3">Editar reseña</p>
-                          </button>
-
-                          {/* Botón para eliminar reseña */}
-                          <button
-                            className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
-                            onClick={() => handleRemoveReview(review.review_id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="24px"
-                              viewBox="0 -960 960 960"
-                              width="24px"
-                              fill="#000000"
-                            >
-                              <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                            </svg>
-                            <p className="ml-3">Elimnar reseña</p>
-                          </button>
                         </div>
                       ))
                     ) : (

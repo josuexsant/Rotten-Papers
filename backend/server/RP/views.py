@@ -1,13 +1,15 @@
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from rest_framework.authtoken.models import Token
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .serializers import *
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from .models import *
+from .serializers import *
 
 
 # Login
@@ -97,7 +99,7 @@ def authors(request):
   
   
 # Manage favorites
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def favorites(request):
@@ -138,7 +140,7 @@ def favorites(request):
       return Response({'message': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 #REVIEWS ----------------------
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def reviews(request):
@@ -179,7 +181,26 @@ def reviews(request):
 
     serializer = ReviewsSerializer(review)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+    # EDIT REVIEW ----------------------
+  elif request.method == 'PUT':
+    user_instance = get_object_or_404(User, pk=user.pk)
+    print(user_instance.id)
+    review_id = request.data.get('review_id')
+    review_text = request.data.get('review')
+    rating = request.data.get('rating')
+
+    review = get_object_or_404(Reviews, review_id=review_id)
+    print(review.user_id)
+
+    if review.user_id != user_instance.id:
+        return Response({'message': 'No tienes permiso para editar esta reseña'}, status=status.HTTP_403_FORBIDDEN)
+
+    review.review = review_text
+    review.rating = rating
+    review.save()
+
+    serializer = ReviewsSerializer(review)
+    return Response(serializer.data, status=status.HTTP_200_OK)
   elif request.method == 'DELETE':
       review_id = request.data.get('review_id')
       review = get_object_or_404(Reviews, review_id=review_id)
