@@ -111,12 +111,12 @@ export const Navbar = () => {
                 {/* Icono de lupa con barra de búsqueda desplegable */}
                 <div className="relative group flex items-center">
                   {/* Barra de búsqueda que se despliega al hacer hover */}
-                  <div className="w-0 group-hover:w-64 transition-all duration-300 ease-in-out overflow-hidden">
+                  <div className="w-0 group-hover:w-64 transition-all duration-700 ease-in-out overflow-hidden">
                     <form>
                       <input
                         id="search"
                         name="search"
-                        className="block  w-full pr-10 py-1 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sx"
+                        className="block  w-full pr-10 py-1 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sx"
                         placeholder="Buscar"
                         type="search"
                       />
