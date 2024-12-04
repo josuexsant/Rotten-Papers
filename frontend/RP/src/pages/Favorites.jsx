@@ -74,14 +74,14 @@ export const Favorites = () => {
     <>
       <Navbar showAccessButton={false} />
 
-      <div className="py-10 text-center">
+      <div className="py-5 text-center">
         <h1 className="text-4xl font-semibold text-gray-800">
           Tus Favoritos
         </h1>
       </div>
 
       <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 sm:py-2 lg:max-w-7xl lg:px-8">
           <div className="mb-6 flex justify-center">
             <input
               type="text"
@@ -116,12 +116,11 @@ export const Favorites = () => {
                   </h3>
                 </div>
 
-                {/* Calificación del libro */}
                 <div className="flex justify-center mt-2">
                   {[...Array(5)].map((_, index) => (
                     <svg
                       key={index}
-                      className="h-5 w-5 text-yellow-500"
+                      className={`h-5 w-5 ${index < book.rating ? "text-yellow-500" : "text-gray-300"}`}
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"

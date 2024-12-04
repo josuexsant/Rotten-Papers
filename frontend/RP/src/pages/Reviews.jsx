@@ -18,7 +18,8 @@ export const Reviews = () => {
   const params = useParams(); //Para visualizar urls
   const navigate = useNavigate();
   const [rating, setRating] = useState(0);
-  const [reviewToEdit, setReviewToEdit] = useState(null);
+  const [isEditing, setIsEditing] = useState(0);
+  const [newRating, setNewRating] = useState(0);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -86,7 +87,7 @@ export const Reviews = () => {
       }
     };
     fetchBookDetails();
-  }, [params.id, filteredReviews, filteredAllReviews]);
+  }, [params.id]);
 
   if (!book || !author || !reviews || !AllReviews) {
     return <div className="">Loading...</div>; // Mientras los datos del libro y el autor se cargan
@@ -195,12 +196,6 @@ export const Reviews = () => {
           console.error("Error:", error);
         });
     }
-  };
-
-  const editReview = (review) => {
-    console.log(review.review_id);
-    setReviewToEdit(review.review);
-    console.log(reviewToEdit);
   };
 
   return (
@@ -377,29 +372,67 @@ export const Reviews = () => {
 
                           {/* Reseña y calificación */}
                           <div className="w-4/6">
-                            <div className="flex items-center mb-2">
-                              {[...Array(5)].map((_, index) => (
-                                <svg
-                                  key={index}
-                                  className={`h-5 w-5 ${
-                                    index < review.rating
-                                      ? "text-yellow-500"
-                                      : "text-gray-300"
-                                  }`}
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
-                                </svg>
-                              ))}
-                              <p className="text-gray-700 ml-2">
-                                <strong>{review.rating}</strong>
-                              </p>
-                            </div>
+                            
                             <div>
                               {/*Aqui falta hacerlo dinámico*/}
-                              <p className="text-gray-700">{review.review}</p>
+                              {isEditing === review.review_id ? (
+                                <>
+                                  <div className="flex items-center mb-2">
+                                    {[...Array(5)].map((_, index) => (
+                                      <svg
+                                        key={index}
+                                        onClick={() => setNewRating(index + 1)}
+                                        className={`h-8 w-7 cursor-pointer ${
+                                          index < newRating
+                                            ? "text-yellow-500"
+                                            : "text-gray-300"
+                                        }`}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                      >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
+                                      </svg>
+                                    ))}
+                                    <p className="text-gray-700 ml-3 text-2xl top-3">
+                                      <strong> {newRating} </strong>
+                                    </p>
+                                  </div>
+                                  <form
+                                    action=""
+                                    onSubmit={(e) => {
+                                      e.preventDefault();
+                                      console.log("Editando reseña...");
+                                      const reviewText =
+                                        e.target.elements["review-text"].value;
+                                      const reviewData = {
+                                        review_id: review.review_id,
+                                        review: reviewText,
+                                        rating: rating,
+                                      };
+                                      // Add logic to handle review update here
+                                      setIsEditing(0); // Reset editing state
+                                    }}
+                                  >
+                                    <textarea
+                                      id="review-text"
+                                      name="review-text"
+                                      rows="4"
+                                      className="p-2 border border-gray-300 bg-slate-50 rounded-lg w-max"
+                                      defaultValue={review.review}
+                                    ></textarea>
+                                    <button
+                                      type="submit"
+                                      className="rounded-full mb-1 p-4 flex mt-4 justify-center bg-custom-blue text-white hover:bg-gray-300"
+                                    >
+                                      Guardar
+                                    </button>
+                                  </form>
+                                </>
+                              ) : (
+                                
+                                <p className="text-gray-700">{review.review}</p>
+                              )}
                             </div>
                           </div>
 
@@ -411,9 +444,7 @@ export const Reviews = () => {
                           {/* Botón para editar reseña */}
                           <button
                             className="rounded-full mb-1 px-2 py-2 flex mt-4 justify-center bg-white text-black hover:bg-gray-300 w-2/4 "
-                            onClick={
-                              () => editReview(review)
-                            }
+                            onClick={() => setIsEditing(review.review_id)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
