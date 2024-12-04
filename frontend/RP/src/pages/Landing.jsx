@@ -7,10 +7,10 @@ import { useAuth } from "../hooks/useAuth";
 
 export const Landing = () => {
   const navigate = useNavigate();
-  const {isAuthenticated} = useAuth();
+  const { isAuthenticated } = useAuth();
   const [Books, setBooks] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username"));
-  const [message, setMessage] = useState("Descubre más...");
+  const [message, setMessage] = useState("Descubre un libro cada día...");
   const [likedBooks, setLikedBook] = useState([]);
   const [newFav, setNewFav] = useState(false);
 
@@ -70,7 +70,6 @@ export const Landing = () => {
   };
 
   const handleLike = async (book_id) => {
-    alert("Se ha añadido a tus favoritos...");
     try {
       const response = await fetch(`${host}/favorites/`, {
         method: "POST",
@@ -127,21 +126,42 @@ export const Landing = () => {
                   // Redirige al hacer clic
                 >
                   <div className="flex flex-row overflow-hidden h-72">
-                    <div className="w-1/2">
+                    <div className="relative w-1/2 group">
+                      {/* Imagen */}
                       <img
                         alt={"book"}
                         src={book.cover}
-                        className="h-full w-full object-cover object-center group-hover:opacity-25 rounded-lg"
+                        className="h-full w-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
                         onClick={() => navigate(`/reviews/${book.book_id}`)}
                       />
-                      <div className="relative group">
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="text-white text-lg">
-                            Ver detalles
-                          </span>
-                        </div>
+
+                      {/* Capa oscura con texto e ícono */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                        <span className="text-white text-lg font-medium">
+                          Ver reseñas
+                        </span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          className="w-8 h-8 text-white mb-2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 5c-7.333 0-10 7-10 7s2.667 7 10 7 10-7 10-7-2.667-7-10-7z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 9a3 3 0 100 6 3 3 0 000-6z"
+                          />
+                        </svg>
                       </div>
                     </div>
+
                     <div className="p-4 w-1/2 flex flex-col justify-between">
                       <div>
                         <p className="mt-1 text-lg font-medium text-gray-600">
@@ -205,16 +225,21 @@ export const Landing = () => {
                                 navigate("/login");
                               }
                             }}
+                            className="group"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="24px"
-                              viewBox="0 -960 960 960"
-                              width="24px"
-                              fill="#EA3323"
-                            >
-                              <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
-                            </svg>
+                            <div className="flex flex-row items-center align-middle justify-between">
+                              <p className="mx-1 text-gray-500">¿Te gusta?</p>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24px"
+                                viewBox="0 -960 960 960"
+                                width="24px"
+                                fill="#EA3323"
+                                className="transition-transform duration-300 group-hover:scale-125 group-hover:fill-red-500"
+                              >
+                                <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
+                              </svg>
+                            </div>
                           </button>
                         )}
                       </div>
