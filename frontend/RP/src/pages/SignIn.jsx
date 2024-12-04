@@ -67,6 +67,7 @@ export function SignIn() {
     }
 
     try {
+      console.log(data);
       const response = await fetch(`${host}/register/`, {
         method: "POST",
         headers: {
@@ -132,6 +133,7 @@ export function SignIn() {
                       <input
                         placeholder="Nombre"
                         type="text"
+                        pattern="[A-Za-z\s]+"
                         {...register("first_name", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />
@@ -149,6 +151,7 @@ export function SignIn() {
                       <input
                         placeholder="Apellido paterno"
                         type="text"
+                        pattern="[A-Za-z\s]+"
                         {...register("last_name", { required: true })}
                         className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
                       />

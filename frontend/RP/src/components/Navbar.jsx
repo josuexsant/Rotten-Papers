@@ -11,6 +11,8 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { host } from "../api/api";
+import { useState } from "react";
+import { set } from "react-hook-form";
 
 const navigation = [
   { name: "Mis favoritos", href: "/favorites", current: false },
@@ -22,7 +24,8 @@ function classNames(...classes) {
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, signout } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, signout } = useAuth();
+  const [tokenTemp, setTokenTemp] = useState(0);
 
   const handleSignout = async () => {
     await signout();
@@ -35,21 +38,26 @@ export const Navbar = () => {
         "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer."
       )
     ) {
+      const token = localStorage.getItem("token");
+      setTokenTemp(token);
+      signout();
       try {
         const response = await fetch(`${host}/delete_user`, {
           method: "DELETE",
           headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
+            Authorization: `Token ${token}`,
           },
         });
 
         if (!response.ok) {
           throw new Error("Failed to delete user");
         }
-
-        signout();
-        console.log("Cuenta eliminada");
-        navigate("/access");
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        setIsAuthenticated(false);
+        window.location.reload();
+        console.log("Cuenta eliminada con éxito");
+        setTokenTemp(0);
       } catch (error) {
         console.error("Error:", error);
       }

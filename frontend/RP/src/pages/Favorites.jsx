@@ -98,7 +98,7 @@ export const Favorites = () => {
               <div
                 key={book.book_id}
                 className="group flex flex-col bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
-                onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
+                
               >
                 {/* Imagen de portada del libro con tamaño rectangular vertical */}
                 <div className="w-full h-72 overflow-hidden">
@@ -106,6 +106,7 @@ export const Favorites = () => {
                     alt={book.title}
                     src={book.cover}
                     className="h-full w-full object-cover object-center group-hover:opacity-75"
+                    onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
                   />
                 </div>
 
