@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { host } from "../api/api";
 import { useAuth } from "../hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -13,7 +14,26 @@ export const Landing = () => {
   const [message, setMessage] = useState("Descubre un libro cada día...");
   const [likedBooks, setLikedBook] = useState([]);
   const [newFav, setNewFav] = useState(false);
+  const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+  };
 
+  const query = useQuery();
+  const searchQuery = query.get("search") || "";
+
+
+  useEffect(() => {
+    async function loadBooks() {
+      const res = await getAllbooks();
+      const filteredBooks = searchQuery
+        ? res.data.filter((book) =>
+            book.title.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : res.data; // Mostrar todos los libros si no hay búsqueda
+      setBooks(filteredBooks);
+    }
+    loadBooks();
+  }, [searchQuery]);
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -98,14 +118,6 @@ export const Landing = () => {
     }
   }, [username]);
 
-  useEffect(() => {
-    async function loadBooks() {
-      const res = await getAllbooks();
-      setBooks(res.data);
-    }
-    loadBooks();
-  }, []);
-
   return (
     <>
       <Navbar />
@@ -132,11 +144,12 @@ export const Landing = () => {
                         alt={"book"}
                         src={book.cover}
                         className="h-full w-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                        onClick={() => navigate(`/reviews/${book.book_id}`)}
                       />
 
-                      {/* Capa oscura con texto e ícono */}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                      <div
+                        className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
+                        onClick={() => navigate(`/reviews/${book.book_id}`)}
+                      >
                         <span className="text-white text-lg font-medium">
                           Ver reseñas
                         </span>
@@ -254,5 +267,3 @@ export const Landing = () => {
     </>
   );
 };
-
-export default Landing;
