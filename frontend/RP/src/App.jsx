@@ -7,6 +7,7 @@ import {
   Login,
   Reviews,
   EditProfile,
+  Payment,
 } from './pages/';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './helpers/ProtectedRoute';
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <EditProfile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/Payment',
+    element: (
+      <ProtectedRoute>
+        <Payment />
       </ProtectedRoute>
     ),
   },

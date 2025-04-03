@@ -1,17 +1,17 @@
-import { Navbar } from "../components/Navbar";
-import { getAllbooks } from "../api/api";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { host } from "../api/api";
-import { useAuth } from "../hooks/useAuth";
-import { useLocation } from "react-router-dom";
+import { Navbar } from '../components/Navbar';
+import { getAllbooks } from '../api/api';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { host } from '../api/api';
+import { useAuth } from '../hooks/useAuth';
+import { useLocation } from 'react-router-dom';
 
 export const Landing = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [Books, setBooks] = useState([]);
-  const [username, setUsername] = useState(localStorage.getItem("username"));
-  const [message, setMessage] = useState("Descubre un libro cada día...");
+  const [username, setUsername] = useState(localStorage.getItem('username'));
+  const [message, setMessage] = useState('Descubre un libro cada día...');
   const [likedBooks, setLikedBook] = useState([]);
   const [newFav, setNewFav] = useState(false);
   const useQuery = () => {
@@ -19,8 +19,7 @@ export const Landing = () => {
   };
 
   const query = useQuery();
-  const searchQuery = query.get("search") || "";
-
+  const searchQuery = query.get('search') || '';
 
   useEffect(() => {
     async function loadBooks() {
@@ -38,22 +37,22 @@ export const Landing = () => {
     const fetchFavorites = async () => {
       try {
         const response = await fetch(`${host}/favorites/`, {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${localStorage.getItem("token")}`,
+            'Content-Type': 'application/json',
+            Authorization: `Token ${localStorage.getItem('token')}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error("Failed to like book");
+          throw new Error('Failed to like book');
         }
 
         const data = await response.json();
         setLikedBook(data);
         console.log(data);
       } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
       }
     };
 
@@ -61,7 +60,7 @@ export const Landing = () => {
   }, [newFav]);
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
+    const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     }
@@ -69,10 +68,10 @@ export const Landing = () => {
 
   const handleRemove = async (bookId) => {
     fetch(`${host}/favorites/`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${localStorage.getItem("token")}`,
+        'Content-Type': 'application/json',
+        Authorization: `Token ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify({ book_id: bookId }),
     })
@@ -81,40 +80,40 @@ export const Landing = () => {
         if (response.ok) {
           setNewFav(!newFav);
         } else {
-          console.error("Error al eliminar el libro");
+          console.error('Error al eliminar el libro');
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error('Error:', error);
       });
   };
 
   const handleLike = async (book_id) => {
     try {
       const response = await fetch(`${host}/favorites/`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${localStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Token ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({ book_id }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to like book");
+        throw new Error('Failed to like book');
       }
       setNewFav(!newFav);
-      console.log("Book liked");
+      console.log('Book liked');
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
   useEffect(() => {
-    if (username && username !== "null") {
+    if (username && username !== 'null') {
       setMessage(`Bienvenido ${username}`);
     } else {
-      setMessage("Descubre más...");
+      setMessage('Descubre más...');
     }
   }, [username]);
 
@@ -135,13 +134,12 @@ export const Landing = () => {
                 <div
                   key={book.book_id}
                   className="group flex flex-col bg-slate-50 rounded-xl shadow-md"
-                  // Redirige al hacer clic
                 >
                   <div className="flex flex-row overflow-hidden h-72">
                     <div className="relative w-1/2 group">
                       {/* Imagen */}
                       <img
-                        alt={"book"}
+                        alt={'book'}
                         src={book.cover}
                         className="h-full w-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
                       />
@@ -187,8 +185,8 @@ export const Landing = () => {
                               key={index}
                               className={`h-5 w-5 ${
                                 index < book.rating
-                                  ? "text-yellow-500"
-                                  : "text-gray-300"
+                                  ? 'text-yellow-500'
+                                  : 'text-gray-300'
                               }`}
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
@@ -212,7 +210,7 @@ export const Landing = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemove(book.book_id);
-                              alert("Se ha borrado el libro de favoritos...");
+                              alert('Se ha borrado el libro de favoritos...');
                             }}
                           >
                             <div className="flex flex-row items-center align-middle justify-between">
@@ -235,7 +233,7 @@ export const Landing = () => {
                               if (isAuthenticated) {
                                 handleLike(book.book_id);
                               } else {
-                                navigate("/login");
+                                navigate('/login');
                               }
                             }}
                             className="group"
