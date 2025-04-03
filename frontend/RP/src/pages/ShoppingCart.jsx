@@ -6,6 +6,7 @@ import {
   MinusIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline"; //Icons
+import { useNavigate } from 'react-router-dom';
 
 // Calculate subtotal
 const subtotal = (books) =>
@@ -24,6 +25,7 @@ const updateQuantity = (id, change, books, setBooks) => {
 };
 
 export function ShoppingCart() {
+  const navigate = useNavigate();
   // State for books
   const [books, setBooks] = useState([
     {
@@ -119,7 +121,7 @@ export function ShoppingCart() {
             ))}
           </div>
 
-          <div className="bg-gray-50 p-6 border-t border-gray-200">
+          <div className="bg-gray-50 p-6 border-t border-gray-200 mb-16">
             <div className="flex justify-between lg:justify-end items-center mb-6 p-5">
               <span className="text-2xl font-medium p-5">Subtotal</span>
               <span className="text-2xl font-bold">
@@ -128,7 +130,7 @@ export function ShoppingCart() {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
-              <button variant="outline" className="gap-2 px-10 py-3 rounded-lg flex border-2 border-black hover:bg-black hover:text-white">
+              <button variant="outline" onClick={() => navigate('/')} className="gap-2 px-10 py-3 rounded-lg flex border-2 border-black hover:bg-black hover:text-white">
                 <ArrowLeftIcon className="h-6 w-6" />
                 Continuar comprando
               </button>

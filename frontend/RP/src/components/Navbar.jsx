@@ -7,7 +7,7 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { host } from "../api/api";
@@ -15,7 +15,8 @@ import { useState } from "react";
 import { set } from "react-hook-form";
 
 const navigation = [
-  { name: "Mis favoritos", href: "/favorites", current: false },
+  { name: "Mis favoritos", href: "/favorites", current: false},
+  { name: <ShoppingCartIcon  className="h-6 w-6"/>, href: "/shoppingCart", current: false}
 ];
 
 function classNames(...classes) {
