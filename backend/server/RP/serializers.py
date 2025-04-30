@@ -41,4 +41,23 @@ class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites
         fields = '__all__'
-        
+
+# Serializador para el modelo Discount
+class DiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Discounts
+        fields = '__all__'
+
+# Serializador para el modelo Card
+class CardSerializer(serializers.ModelSerializer):
+    user = UserSerializer()  # Incluye información detallada del usuario
+
+    class Meta:
+        model = Cards
+        fields = '__all__'
+
+# Serializador para el modelo Ticket
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tickets
+        fields = '__all__'

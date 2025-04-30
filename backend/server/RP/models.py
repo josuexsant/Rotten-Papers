@@ -1,84 +1,105 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
+from rest_framework import serializers
+from .models import *
 
-class Authors(models.Model):
-    author_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    lastname1 = models.CharField(max_length=255, blank=True, null=True)    
-    lastname2 = models.CharField(max_length=255, blank=True, null=True)    
-
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        managed = True
-        db_table = 'authors'
+        model = Users
+        fields = ['user_id', 'name', 'lastname1', 'lastname2', 'email', 'password', 'photo']
+        extra_kwargs = {'password': {'write_only': True}}
 
-class BookGenre(models.Model):
-    genreb_id = models.AutoField(db_column='genreB_id', primary_key=True)  # Field name made lowercase.
-    genre = models.ForeignKey('Genres', models.DO_NOTHING)
-    book = models.ForeignKey('Books', models.DO_NOTHING)
-
+class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
-        managed = True
-        db_table = 'book_genre'
+        model = Authors
+        fields = '_all_'
 
-class Books(models.Model):
-    book_id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255)
-    author = models.ForeignKey(Authors, models.DO_NOTHING)
-    synopsis = models.CharField(max_length=255)
-    genre = models.ForeignKey('Genres', models.DO_NOTHING)
-    cover = models.CharField(max_length=255)
-    rating = models.FloatField()
-
+class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        managed = True
-        db_table = 'books'
+        model = Genres
+        fields = '_all_'
 
-class Favorites(models.Model):
-    favorite_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('Users', models.DO_NOTHING)
-    book = models.ForeignKey(Books, models.DO_NOTHING)
-
+class BookSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(read_only=True)
+    genre = GenreSerializer(read_only=True)
+    
     class Meta:
-        managed = True
-        db_table = 'favorites'
+        model = Books
+        fields = '_all_'
+        depth = 1
 
-class Genres(models.Model):
-    genre_id = models.AutoField(primary_key=True)
-    genre = models.CharField(max_length=255)
-
+class BookGenreSerializer(serializers.ModelSerializer):
     class Meta:
-        managed = True
-        db_table = 'genres'
+        model = BookGenre
+        fields = '_all_'
 
-class Preferences(models.Model):
-    preference_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('Users', models.DO_NOTHING)
-    genre = models.ForeignKey(Genres, models.DO_NOTHING)
-
+class PreferencesSerializer(serializers.ModelSerializer):
     class Meta:
-        managed = True
-        db_table = 'preferences'
+        model = Preferences
+        fields = '_all_'
 
-class Reviews(models.Model):
-    review_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('Users', models.DO_NOTHING)
-    book = models.ForeignKey(Books, models.DO_NOTHING)
-    rating = models.IntegerField()
-    review = models.TextField()
-
+class ReviewsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    book = BookSerializer(read_only=True)
+    
     class Meta:
-        managed = True
-        db_table = 'reviews'
+        model = Reviews
+        fields = '_all_'
+        depth = 1
 
-class Users(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    lastname1 = models.CharField(max_length=255)
-    lastname2 = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    photo = models.CharField(max_length=255)
-
+class FavoritesSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    book = BookSerializer(read_only=True)
+    
     class Meta:
-        managed = True
-        db_table = 'users'
+        model = Favorites
+        fields = '_all_'
+        depth = 1
+
+class ShoppingCarSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = ShoppingCar
+        fields = '_all_'
+
+class ShoppingCarBooksSerializer(serializers.ModelSerializer):
+    shopping_car = ShoppingCarSerializer(read_only=True)
+    book = BookSerializer(read_only=True)
+    
+    class Meta:
+        model = ShoppingCarBooks
+        fields = '_all_'
+        depth = 1
+
+class DiscountsSerializer(serializers.ModelSerializer):
+    book = BookSerializer(read_only=True)
+    
+    class Meta:
+        model = Discounts
+        fields = '_all_'
+
+class CardsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Cards
+        fields = '_all_'
+        extra_kwargs = {
+            'card_number': {'write_only': True},
+            'cvv': {'write_only': True}
+        }
+
+class TicketsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Tickets
+        fields = '_all_'
+
+class PurchasesSerializer(serializers.ModelSerializer):
+    ticket = TicketsSerializer(read_only=True)
+    book = BookSerializer(read_only=True)
+    
+    class Meta:
+        model = Purchases
+        fields = '_all_'
+        depth = 1
