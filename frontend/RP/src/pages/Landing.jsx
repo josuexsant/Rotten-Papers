@@ -178,6 +178,13 @@ export const Landing = () => {
                         <p className="mt-1 text-lg font-medium text-gray-600">
                           {book.title}
                         </p>
+                        <p className="mt-1 text-lg font-medium text-bold text-gray-600">
+                          $ {book.price} MXN
+                        </p>
+                        {/*TODO: AGREGA LA FUNCION DE QUEDAN POCOS... */}
+                        <p className="mt-1 text-lg font-medium text-bold text-gray-600">
+                         
+                        </p>
                         <div className="flex items-center mt-2">
                           <p className="text-gray-500">{book.rating}</p>
                           {[...Array(5)].map((_, index) => (

@@ -72,9 +72,9 @@ DATABASES = {
         'USER': 'root',  
         'PASSWORD': '1234', 
         # Si usas el backend con Docker, descomenta la siguiente línea
-        'HOST': 'mysql_db',
+        #'HOST': 'mysql_db',
         # Si usas el backend en local, descomenta la siguiente línea
-        #'HOST': 'localhost',
+        'HOST': 'localhost',
         'PORT': '3306',  
         'OPTIONS': {
             'charset': 'utf8mb4',

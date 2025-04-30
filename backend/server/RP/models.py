@@ -1,105 +1,147 @@
-from rest_framework import serializers
-from .models import *
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Users
-        fields = ['user_id', 'name', 'lastname1', 'lastname2', 'email', 'password', 'photo']
-        extra_kwargs = {'password': {'write_only': True}}
+class Authors(models.Model):
+    author_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    lastname1 = models.CharField(max_length=255, blank=True, null=True)    
+    lastname2 = models.CharField(max_length=255, blank=True, null=True)    
 
-class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Authors
-        fields = '_all_'
+        managed = True
+        db_table = 'authors'
 
-class GenreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Genres
-        fields = '_all_'
+class Genres(models.Model):
+    genre_id = models.AutoField(primary_key=True)
+    genre = models.CharField(max_length=255)
 
-class BookSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(read_only=True)
-    genre = GenreSerializer(read_only=True)
-    
     class Meta:
-        model = Books
-        fields = '_all_'
-        depth = 1
+        managed = True
+        db_table = 'genres'
 
-class BookGenreSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookGenre
-        fields = '_all_'
+class Users(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    lastname1 = models.CharField(max_length=255)
+    lastname2 = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
+    photo = models.CharField(max_length=255)
 
-class PreferencesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Preferences
-        fields = '_all_'
+        managed = True
+        db_table = 'users'
 
-class ReviewsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    book = BookSerializer(read_only=True)
-    
-    class Meta:
-        model = Reviews
-        fields = '_all_'
-        depth = 1
+class Preferences(models.Model):
+    preference_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, models.DO_NOTHING)
+    genre = models.ForeignKey(Genres, models.DO_NOTHING)
 
-class FavoritesSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    book = BookSerializer(read_only=True)
-    
     class Meta:
-        model = Favorites
-        fields = '_all_'
-        depth = 1
+        managed = True
+        db_table = 'preferences'
 
-class ShoppingCarSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    
-    class Meta:
-        model = ShoppingCar
-        fields = '_all_'
+class Books(models.Model):
+    book_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(Authors, models.DO_NOTHING)
+    synopsis = models.CharField(max_length=255)
+    genre = models.ForeignKey(Genres, models.DO_NOTHING)
+    cover = models.CharField(max_length=255)
+    rating = models.FloatField()
+    stock = models.BigIntegerField()
+    price = models.FloatField()
 
-class ShoppingCarBooksSerializer(serializers.ModelSerializer):
-    shopping_car = ShoppingCarSerializer(read_only=True)
-    book = BookSerializer(read_only=True)
-    
     class Meta:
-        model = ShoppingCarBooks
-        fields = '_all_'
-        depth = 1
+        managed = True
+        db_table = 'books'
 
-class DiscountsSerializer(serializers.ModelSerializer):
-    book = BookSerializer(read_only=True)
-    
-    class Meta:
-        model = Discounts
-        fields = '_all_'
+class BookGenre(models.Model):
+    genreb_id = models.AutoField(db_column='genreB_id', primary_key=True)
+    genre = models.ForeignKey(Genres, models.DO_NOTHING)
+    book = models.ForeignKey(Books, models.DO_NOTHING)
 
-class CardsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    
     class Meta:
-        model = Cards
-        fields = '_all_'
-        extra_kwargs = {
-            'card_number': {'write_only': True},
-            'cvv': {'write_only': True}
-        }
+        managed = True
+        db_table = 'book_genre'
 
-class TicketsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    
-    class Meta:
-        model = Tickets
-        fields = '_all_'
+class Reviews(models.Model):
+    review_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, models.DO_NOTHING)
+    book = models.ForeignKey(Books, models.DO_NOTHING)
+    rating = models.IntegerField()
+    review = models.TextField()
 
-class PurchasesSerializer(serializers.ModelSerializer):
-    ticket = TicketsSerializer(read_only=True)
-    book = BookSerializer(read_only=True)
-    
     class Meta:
-        model = Purchases
-        fields = '_all_'
-        depth = 1
+        managed = True
+        db_table = 'reviews'
+
+class Favorites(models.Model):
+    favorite_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, models.DO_NOTHING)
+    book = models.ForeignKey(Books, models.DO_NOTHING)
+
+    class Meta:
+        managed = True
+        db_table = 'favorites'
+
+class ShoppingCar(models.Model):
+    shopping_car_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = True
+        db_table = 'shopping_car'
+
+class ShoppingCarBooks(models.Model):
+    shopping_car_books_id = models.AutoField(primary_key=True)
+    shopping_car = models.ForeignKey(ShoppingCar, on_delete=models.CASCADE)
+    book = models.ForeignKey(Books, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = True
+        db_table = 'shopping_car_books'
+
+class Discounts(models.Model):
+    discount_id = models.AutoField(primary_key=True)
+    book = models.ForeignKey(Books, on_delete=models.CASCADE)
+    expiration_date = models.DateTimeField()
+    amount = models.BigIntegerField()
+
+    class Meta:
+        managed = True
+        db_table = 'discounts'
+
+class Cards(models.Model):
+    card_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    card_number = models.CharField(max_length=255)
+    bank = models.CharField(max_length=255)
+    owner = models.CharField(max_length=255)
+    cvv = models.CharField(max_length=255)
+    expiration_date = models.DateField()
+
+    class Meta:
+        managed = True
+        db_table = 'cards'
+
+class Tickets(models.Model):
+    ticket_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    total = models.FloatField()
+    address = models.CharField(max_length=255)
+
+    class Meta:
+        managed = True
+        db_table = 'tickets'
+
+class Purchases(models.Model):
+    purchase_id = models.AutoField(primary_key=True)
+    ticket = models.ForeignKey(Tickets, on_delete=models.CASCADE)
+    book = models.ForeignKey(Books, on_delete=models.CASCADE)
+    discount_applied = models.BigIntegerField()
+
+    class Meta:
+        managed = True
+        db_table = 'purchases'
