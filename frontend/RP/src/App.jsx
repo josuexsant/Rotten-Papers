@@ -7,6 +7,7 @@ import {
   Login,
   Reviews,
   EditProfile,
+  Payment,
   ShoppingCart,
 } from './pages/';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -57,6 +58,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: '/Payment',
+    element: (
+      <ProtectedRoute>
+        <Payment />
+      </ProtectedRoute>
+      ),
+   },
   {
     path: '/shoppingCart',
     element: (
