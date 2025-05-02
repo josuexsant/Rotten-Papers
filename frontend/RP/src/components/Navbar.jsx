@@ -15,8 +15,8 @@ import { useState } from "react";
 import { set } from "react-hook-form";
 
 const navigation = [
-  { name: "Mis favoritos", href: "/favorites", current: false},
-  { name: <ShoppingCartIcon  className="h-6 w-6"/>, href: "/shoppingCart", current: false}
+  { name: "Mis favoritos", to: "/favorites", current: false},
+  { name: <ShoppingCartIcon  className="h-6 w-6"/>, to: "/shoppingCart", current: false}
 ];
 
 function classNames(...classes) {
@@ -94,9 +94,9 @@ export const Navbar = () => {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-8 items-center">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.to}
                     aria-current={item.current ? "page" : undefined}
                     className={classNames(
                       item.current
@@ -106,7 +106,7 @@ export const Navbar = () => {
                     )}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
 
                 {/* Icono de lupa con barra de búsqueda desplegable */}
