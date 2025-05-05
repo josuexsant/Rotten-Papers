@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { host } from '../api/api';
 import { useAuth } from '../hooks/useAuth';
 import { useLocation } from 'react-router-dom';
+import { Button } from '@headlessui/react';
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -209,7 +210,7 @@ export const Landing = () => {
                           {book.synopsis}
                         </p>
                       </div>
-                      <div className="mt-4 flex justify-center">
+                      <div className="mt-4 flex-col justify-center">
                         {likedBooks
                           .map((book) => book.book_id)
                           .includes(book.book_id) ? (
@@ -221,7 +222,7 @@ export const Landing = () => {
                             }}
                           >
                             <div className="flex flex-row items-center align-middle justify-between">
-                              <p className="mx-1">¡Te gusta!</p>
+                              <p className="mx-1">Me gusta</p>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 height="24px"
@@ -246,7 +247,7 @@ export const Landing = () => {
                             className="group"
                           >
                             <div className="flex flex-row items-center align-middle justify-between">
-                              <p className="mx-1 text-gray-500">¿Te gusta?</p>
+                              <p className="mx-1 text-gray-500">Me gusta</p>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 height="24px"
@@ -260,6 +261,9 @@ export const Landing = () => {
                             </div>
                           </button>
                         )}
+                        <button className='bg-orange-200 p-3 rounded-md'>
+                          Agregar al carrito
+                        </button>
                       </div>
                     </div>
                   </div>
