@@ -19,5 +19,4 @@ urlpatterns = [
     re_path('author', views.author),
     re_path('editProfile', views.editProfile),
     re_path('shoppingCar', views.shopping_cart),
-    re_path('shoppingCartBooks', views.clear_shopping_cart),
 ]
