@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 
 class Authors(models.Model):
@@ -19,22 +19,10 @@ class Genres(models.Model):
         managed = True
         db_table = 'genres'
 
-class Users(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    lastname1 = models.CharField(max_length=255)
-    lastname2 = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    photo = models.CharField(max_length=255)
-
-    class Meta:
-        managed = True
-        db_table = 'users'
 
 class Preferences(models.Model):
     preference_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, models.DO_NOTHING)
+    user = models.ForeignKey(User, models.DO_NOTHING)
     genre = models.ForeignKey(Genres, models.DO_NOTHING)
 
     class Meta:
@@ -67,7 +55,7 @@ class BookGenre(models.Model):
 
 class Reviews(models.Model):
     review_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, models.DO_NOTHING)
+    user = models.ForeignKey(User, models.DO_NOTHING)
     book = models.ForeignKey(Books, models.DO_NOTHING)
     rating = models.IntegerField()
     review = models.TextField()
@@ -78,7 +66,7 @@ class Reviews(models.Model):
 
 class Favorites(models.Model):
     favorite_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, models.DO_NOTHING)
+    user = models.ForeignKey(User, models.DO_NOTHING)
     book = models.ForeignKey(Books, models.DO_NOTHING)
 
     class Meta:
@@ -87,7 +75,7 @@ class Favorites(models.Model):
 
 class ShoppingCar(models.Model):
     shopping_car_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         managed = True
@@ -114,7 +102,7 @@ class Discounts(models.Model):
 
 class Cards(models.Model):
     card_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     card_number = models.CharField(max_length=255)
     bank = models.CharField(max_length=255)
     owner = models.CharField(max_length=255)
@@ -127,7 +115,7 @@ class Cards(models.Model):
 
 class Tickets(models.Model):
     ticket_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
     total = models.FloatField()
     address = models.CharField(max_length=255)
