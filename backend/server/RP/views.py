@@ -171,7 +171,7 @@ def reviews(request):
 
     book = get_object_or_404(Books, book_id=book_id)
 
-    user_instance = get_object_or_404(Users, pk=user.pk)
+    user_instance = get_object_or_404(User, pk=user.pk)
     review = Reviews.objects.create(
       user=user_instance,
       book=book,
@@ -270,3 +270,43 @@ def editProfile(request):
 
   serializer = UserSerializer(user)
   return Response({"user": serializer.data, "message": "User updated successfully"}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'POST', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def shopping_cart(request):
+    user = request.user
+
+    # Asegura que el carrito del usuario exista
+    cart, created = ShoppingCar.objects.get_or_create(user=user)
+
+    if request.method == 'GET':
+        cart_books = ShoppingCarBooks.objects.filter(shopping_car=cart)
+        books = [entry.book for entry in cart_books]
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status=200)
+
+    elif request.method == 'POST':
+        book_id = request.data.get('book_id')
+        if not book_id:
+            return Response({"error": "Missing 'book_id'"}, status=400)
+        
+        book = get_object_or_404(Books, pk=book_id)
+        # Verifica si ya está en el carrito
+        if ShoppingCarBooks.objects.filter(shopping_car=cart, book=book).exists():
+            return Response({"message": "Book already in cart."}, status=400)
+        
+        ShoppingCarBooks.objects.create(shopping_car=cart, book=book)
+        return Response({"message": "Book added to cart."}, status=201)
+
+    elif request.method == 'DELETE':
+        book_id = request.data.get('book_id')
+        if not book_id:
+            return Response({"error": "Missing 'book_id'"}, status=400)
+
+        book = get_object_or_404(Books, pk=book_id)
+        deleted, _ = ShoppingCarBooks.objects.filter(shopping_car=cart, book=book).delete()
+        if deleted:
+            return Response({"message": "Book removed from cart."}, status=200)
+        else:
+            return Response({"message": "Book not found in cart."}, status=404)
