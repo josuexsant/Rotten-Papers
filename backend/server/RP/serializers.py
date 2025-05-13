@@ -61,3 +61,13 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tickets
         fields = '__all__'
+
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingCar
+        fields = '__all__'  
+
+class ShoppingCartBooksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingCarBooks
+        fields = '__all__'
