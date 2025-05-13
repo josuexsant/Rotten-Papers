@@ -10,6 +10,9 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 
 # Login
@@ -310,3 +313,41 @@ def shopping_cart(request):
             return Response({"message": "Book removed from cart."}, status=200)
         else:
             return Response({"message": "Book not found in cart."}, status=404)
+          
+# Purchase
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def purchase(request):
+
+  user = request.user
+  # Get user's favorites as the "cart"
+  favorites = Favorites.objects.filter(user_id=user.pk)
+  favorite_books = [favorite.book for favorite in favorites]
+
+  if not favorite_books:
+    return Response({"message": "No books in favorites to purchase."}, status=400)
+
+  # Generate the email content
+  book_titles = [book.title for book in favorite_books]
+  total_books = len(book_titles)
+  email_subject = "Purchase Confirmation - Your Ticket"
+  email_body = render_to_string('purchase_ticket.html', {
+    'user': user,
+    'books': book_titles,
+    'total_books': total_books
+  })
+
+  # Send the email
+  send_mail(
+    subject=email_subject,
+    message="",
+    from_email=settings.DEFAULT_FROM_EMAIL,
+    recipient_list=[user.email],
+    html_message=email_body
+  )
+
+  # Clear the user's favorites after "purchase"
+  favorites.delete()
+
+  return Response({"message": "Purchase successful. A confirmation email has been sent."}, status=200)

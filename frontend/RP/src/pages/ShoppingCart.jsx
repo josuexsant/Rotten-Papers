@@ -134,7 +134,10 @@ export function ShoppingCart() {
                 <ArrowLeftIcon className="h-6 w-6" />
                 Continuar comprando
               </button>
-              <button className="flex bg-blue-600 text-white gap-2 px-10 py-3 rounded-lg  hover:bg-blue-500 hover:border-blue-600 ">
+              <button className="flex bg-blue-600 text-white gap-2 px-10 py-3 rounded-lg  hover:bg-blue-500 hover:border-blue-600 "
+                onClick={() => navigate('/payment')
+              }>
+                <ShoppingBagIcon className="h-6 w-6" />
                 Comprar ahora
               </button>
             </div>
