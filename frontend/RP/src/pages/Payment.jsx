@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Navbar } from '../components/Navbar';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Navbar } from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const subtotal = (books) =>
   books.reduce((total, book) => total + book.price * book.quantity, 0);
@@ -8,16 +8,16 @@ const subtotal = (books) =>
 export function Payment() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    country: '',
-    fullName: '',
-    street: '',
-    postalCode: '',
-    phoneNumber: '',
-    specialInstructions: '',
-    cardNumber: '',
-    cardName: '',
-    expiryDate: '',
-    cvv: '',
+    country: "",
+    fullName: "",
+    street: "",
+    postalCode: "",
+    phoneNumber: "",
+    specialInstructions: "",
+    cardNumber: "",
+    cardName: "",
+    expiryDate: "",
+    cvv: "",
   });
 
   const handleChange = (e) => {
@@ -27,26 +27,26 @@ export function Payment() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Datos enviados:', formData);
-    navigate('/confirmation');
+    console.log("Datos enviados:", formData);
+    navigate("/confirmation");
   };
 
   const [books] = useState([
     {
       id: 1,
-      title: 'The Design of Everyday Things',
+      title: "The Design of Everyday Things",
       price: 19.99,
       quantity: 1,
     },
     {
       id: 2,
-      title: 'Atomic Habits',
-      price: 16.99,
+      title: "Atomic Habits",
+      price: 16.9,
       quantity: 2,
     },
     {
       id: 3,
-      title: 'The Alchemist',
+      title: "The Alchemist",
       price: 12.99,
       quantity: 1,
     },
@@ -61,7 +61,7 @@ export function Payment() {
           <h2 className="text-2xl font-bold mb-4">Detalles de Envío</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <label htmlFor="country" className="block font-medium">
-              País:
+              País o región:
               <select
                 id="country"
                 name="country"
@@ -102,6 +102,7 @@ export function Payment() {
               <input
                 type="text"
                 name="fullName"
+                placeholder="Nombre y Apellido"
                 value={formData.fullName}
                 onChange={handleChange}
                 required
@@ -114,6 +115,7 @@ export function Payment() {
               <input
                 type="text"
                 name="street"
+                placeholder="Calle, número ext e int"
                 value={formData.street}
                 onChange={handleChange}
                 required
@@ -124,8 +126,11 @@ export function Payment() {
             <label className="block font-medium">
               Código Postal:
               <input
-                type="text"
+                type="number"
                 name="postalCode"
+                placeholder="Por ejemplo: 12345"
+                pattern="\d{5}"
+                minLength={5}
                 value={formData.postalCode}
                 onChange={handleChange}
                 required
@@ -147,6 +152,9 @@ export function Payment() {
 
             <label className="block font-medium">
               Instrucciones Especiales:
+              <p className="text-sm text-gray-500 mb-2">
+                (Opcional) Ejemplo: "Dejar en la puerta" o "Entregar a vecino".
+              </p>
               <textarea
                 name="specialInstructions"
                 value={formData.specialInstructions}
@@ -154,12 +162,6 @@ export function Payment() {
                 className="w-full border p-2 rounded"
               ></textarea>
             </label>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-            >
-              Confirmar dirección
-            </button>
           </form>
         </div>
 
@@ -209,7 +211,10 @@ export function Payment() {
               <label className="block font-medium">
                 Número de Tarjeta:
                 <input
-                  type="text"
+                  type="number"
+                  placeholder="XXXX-XXXX-XXXX-XXXX"
+                  pattern="\d{4}-\d{4}-\d{4}-\d{4}"
+                  minLength={19}
                   name="cardNumber"
                   value={formData.cardNumber}
                   onChange={handleChange}
@@ -223,6 +228,7 @@ export function Payment() {
                 <input
                   type="text"
                   name="cardName"
+                  placeholder="Nombre y Apellido"
                   value={formData.cardName}
                   onChange={handleChange}
                   required
@@ -234,10 +240,19 @@ export function Payment() {
                 <label className="block font-medium w-1/2">
                   Fecha de Expiración:
                   <input
-                    type="text"
+                    type="month"
                     name="expiryDate"
                     value={formData.expiryDate}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      // Get the value from the input (YYYY-MM format)
+                      const monthValue = e.target.value;
+
+                      // Format it to MM/YYYY if needed
+                      // Note: When displayed to the user, browsers typically show
+                      // month inputs in their localized format already
+
+                      handleChange(e);
+                    }}
                     required
                     className="w-full border p-2 rounded"
                   />
@@ -245,7 +260,11 @@ export function Payment() {
                 <label className="block font-medium w-1/2">
                   CVV:
                   <input
-                    type="text"
+                    type="number"
+                    placeholder="XXX"
+                    pattern="\d{3}"
+                    minLength={3}
+                    maxLength={3}
                     name="cvv"
                     value={formData.cvv}
                     onChange={handleChange}
