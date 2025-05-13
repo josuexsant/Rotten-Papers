@@ -100,7 +100,7 @@ export function Purchase() {
     0
   );
 
-  const shipping = 4.99;
+  const shipping = 49.90; // Costo de envío fijo
   const total = subtotal + shipping;
 
   const handleContinueShopping = () => {
