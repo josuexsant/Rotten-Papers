@@ -1,43 +1,99 @@
 import { Navbar } from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export function Purchase() {
   const navigate = useNavigate();
-  // Estos datos vendrían de tu estado o contexto en una aplicación real
-  const orderData = {
-    orderId: "ORD-25689",
-    date: "12/05/2025",
-    books: [
-      {
-        id: 1,
-        title: "The Design of Everyday Things",
-        price: 19.99,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        title: "Atomic Habits",
-        price: 16.9,
-        quantity: 2,
-      },
-      {
-        id: 3,
-        title: "The Alchemist",
-        price: 12.99,
-        quantity: 1,
-      },
-    ],
+  const location = useLocation();
+  
+  // Estado para almacenar los datos que vienen del componente Payment
+  const [orderData, setOrderData] = useState({
+    orderId: "ORD-" + Math.floor(10000 + Math.random() * 90000), // Genera un ID aleatorio
+    date: new Date().toLocaleDateString(),
+    books: [],
     shippingAddress: {
-      fullName: "Juan Pérez",
-      street: "Av. Reforma 123",
-      postalCode: "72000",
-      country: "México",
+      fullName: "",
+      street: "",
+      postalCode: "",
+      country: "",
     },
     paymentInfo: {
-      cardNumber: "•••• •••• •••• 4589",
-      cardName: "Juan Pérez",
+      cardNumber: "",
+      cardName: "",
+      expiryDate: "",
     },
-  };
+  });
+
+  // Efecto para procesar los datos que vienen del componente Payment
+  useEffect(() => {
+    // Verificar si hay datos en location.state
+    if (location.state && location.state.formData && location.state.books) {
+      const { formData, books } = location.state;
+      
+      // Formatear los datos para mostrarlos
+      setOrderData({
+        orderId: "ORD-" + Math.floor(10000 + Math.random() * 90000),
+        date: new Date().toLocaleDateString(),
+        books: books,
+        shippingAddress: {
+          fullName: formData.fullName || "",
+          street: formData.street || "",
+          postalCode: formData.postalCode || "",
+          country: formData.country || "",
+          phoneNumber: formData.phoneNumber || "",
+          specialInstructions: formData.specialInstructions || "",
+        },
+        paymentInfo: {
+          // Mostrar solo los últimos 4 dígitos de la tarjeta
+          cardNumber: formData.cardNumber ? 
+            "•••• •••• •••• " + formData.cardNumber.slice(-4) : 
+            "•••• •••• •••• ****",
+          cardName: formData.cardName || "",
+          // Formatear la fecha de expiración a MM/YYYY si existe
+          expiryDate: formData.expiryDate ? 
+            `${formData.expiryDate.split('-')[1]}/${formData.expiryDate.split('-')[0]}` : 
+            "",
+        },
+      });
+    } else {
+      // Si no hay datos en location.state, usar datos por defecto
+      // Esto es útil para pruebas o si el usuario accede directamente a esta ruta
+      setOrderData({
+        orderId: "ORD-" + Math.floor(10000 + Math.random() * 90000),
+        date: new Date().toLocaleDateString(),
+        books: [
+          {
+            id: 1,
+            title: "The Design of Everyday Things",
+            price: 19.99,
+            quantity: 1,
+          },
+          {
+            id: 2,
+            title: "Atomic Habits",
+            price: 16.9,
+            quantity: 2,
+          },
+          {
+            id: 3,
+            title: "The Alchemist",
+            price: 12.99,
+            quantity: 1,
+          },
+        ],
+        shippingAddress: {
+          fullName: "Juan Pérez",
+          street: "Av. Reforma 123",
+          postalCode: "72000",
+          country: "México",
+        },
+        paymentInfo: {
+          cardNumber: "•••• •••• •••• 4589",
+          cardName: "Juan Pérez",
+        },
+      });
+    }
+  }, [location.state]);
 
   const subtotal = orderData.books.reduce(
     (total, book) => total + book.price * book.quantity,
@@ -48,12 +104,7 @@ export function Purchase() {
   const total = subtotal + shipping;
 
   const handleContinueShopping = () => {
-    // En una implementación real, esto usaría un navegador como react-router
-    console.log("Continuar comprando");
-    // Simular navegación
-    setTimeout(() => {
-      navigate("/"); // Redirigir a la página de inicio
-    }, 1000);
+    navigate("/");
   };
 
   return (
@@ -188,6 +239,19 @@ export function Purchase() {
                   {orderData.shippingAddress.postalCode},{" "}
                   {orderData.shippingAddress.country}
                 </p>
+                {orderData.shippingAddress.phoneNumber && (
+                  <p className="text-gray-600 mt-2">
+                    Tel: {orderData.shippingAddress.phoneNumber}
+                  </p>
+                )}
+                {orderData.shippingAddress.specialInstructions && (
+                  <div className="mt-2 pt-2 border-t border-gray-200">
+                    <p className="text-sm font-medium">Instrucciones especiales:</p>
+                    <p className="text-gray-600 italic">
+                      {orderData.shippingAddress.specialInstructions}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -216,6 +280,11 @@ export function Purchase() {
                 <p className="text-gray-600">
                   Titular: {orderData.paymentInfo.cardName}
                 </p>
+                {orderData.paymentInfo.expiryDate && (
+                  <p className="text-gray-600">
+                    Expira: {orderData.paymentInfo.expiryDate}
+                  </p>
+                )}
               </div>
             </div>
 

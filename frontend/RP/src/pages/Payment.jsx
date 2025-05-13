@@ -28,7 +28,14 @@ export function Payment() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formData);
-    navigate("/confirmation");
+    
+    // Navegar a la página de confirmación y pasar los datos como estado
+    navigate("/confirmation", { 
+      state: { 
+        formData, 
+        books // Pasar los libros junto con los datos del formulario
+      } 
+    });
   };
 
   const [books] = useState([
@@ -243,16 +250,7 @@ export function Payment() {
                     type="month"
                     name="expiryDate"
                     value={formData.expiryDate}
-                    onChange={(e) => {
-                      // Get the value from the input (YYYY-MM format)
-                      const monthValue = e.target.value;
-
-                      // Format it to MM/YYYY if needed
-                      // Note: When displayed to the user, browsers typically show
-                      // month inputs in their localized format already
-
-                      handleChange(e);
-                    }}
+                    onChange={handleChange}
                     required
                     className="w-full border p-2 rounded"
                   />

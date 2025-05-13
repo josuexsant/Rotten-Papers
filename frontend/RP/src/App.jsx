@@ -76,7 +76,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/purchase',
+    path: '/confirmation',
     element: (
       <ProtectedRoute>
         <Purchase />
