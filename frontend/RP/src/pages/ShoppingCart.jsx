@@ -1,58 +1,71 @@
 import { Navbar } from "../components/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ShoppingBagIcon,
   ArrowLeftIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline"; //Icons
-import { useNavigate } from 'react-router-dom';
+} from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
+import { getCartBooks, addToCart, removeFromCart } from "../api/api"; // Ajusta la ruta
 
-// Calculate subtotal
-const subtotal = (books) =>
-  books.reduce((total, book) => total + book.price * book.quantity, 0);
-// Update book quantity
-const updateQuantity = (id, change, books, setBooks) => {
-  setBooks(
-    books.map((book) => {
-      if (book.id === id) {
-        const newQuantity = Math.max(1, book.quantity + change);
-        return { ...book, quantity: newQuantity };
-      }
-      return book;
-    })
-  );
-};
+// Calcular subtotal
+const subtotal = (books) => books.reduce((total, book) => total + book.price, 0);
 
 export function ShoppingCart() {
   const navigate = useNavigate();
-  // State for books
-  const [books, setBooks] = useState([
-    {
-      id: 1,
-      title: "The Design of Everyday Things",
-      author: "Don Norman",
-      price: 19.99,
-      image: "https://www.pixartprinting.it/blog/wp-content/uploads/2024/03/1-2.jpg?height=150&width=120",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      title: "Atomic Habits",
-      author: "James Clear",
-      price: 16.99,
-      image: "https://www.pixartprinting.it/blog/wp-content/uploads/2024/03/1-2.jpg?height=150&width=120",
-      quantity: 2,
-    },
-    {
-      id: 3,
-      title: "The Alchemist",
-      author: "Paulo Coelho",
-      price: 12.99,
-      image: "https://www.pixartprinting.it/blog/wp-content/uploads/2024/03/1-2.jpg?height=150&width=120",
-      quantity: 1,
-    },
-  ]);
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Obtener libros del carrito al cargar el componente
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await getCartBooks();
+        setBooks(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Error al cargar el carrito. Inténtalo de nuevo.");
+        setLoading(false);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("authToken");
+          navigate("/login");
+        }
+      }
+    };
+
+    fetchCart();
+  }, [navigate]);
+
+  // Eliminar libro del carrito
+  const handleRemoveFromCart = async (bookId) => {
+    try {
+      const response = await removeFromCart(bookId);
+      const updatedCart = await getCartBooks();
+      setBooks(updatedCart.data);
+      alert(response.data.message);
+    } catch (err) {
+      alert(err.response?.data?.message || "Error al eliminar el libro.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-5xl mx-auto">
+        <Navbar />
+        <p>Cargando carrito...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-5xl mx-auto">
+        <Navbar />
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -64,61 +77,53 @@ export function ShoppingCart() {
 
         <div className="overflow-hidden">
           <div className="p-6">
-            {books.map((book) => (
-              <div key={book.id} className="mb-6">
-                <div className="flex gap-6">
-                  <div className="relative h-[150px] w-[120px] overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
-                    <img
-                      src={book.image || "/placeholder.svg"}
-                      alt={book.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div className="flex justify-between items-center ">
-                      <div>
-                        <h3 className="font-medium text-lg">{book.title}</h3>
-                        <p className="text-gray-500">{book.author}</p>
-                      </div>
-                      <div className="flex gap-4">
-                        <button className=" text-red-500 font-semibold">Eliminar</button>
-                        <button className="font-semibold">Comprar</button>
-                      </div>
+            {books.length === 0 ? (
+              <p>Tu carrito está vacío.</p>
+            ) : (
+              books.map((book) => (
+                <div key={book.book_id} className="mb-6">
+                  <div className="flex gap-6">
+                    <div className="relative h-[150px] w-[120px] overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
+                      <img
+                        src={book.cover || "/placeholder.svg"}
+                        alt={book.title}
+                        className="object-cover w-full h-full"
+                      />
                     </div>
-                    <div className="flex justify-between items-end">
-                      <div className="flex items-center gap-3 mt-2">
-                        <button
-                          onClick={() =>
-                            updateQuantity(book.id, -1, books, setBooks)
-                          }
-                          className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
-                        >
-                          <MinusIcon className="h-4 w-4" />
-                        </button>
-                        <span className="text-lg font-medium w-6 text-center">
-                          {book.quantity}
-                        </span>
-                        <button
-                          onClick={() =>
-                            updateQuantity(book.id, 1, books, setBooks)
-                          }
-                          className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
-                        >
-                          <PlusIcon className="h-4 w-4" />
-                        </button>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h3 className="font-medium text-lg">{book.title}</h3>
+                          <p className="text-gray-500">{book.synopsis}</p>
+                        </div>
+                        <div className="flex gap-4">
+                          <button
+                            onClick={() => handleRemoveFromCart(book.book_id)}
+                            className="text-red-500 font-semibold"
+                          >
+                            Eliminar
+                          </button>
+                          <button
+                            onClick={() => navigate("/payment")}
+                            className="font-semibold"
+                          >
+                            Comprar
+                          </button>
+                        </div>
                       </div>
-                      <div className="text-lg font-medium">
-                        ${(book.price * book.quantity).toFixed(2)}
+                      <div className="flex justify-between items-end">
+                        <div className="text-lg font-medium">
+                          ${book.price.toFixed(2)}
+                        </div>
                       </div>
                     </div>
                   </div>
+                  {book.book_id !== books[books.length - 1].book_id && (
+                    <hr className="mt-6" />
+                  )}
                 </div>
-                {book.id !== books[books.length - 1].id && (
-                  <hr className="mt-6" />
-                )}
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           <div className="bg-gray-50 p-6 border-t border-gray-200 mb-16">
@@ -130,13 +135,17 @@ export function ShoppingCart() {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
-              <button variant="outline" onClick={() => navigate('/')} className="gap-2 px-10 py-3 rounded-lg flex border-2 border-black hover:bg-black hover:text-white">
+              <button
+                onClick={() => navigate("/")}
+                className="gap-2 px-10 py-3 rounded-lg flex border-2 border-black hover:bg-black hover:text-white"
+              >
                 <ArrowLeftIcon className="h-6 w-6" />
                 Continuar comprando
               </button>
-              <button className="flex bg-blue-600 text-white gap-2 px-10 py-3 rounded-lg  hover:bg-blue-500 hover:border-blue-600 "
-                onClick={() => navigate('/payment')
-              }>
+              <button
+                onClick={() => navigate("/payment")}
+                className="flex bg-blue-600 text-white gap-2 px-10 py-3 rounded-lg hover:bg-blue-500 hover:border-blue-600"
+              >
                 <ShoppingBagIcon className="h-6 w-6" />
                 Comprar ahora
               </button>

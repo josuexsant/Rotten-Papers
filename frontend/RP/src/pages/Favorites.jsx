@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import { host } from "../api/api";
+import { host, addToCart } from "../api/api";
 
 export const Favorites = () => {
   const navigate = useNavigate();
@@ -70,6 +70,16 @@ export const Favorites = () => {
     }
   };
 
+    // Añadir libro al carrito
+    const handleAddToCart = async (bookId) => {
+      try {
+        const response = await addToCart(bookId);
+        alert(response.data.message);
+      } catch (err) {
+        alert(err.response?.data?.message || "Error al agregar el libro.");
+      }
+    };
+  
   return (
     <>
       <Navbar showAccessButton={false} />
@@ -158,6 +168,14 @@ export const Favorites = () => {
                     </span>
                   </button>
                 </div>
+                <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                    handleAddToCart(book.book_id);
+                }}
+                className='bg-orange-200 p-3 rounded-md z-10'>
+                  Agregar al carrito
+                </button>
               </div>
             ))}
           </div>

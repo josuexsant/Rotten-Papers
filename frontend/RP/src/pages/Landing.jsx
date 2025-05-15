@@ -1,5 +1,5 @@
 import { Navbar } from '../components/Navbar';
-import { getAllbooks } from '../api/api';
+import { getAllbooks, addToCart } from '../api/api';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { host } from '../api/api';
@@ -117,6 +117,16 @@ export const Landing = () => {
       setMessage('Descubre más...');
     }
   }, [username]);
+
+  // Añadir libro al carrito
+  const handleAddToCart = async (bookId) => {
+    try {
+      const response = await addToCart(bookId);
+      alert(response.data.message);
+    } catch (err) {
+      alert(err.response?.data?.message || "Error al agregar el libro.");
+    }
+  };
 
   return (
     <>
@@ -261,7 +271,16 @@ export const Landing = () => {
                             </div>
                           </button>
                         )}
-                        <button className='bg-orange-200 p-3 rounded-md'>
+                        <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isAuthenticated) {
+                            handleAddToCart(book.book_id);
+                          } else {
+                            navigate('/login');
+                          }
+                        }}
+                        className='bg-orange-200 p-3 rounded-md'>
                           Agregar al carrito
                         </button>
                       </div>
