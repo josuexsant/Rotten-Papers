@@ -3,12 +3,28 @@ import { useState, useEffect } from "react";
 import {
   ShoppingBagIcon,
   ArrowLeftIcon,
+  PlusIcon,
+  MinusIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { getCartBooks, addToCart, removeFromCart } from "../api/api"; // Ajusta la ruta
 
 // Calcular subtotal
-const subtotal = (books) => books.reduce((total, book) => total + book.price, 0);
+const subtotal = (books) =>
+  books.reduce((total, book) => total + book.price * (book.quantity || 1), 0);
+
+// Actualizar cantidad de un libro
+const updateQuantity = (bookId, change, books, setBooks) => {
+  setBooks(
+    books.map((book) => {
+      if (book.book_id === bookId) {
+        const newQuantity = Math.max(1, (book.quantity || 1) + change);
+        return { ...book, quantity: newQuantity };
+      }
+      return book;
+    })
+  );
+};
 
 export function ShoppingCart() {
   const navigate = useNavigate();
@@ -21,7 +37,12 @@ export function ShoppingCart() {
     const fetchCart = async () => {
       try {
         const response = await getCartBooks();
-        setBooks(response.data);
+        // Inicializar cada libro con quantity: 1
+        const booksWithQuantity = response.data.map((book) => ({
+          ...book,
+          quantity: 1,
+        }));
+        setBooks(booksWithQuantity);
         setLoading(false);
       } catch (err) {
         setError("Error al cargar el carrito. Inténtalo de nuevo.");
@@ -41,7 +62,12 @@ export function ShoppingCart() {
     try {
       const response = await removeFromCart(bookId);
       const updatedCart = await getCartBooks();
-      setBooks(updatedCart.data);
+      // Reestablecer quantity: 1 para los libros del carrito
+      const booksWithQuantity = updatedCart.data.map((book) => ({
+        ...book,
+        quantity: 1,
+      }));
+      setBooks(booksWithQuantity);
       alert(response.data.message);
     } catch (err) {
       alert(err.response?.data?.message || "Error al eliminar el libro.");
@@ -112,8 +138,29 @@ export function ShoppingCart() {
                         </div>
                       </div>
                       <div className="flex justify-between items-end">
+                        <div className="flex items-center gap-3 mt-2">
+                          <button
+                            onClick={() =>
+                              updateQuantity(book.book_id, -1, books, setBooks)
+                            }
+                            className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                          </button>
+                          <span className="text-lg font-medium w-6 text-center">
+                            {book.quantity || 1}
+                          </span>
+                          <button
+                            onClick={() =>
+                              updateQuantity(book.book_id, 1, books, setBooks)
+                            }
+                            className="h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                          </button>
+                        </div>
                         <div className="text-lg font-medium">
-                          ${book.price.toFixed(2)}
+                          ${(book.price * (book.quantity || 1)).toFixed(2)}
                         </div>
                       </div>
                     </div>
