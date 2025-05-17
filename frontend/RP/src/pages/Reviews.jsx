@@ -3,11 +3,14 @@ import { Navbar } from "../components/Navbar";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { host } from "../api/api";
+import { getAllbooks, addToCart } from '../api/api';
 import { 
   StarIcon, 
   PencilSquareIcon, 
   TrashIcon, 
-  HeartIcon as HeartIconSolid 
+  ShoppingCartIcon,
+  HeartIcon as HeartIconSolid,
+  CurrencyDollarIcon
 } from "@heroicons/react/24/solid";
 import { HeartIcon as HeartIconOutline } from "@heroicons/react/24/outline";
 
@@ -30,6 +33,7 @@ export const Reviews = () => {
   const [likedBooks, setLikedBook] = useState([]);
   const [reviewText, setReviewText] = useState("");
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
 
   // Función para obtener la fecha formateada
   const formatDate = (dateString) => {
@@ -40,6 +44,14 @@ export const Reviews = () => {
       month: '2-digit',
       year: '2-digit'
     });
+  };
+
+  // Función para formatear el precio
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(price);
   };
 
   useEffect(() => {
@@ -217,6 +229,27 @@ export const Reviews = () => {
       });
   };
 
+  const handleAddToCart = async (bookId) => {
+      if (!isAuthenticated) {
+        navigate('/login');
+        return;
+      }
+      
+      try {
+        const response = await addToCart(bookId);
+        showNotification(response.data.message || "Libro agregado al carrito", 'success');
+      } catch (err) {
+        showNotification(err.response?.data?.message || "Error al agregar el libro.", 'error');
+      }
+    };
+  
+    const showNotification = (message, type) => {
+      setNotification({ show: true, message, type });
+      setTimeout(() => {
+        setNotification({ show: false, message: '', type: '' });
+      }, 3000);
+    };
+
   const handleSubmitReview = (e) => {
     e.preventDefault();
     
@@ -361,6 +394,16 @@ export const Reviews = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+      
+      {/* Notificación */}
+      {notification.show && (
+        <div className={`fixed top-20 right-4 z-50 px-6 py-3 rounded-lg shadow-lg ${
+          notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          <p className="font-medium">{notification.message}</p>
+        </div>
+      )}
+      
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Información del libro */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
@@ -374,8 +417,26 @@ export const Reviews = () => {
                   className="w-full max-w-xs object-cover rounded-lg shadow-md mb-6"
                 />
                 
-                {/* Botón de favoritos */}
-                <div className="w-full">
+                {/* Precio */}
+                <div className="w-full mb-4">
+                  <div className="flex items-center justify-center bg-blue-50 p-4 rounded-lg">
+                    <CurrencyDollarIcon className="h-7 w-7 text-green-600 mr-2" />
+                    <span className="text-2xl font-bold text-gray-800">{formatPrice(book.price)}</span>
+                  </div>
+                </div>
+                
+                {/* Botones de acción */}
+                <div className="w-full flex flex-col gap-2">
+                  {/* Botón agregar al carrito */}
+                  <button
+                    onClick={() => handleAddToCart(book.book_id)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+                  >
+                    <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                    Agregar al carrito
+                  </button>
+                  
+                  {/* Botón de favoritos */}
                   <button
                     onClick={isBookLiked ? handleRemoveFavorite : handleLike}
                     className={`w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-lg transition-colors
