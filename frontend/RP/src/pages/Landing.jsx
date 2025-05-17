@@ -1,20 +1,30 @@
 import { Navbar } from '../components/Navbar';
 import { getAllbooks, addToCart } from '../api/api';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { host } from '../api/api';
 import { useAuth } from '../hooks/useAuth';
-import { useLocation } from 'react-router-dom';
-import { Button } from '@headlessui/react';
+import { 
+  HeartIcon as HeartIconSolid,
+  StarIcon,
+  ShoppingCartIcon,
+  EyeIcon,
+  BookOpenIcon,
+  InformationCircleIcon
+} from '@heroicons/react/24/solid';
+import { HeartIcon as HeartIconOutline } from '@heroicons/react/24/outline';
 
 export const Landing = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [Books, setBooks] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(localStorage.getItem('username'));
   const [message, setMessage] = useState('Descubre un libro cada día...');
   const [likedBooks, setLikedBook] = useState([]);
   const [newFav, setNewFav] = useState(false);
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   };
@@ -24,18 +34,28 @@ export const Landing = () => {
 
   useEffect(() => {
     async function loadBooks() {
-      const res = await getAllbooks();
-      const filteredBooks = searchQuery
-        ? res.data.filter((book) =>
-            book.title.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : res.data; // Mostrar todos los libros si no hay búsqueda
-      setBooks(filteredBooks);
+      setLoading(true);
+      try {
+        const res = await getAllbooks();
+        const filteredBooks = searchQuery
+          ? res.data.filter((book) =>
+              book.title.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+          : res.data;
+        setBooks(filteredBooks);
+      } catch (error) {
+        console.error('Error al cargar libros:', error);
+      } finally {
+        setLoading(false);
+      }
     }
     loadBooks();
   }, [searchQuery]);
+
   useEffect(() => {
     const fetchFavorites = async () => {
+      if (!isAuthenticated) return;
+      
       try {
         const response = await fetch(`${host}/favorites/`, {
           method: 'GET',
@@ -46,50 +66,63 @@ export const Landing = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to like book');
+          throw new Error('Failed to fetch favorites');
         }
 
         const data = await response.json();
         setLikedBook(data);
-        console.log(data);
       } catch (error) {
         console.error('Error:', error);
       }
     };
 
     fetchFavorites();
-  }, [newFav]);
+  }, [newFav, isAuthenticated]);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
+    if (storedUsername && storedUsername !== 'null') {
       setUsername(storedUsername);
+      setMessage(`Bienvenido ${storedUsername}`);
+    } else {
+      setMessage('Descubre un mundo de lectura');
     }
   }, []);
 
   const handleRemove = async (bookId) => {
-    fetch(`${host}/favorites/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({ book_id: bookId }),
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.ok) {
-          setNewFav(!newFav);
-        } else {
-          console.error('Error al eliminar el libro');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${host}/favorites/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ book_id: bookId }),
       });
+
+      if (response.ok) {
+        setNewFav(!newFav);
+        showNotification('Libro eliminado de favoritos', 'success');
+      } else {
+        showNotification('Error al eliminar el libro de favoritos', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showNotification('Error al procesar la solicitud', 'error');
+    }
   };
 
-  const handleLike = async (book_id) => {
+  const handleLike = async (bookId) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    
     try {
       const response = await fetch(`${host}/favorites/`, {
         method: 'POST',
@@ -97,201 +130,206 @@ export const Landing = () => {
           'Content-Type': 'application/json',
           Authorization: `Token ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ book_id }),
+        body: JSON.stringify({ book_id: bookId }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to like book');
       }
       setNewFav(!newFav);
-      console.log('Book liked');
+      showNotification('Libro añadido a favoritos', 'success');
     } catch (error) {
       console.error('Error:', error);
+      showNotification('Error al añadir a favoritos', 'error');
     }
   };
 
-  useEffect(() => {
-    if (username && username !== 'null') {
-      setMessage(`Bienvenido ${username}`);
-    } else {
-      setMessage('Descubre más...');
-    }
-  }, [username]);
-
-  // Añadir libro al carrito
   const handleAddToCart = async (bookId) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    
     try {
       const response = await addToCart(bookId);
-      alert(response.data.message);
+      showNotification(response.data.message, 'success');
     } catch (err) {
-      alert(err.response?.data?.message || "Error al agregar el libro.");
+      showNotification(err.response?.data?.message || "Error al agregar el libro.", 'error');
     }
+  };
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: '' });
+    }, 3000);
+  };
+
+  // Función para truncar texto
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
+  const isBookLiked = (bookId) => {
+    return likedBooks.some(book => book.book_id === bookId);
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="bg-white">
-        <div className="text-center text-gray-600 text-3xl font-semibold my-4">
-          {message}
+      
+      {/* Notificación */}
+      {notification.show && (
+        <div 
+          className={`fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-lg 
+            ${notification.type === 'success' ? 'bg-green-100 text-green-800 border-l-4 border-green-500' : 
+            'bg-red-100 text-red-800 border-l-4 border-red-500'} 
+            transition-opacity duration-300`}
+        >
+          {notification.message}
         </div>
-
-        <div className="mx-auto max-w-2xl px-4 sm:px-2 sm:max-w-4xl sm: lg:max-w-7xl lg:px-8">
-          <h2 className="sr-only">Products</h2>
-
-          <div className="rounded-lg p-3 bg-white">
-            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
-              {Books.map((book) => (
-                <div
-                  key={book.book_id}
-                  className="group flex flex-col bg-slate-50 rounded-xl shadow-md"
-                >
-                  <div className="flex flex-row overflow-hidden h-72">
-                    <div className="relative w-1/2 group">
-                      {/* Imagen */}
-                      <img
-                        alt={'book'}
-                        src={book.cover}
-                        className="h-full w-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                      />
-
-                      <div
-                        className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"
-                        onClick={() => navigate(`/reviews/${book.book_id}`)}
-                      >
-                        <span className="text-white text-lg font-medium">
-                          Ver reseñas
-                        </span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className="w-8 h-8 text-white mb-2"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 5c-7.333 0-10 7-10 7s2.667 7 10 7 10-7 10-7-2.667-7-10-7z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 9a3 3 0 100 6 3 3 0 000-6z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-
-                    <div className="p-4 w-1/2 flex flex-col justify-between">
-                      <div>
-                        <p className="mt-1 text-lg font-medium text-gray-600">
-                          {book.title}
-                        </p>
-                        <p className="mt-1 text-lg font-medium text-bold text-gray-600">
-                          $ {book.price} MXN
-                        </p>
-                        {/*TODO: AGREGA LA FUNCION DE QUEDAN POCOS... */}
-                        <p className="mt-1 text-lg font-medium text-bold text-gray-600">
-                         
-                        </p>
-                        <div className="flex items-center mt-2">
-                          <p className="text-gray-500">{book.rating}</p>
-                          {[...Array(5)].map((_, index) => (
-                            <svg
-                              key={index}
-                              className={`h-5 w-5 ${
-                                index < book.rating
-                                  ? 'text-yellow-500'
-                                  : 'text-gray-300'
-                              }`}
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
-                            </svg>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="mt-4 flex-1 overflow-hidden">
-                        <p className="text-sm text-gray-800 h-auto overflow-hidden group-hover:max-h-full group-hover:overflow-auto transition-all duration-300 ease-in-out">
-                          {book.synopsis}
-                        </p>
-                      </div>
-                      <div className="mt-4 flex-col justify-center">
-                        {likedBooks
-                          .map((book) => book.book_id)
-                          .includes(book.book_id) ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemove(book.book_id);
-                              alert('Se ha borrado el libro de favoritos...');
-                            }}
-                          >
-                            <div className="flex flex-row items-center align-middle justify-between">
-                              <p className="mx-1">Me gusta</p>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#EA3323"
-                              >
-                                <path d="m 480 -120 l -58 -52 q -101 -91 -167 -157 T 150 -447.5 Q 111 -500 95.5 -544 T 80 -634 q 0 -94 63 -157 t 157 -63 q 52 0 99 22 t 81 62 q 34 -40 81 -62 t 99 -22 q 94 0 157 63 t 63 157 q 0 46 -15.5 90 T 810 -447.5 Q 771 -395 705 -329 T 538 -172 l -58 52 Z Z Z" />
-                              </svg>
-                            </div>
-                          </button>
-                        ) : (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (isAuthenticated) {
-                                handleLike(book.book_id);
-                              } else {
-                                navigate('/login');
-                              }
-                            }}
-                            className="group"
-                          >
-                            <div className="flex flex-row items-center align-middle justify-between">
-                              <p className="mx-1 text-gray-500">Me gusta</p>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#EA3323"
-                                className="transition-transform duration-300 group-hover:scale-125 group-hover:fill-red-500"
-                              >
-                                <path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z" />
-                              </svg>
-                            </div>
-                          </button>
-                        )}
-                        <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (isAuthenticated) {
-                            handleAddToCart(book.book_id);
-                          } else {
-                            navigate('/login');
-                          }
-                        }}
-                        className='bg-orange-200 p-3 rounded-md'>
-                          Agregar al carrito
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      )}
+      
+      {/* Mensaje de bienvenida */}
+      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-12 px-4 sm:px-6 lg:px-8 mb-6">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold text-center">{message}</h1>
+          <p className="mt-4 text-xl text-center max-w-3xl mx-auto">
+            Encuentra tu próxima aventura literaria en nuestra biblioteca digital
+          </p>
         </div>
       </div>
-    </>
+      
+      {/* Filtros o categorías (opcional) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div className="flex flex-wrap gap-3 justify-center">
+          {['Todos', 'Ficción', 'Aventura', 'Clásicos', 'Romance', 'Historia'].map((category) => (
+            <button 
+              key={category}
+              className="px-4 py-2 bg-white rounded-full shadow-sm hover:shadow-md transition-shadow border border-gray-200 text-gray-700 font-medium"
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Lista de libros */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <p className="ml-3 text-lg font-medium text-gray-700">Cargando libros...</p>
+          </div>
+        ) : books.length === 0 ? (
+          <div className="text-center py-12">
+            <BookOpenIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-gray-700 mb-2">No se encontraron libros</h3>
+            <p className="text-gray-500">
+              {searchQuery 
+                ? `No hay resultados para "${searchQuery}". Intenta con otro término.` 
+                : "No hay libros disponibles en este momento."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {books.map((book) => (
+              <div 
+                key={book.book_id}
+                className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full"
+              >
+                <div className="relative aspect-[2/3] overflow-hidden group">
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                    <button
+                      onClick={() => navigate(`/reviews/${book.book_id}`)}
+                      className="bg-white/90 text-gray-900 font-medium py-2 px-4 rounded-lg flex items-center justify-center hover:bg-white transition-colors"
+                    >
+                      <EyeIcon className="h-5 w-5 mr-2" />
+                      Ver detalles
+                    </button>
+                  </div>
+                  
+                  {/* Etiqueta de precio */}
+                  <div className="absolute top-3 right-3 bg-white/90 text-gray-900 font-bold py-1 px-3 rounded-full shadow-md">
+                    ${book.price} MXN
+                  </div>
+                </div>
+                
+                <div className="p-4 flex-grow flex flex-col">
+                  <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2">{book.title}</h3>
+                  
+                  {/* Calificación */}
+                  <div className="flex items-center mb-3">
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <StarIcon
+                          key={star}
+                          className={`h-4 w-4 ${
+                            star <= Math.round(book.rating) ? 'text-yellow-500' : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="ml-2 text-sm text-gray-600">({book.rating.toFixed(1)})</span>
+                  </div>
+                  
+                  {/* Sinopsis resumida */}
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                    {truncateText(book.synopsis, 120)}
+                  </p>
+                  
+                  {/* Stock (condicional) */}
+                  {book.stock && book.stock < 10 && (
+                    <div className="mb-3 flex items-center text-sm text-amber-700">
+                      <InformationCircleIcon className="h-4 w-4 mr-1" />
+                      <span>¡Quedan solo {book.stock} unidades!</span>
+                    </div>
+                  )}
+                  
+                  <div className="mt-auto flex flex-col gap-2">
+                    <button
+                      onClick={() => handleAddToCart(book.book_id)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
+                    >
+                      <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                      Agregar al carrito
+                    </button>
+                    
+                    <button
+                      onClick={() => isBookLiked(book.book_id) ? handleRemove(book.book_id) : handleLike(book.book_id)}
+                      className={`w-full font-medium py-2 px-4 rounded-lg flex items-center justify-center transition-colors
+                        ${isBookLiked(book.book_id) 
+                          ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' 
+                          : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700'
+                        }`}
+                    >
+                      {isBookLiked(book.book_id) ? (
+                        <>
+                          <HeartIconSolid className="h-5 w-5 mr-2 text-red-500" />
+                          En mis favoritos
+                        </>
+                      ) : (
+                        <>
+                          <HeartIconOutline className="h-5 w-5 mr-2" />
+                          Añadir a favoritos
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
+
+export default Landing;

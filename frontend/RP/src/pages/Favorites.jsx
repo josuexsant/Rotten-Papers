@@ -2,186 +2,337 @@ import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { host, addToCart } from "../api/api";
+import { 
+  HeartIcon, 
+  ShoppingCartIcon, 
+  TrashIcon, 
+  MagnifyingGlassIcon, 
+  EyeIcon, 
+  ExclamationCircleIcon,
+  CheckCircleIcon,
+  XMarkIcon,
+  BookOpenIcon
+} from "@heroicons/react/24/outline";
+import { HeartIcon as HeartIconSolid, StarIcon } from "@heroicons/react/24/solid";
 
 export const Favorites = () => {
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
+  // Muestra una notificación temporal
+  const showNotification = (message, type = "success") => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: "", type: "" });
+    }, 3000);
+  };
+
+  // Carga inicial de los libros favoritos
   useEffect(() => {
-    fetch(`${host}/favorites/`, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchFavorites = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${host}/favorites/`, {
+          method: "GET",
+          headers: {
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al cargar favoritos");
+        }
+
+        const data = await response.json();
         setBooks(data);
         setFilteredBooks(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error:", error);
-      });
+        setError(error.message || "Error al cargar favoritos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
   }, []);
-  
-  const handleRemove = (bookId) => {
-    const confirmed = window.confirm(
-      "¿Estás seguro de que quieres eliminar este libro de favoritos?"
-    );
-    if (confirmed) {
-      fetch(`${host}/favorites/`, {
+
+  // Maneja la eliminación de un libro de favoritos
+  const handleRemove = async (bookId) => {
+    try {
+      const response = await fetch(`${host}/favorites/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ book_id: bookId }),
-      })
-        .then((response) => {
-          console.log(response);
-          if (response.ok) {
-            const updatedBooks = books.filter(
-              (book) => book.book_id !== bookId
-            );
-            setBooks(updatedBooks);
-            setFilteredBooks(updatedBooks);
-          } else {
-            console.error("Error al eliminar el libro");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar el libro");
+      }
+
+      const updatedBooks = books.filter((book) => book.book_id !== bookId);
+      setBooks(updatedBooks);
+      setFilteredBooks(updatedBooks.filter((book) =>
+        book.title.toLowerCase().includes(searchTerm.toLowerCase())
+      ));
+      showNotification("Libro eliminado de favoritos", "success");
+    } catch (error) {
+      console.error("Error:", error);
+      showNotification("Error al eliminar el libro", "error");
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
+  // Maneja la búsqueda de libros
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    if (event.target.value === "") {
+    const value = event.target.value;
+    setSearchTerm(value);
+    
+    if (value === "") {
       setFilteredBooks(books);
     } else {
       const filtered = books.filter((book) =>
-        book.title.toLowerCase().includes(event.target.value.toLowerCase())
+        book.title.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredBooks(filtered);
     }
   };
 
-    // Añadir libro al carrito
-    const handleAddToCart = async (bookId) => {
-      try {
-        const response = await addToCart(bookId);
-        alert(response.data.message);
-      } catch (err) {
-        alert(err.response?.data?.message || "Error al agregar el libro.");
-      }
-    };
-  
+  // Añade un libro al carrito
+  const handleAddToCart = async (bookId) => {
+    try {
+      const response = await addToCart(bookId);
+      showNotification(response.data.message, "success");
+    } catch (err) {
+      showNotification(err.response?.data?.message || "Error al agregar el libro", "error");
+    }
+  };
+
+  // Trunca texto para mostrarlo en un espacio limitado
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  };
+
   return (
-    <>
-      <Navbar showAccessButton={false} />
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      
+      {/* Notificación */}
+      {notification.show && (
+        <div className={`fixed top-20 right-4 z-50 flex items-center p-4 rounded-lg shadow-lg ${
+          notification.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`}>
+          {notification.type === "success" ? (
+            <CheckCircleIcon className="h-6 w-6 mr-2" />
+          ) : (
+            <ExclamationCircleIcon className="h-6 w-6 mr-2" />
+          )}
+          <p>{notification.message}</p>
+          <button 
+            onClick={() => setNotification({ show: false, message: "", type: "" })}
+            className="ml-3 text-gray-500 hover:text-gray-700"
+          >
+            <XMarkIcon className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+      
+      {/* Modal de confirmación para eliminar */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">¿Eliminar de favoritos?</h3>
+            <p className="text-gray-600 mb-6">
+              ¿Estás seguro de que quieres eliminar "{confirmDelete.title}" de tu lista de favoritos?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setConfirmDelete(null)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => handleRemove(confirmDelete.id)}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div className="py-5 text-center">
-        <h1 className="text-4xl font-semibold text-gray-800">
-          Tus Favoritos
-        </h1>
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Encabezado */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center justify-center">
+            <HeartIconSolid className="h-8 w-8 mr-2 text-red-500" />
+            Mis Favoritos
+          </h1>
+          <p className="mt-2 text-gray-600">
+            Todos tus libros favoritos en un solo lugar
+          </p>
+        </div>
 
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 sm:px-6 sm:py-2 lg:max-w-7xl lg:px-8">
-          <div className="mb-6 flex justify-center">
+        {/* Barra de búsqueda */}
+        <div className="max-w-md mx-auto mb-8">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+            </div>
             <input
               type="text"
               placeholder="Buscar en tus favoritos..."
               value={searchTerm}
               onChange={handleSearch}
-              className="w-full max-w-lg p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             />
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
+        {/* Contenido principal */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+            <p className="ml-3 text-lg font-medium text-gray-600">Cargando favoritos...</p>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg max-w-lg mx-auto">
+            <div className="flex">
+              <ExclamationCircleIcon className="h-6 w-6 text-red-500 mr-3" />
+              <p className="text-red-700">{error}</p>
+            </div>
+          </div>
+        ) : filteredBooks.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-lg shadow-sm max-w-2xl mx-auto">
+            {searchTerm ? (
+              <>
+                <MagnifyingGlassIcon className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                <h2 className="text-2xl font-semibold text-gray-700 mb-2">No se encontraron resultados</h2>
+                <p className="text-gray-500 mb-6">
+                  No encontramos libros que coincidan con "{searchTerm}" en tu lista de favoritos.
+                </p>
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Ver todos los favoritos
+                </button>
+              </>
+            ) : (
+              <>
+                <HeartIcon className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                <h2 className="text-2xl font-semibold text-gray-700 mb-2">No tienes favoritos</h2>
+                <p className="text-gray-500 mb-6">
+                  Parece que aún no has añadido ningún libro a tus favoritos.
+                </p>
+                <button
+                  onClick={() => navigate("/")}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  <BookOpenIcon className="h-5 w-5 mr-2" />
+                  Explorar libros
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredBooks.map((book) => (
-              
               <div
                 key={book.book_id}
-                className="group flex flex-col bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
-                
+                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200 flex flex-col"
               >
-                {/* Imagen de portada del libro con tamaño rectangular vertical */}
-                <div className="w-full h-72 overflow-hidden">
+                {/* Imagen de portada */}
+                <div className="relative group h-64 overflow-hidden">
                   <img
-                    alt={book.title}
                     src={book.cover}
-                    className="h-full w-full object-cover object-center group-hover:opacity-75"
-                    onClick={() => navigate(`/reviews/${book.book_id}`)} // Redirige al hacer clic
+                    alt={book.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+                    <button
+                      onClick={() => navigate(`/reviews/${book.book_id}`)}
+                      className="bg-white/90 text-gray-900 font-medium py-2 px-4 rounded-lg flex items-center hover:bg-white transition-colors mb-2"
+                    >
+                      <EyeIcon className="h-5 w-5 mr-2" />
+                      Ver detalles
+                    </button>
+                  </div>
                 </div>
-
-                {/* Título del libro */}
-                <div className="p-2">
-                  <h3 className="text-center text-lg font-medium text-gray-900">
+                
+                {/* Información del libro */}
+                <div className="p-4 flex-grow flex flex-col">
+                  <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-1">
                     {book.title}
                   </h3>
-                </div>
-
-                <div className="flex justify-center mt-2">
-                  {[...Array(5)].map((_, index) => (
-                    <svg
-                      key={index}
-                      className={`h-5 w-5 ${index < book.rating ? "text-yellow-500" : "text-gray-300"}`}
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.388 2.46a1 1 0 00-.364 1.118l1.287 3.97c.3.921-.755 1.688-1.54 1.118l-3.388-2.46a1 1 0 00-1.176 0l-3.388 2.46c-.784.57-1.838-.197-1.54-1.118l1.287-3.97a1 1 0 00-.364-1.118L2.045 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z" />
-                    </svg>
-                  ))}
-                </div>
-
-                {/* Botón de eliminar */}
-                <div className="mt-4 flex justify-center mb-4">
-                  <button
-                    onClick={() => handleRemove(book.book_id)}
-                    className="text-gray-500 hover:text-red-600 transition-all duration-300 ease-in-out"
-                  >
-                    <span className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="h-6 w-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 18M6 6h12l-1.5 12h-9L6 6zM9 6V3.75A1.75 1.75 0 0110.75 2h2.5A1.75 1.75 0 0115 3.75V6M10 10h4"
-                        />
-                      </svg>
-                      <span className="ml-2 text-sm">
-                        Eliminar de mis favoritos
-                      </span>
+                  
+                  {/* Calificación */}
+                  <div className="flex mb-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <StarIcon
+                        key={star}
+                        className={`h-5 w-5 ${star <= Math.round(book.rating) ? 'text-yellow-500' : 'text-gray-300'}`}
+                      />
+                    ))}
+                    <span className="ml-1 text-sm text-gray-600">
+                      ({book.rating.toFixed(1)})
                     </span>
-                  </button>
+                  </div>
+                  
+                  {/* Sinopsis corta */}
+                  {book.synopsis && (
+                    <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                      {truncateText(book.synopsis, 100)}
+                    </p>
+                  )}
+
+                  {/* Precio */}
+                  <div className="mt-auto">
+                    {book.price && (
+                      <p className="text-lg font-bold text-gray-800 mb-3">
+                        ${book.price.toFixed(2)}
+                      </p>
+                    )}
+                    
+                    {/* Botones de acción */}
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => handleAddToCart(book.book_id)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
+                      >
+                        <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                        Agregar al carrito
+                      </button>
+                      
+                      <button
+                        onClick={() => setConfirmDelete({ id: book.book_id, title: book.title })}
+                        className="w-full text-gray-600 hover:text-red-600 font-medium py-2 px-4 rounded-lg flex items-center justify-center transition-colors border border-gray-300 hover:border-red-300"
+                      >
+                        <TrashIcon className="h-5 w-5 mr-2" />
+                        Eliminar de favoritos
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                    handleAddToCart(book.book_id);
-                }}
-                className='bg-orange-200 p-3 rounded-md z-10'>
-                  Agregar al carrito
-                </button>
               </div>
             ))}
           </div>
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
