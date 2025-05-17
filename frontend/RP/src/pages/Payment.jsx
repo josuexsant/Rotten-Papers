@@ -38,6 +38,17 @@ export function Payment() {
     expiryDate: "",
     cvv: "",
   });
+  const [touched, setTouched] = useState({
+    country: false,
+    fullName: false,
+    street: false,
+    postalCode: false,
+    phoneNumber: false,
+    cardNumber: false,
+    cardName: false,
+    expiryDate: false,
+    cvv: false,
+  });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,9 +83,18 @@ export function Payment() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    if (isSubmitted) {
+    // Validar el campo cada vez que cambia su valor si ya ha sido tocado
+    if (touched[name] || isSubmitted) {
       validateField(name, value);
     }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    // Marcar el campo como tocado cuando pierde el foco
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    // Validar el campo cuando pierde el foco
+    validateField(name, value);
   };
 
   const validateField = (name, value) => {
@@ -149,6 +169,14 @@ export function Payment() {
     let isValid = true;
     let newErrors = { ...errors };
 
+    // Marcar todos los campos como tocados
+    const allTouched = Object.keys(formData).reduce(
+      (acc, field) => ({ ...acc, [field]: true }),
+      {}
+    );
+    setTouched(allTouched);
+
+    // Validar cada campo
     Object.keys(formData).forEach((field) => {
       if (field !== "specialInstructions") {
         const isFieldValid = validateField(field, formData[field]);
@@ -180,6 +208,11 @@ export function Payment() {
         }
       }
     }
+  };
+
+  // Función para determinar si se debe mostrar un error
+  const shouldShowError = (fieldName) => {
+    return (touched[fieldName] || isSubmitted) && errors[fieldName];
   };
 
   if (loading) {
@@ -248,8 +281,9 @@ export function Payment() {
                       name="country"
                       value={formData.country}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.country ? "border-red-500" : "border-gray-300"
+                        shouldShowError("country") ? "border-red-500" : "border-gray-300"
                       }`}
                     >
                       <option value="">Seleccione un país</option>
@@ -277,7 +311,7 @@ export function Payment() {
                       <option value="Uruguay">Uruguay</option>
                       <option value="Venezuela">Venezuela</option>
                     </select>
-                    {errors.country && (
+                    {shouldShowError("country") && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.country}
                       </p>
@@ -298,11 +332,12 @@ export function Payment() {
                       placeholder="Nombre y Apellido"
                       value={formData.fullName}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.fullName ? "border-red-500" : "border-gray-300"
+                        shouldShowError("fullName") ? "border-red-500" : "border-gray-300"
                       }`}
                     />
-                    {errors.fullName && (
+                    {shouldShowError("fullName") && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.fullName}
                       </p>
@@ -323,11 +358,12 @@ export function Payment() {
                       placeholder="Calle, número ext e int"
                       value={formData.street}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.street ? "border-red-500" : "border-gray-300"
+                        shouldShowError("street") ? "border-red-500" : "border-gray-300"
                       }`}
                     />
-                    {errors.street && (
+                    {shouldShowError("street") && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.street}
                       </p>
@@ -349,12 +385,13 @@ export function Payment() {
                         placeholder="12345"
                         value={formData.postalCode}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         maxLength={5}
                         className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                          errors.postalCode ? "border-red-500" : "border-gray-300"
+                          shouldShowError("postalCode") ? "border-red-500" : "border-gray-300"
                         }`}
                       />
-                      {errors.postalCode && (
+                      {shouldShowError("postalCode") && (
                         <p className="mt-1 text-sm text-red-500">
                           {errors.postalCode}
                         </p>
@@ -374,13 +411,14 @@ export function Payment() {
                         placeholder="5512345678"
                         value={formData.phoneNumber}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                          errors.phoneNumber
+                          shouldShowError("phoneNumber")
                             ? "border-red-500"
                             : "border-gray-300"
                         }`}
                       />
-                      {errors.phoneNumber && (
+                      {shouldShowError("phoneNumber") && (
                         <p className="mt-1 text-sm text-red-500">
                           {errors.phoneNumber}
                         </p>
@@ -445,12 +483,13 @@ export function Payment() {
                       placeholder="1234 5678 9012 3456"
                       value={formData.cardNumber}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       maxLength={16}
                       className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.cardNumber ? "border-red-500" : "border-gray-300"
+                        shouldShowError("cardNumber") ? "border-red-500" : "border-gray-300"
                       }`}
                     />
-                    {errors.cardNumber && (
+                    {shouldShowError("cardNumber") && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.cardNumber}
                       </p>
@@ -471,11 +510,12 @@ export function Payment() {
                       placeholder="Nombre y Apellido"
                       value={formData.cardName}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.cardName ? "border-red-500" : "border-gray-300"
+                        shouldShowError("cardName") ? "border-red-500" : "border-gray-300"
                       }`}
                     />
-                    {errors.cardName && (
+                    {shouldShowError("cardName") && (
                       <p className="mt-1 text-sm text-red-500">
                         {errors.cardName}
                       </p>
@@ -496,11 +536,12 @@ export function Payment() {
                         name="expiryDate"
                         value={formData.expiryDate}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                          errors.expiryDate ? "border-red-500" : "border-gray-300"
+                          shouldShowError("expiryDate") ? "border-red-500" : "border-gray-300"
                         }`}
                       />
-                      {errors.expiryDate && (
+                      {shouldShowError("expiryDate") && (
                         <p className="mt-1 text-sm text-red-500">
                           {errors.expiryDate}
                         </p>
@@ -520,12 +561,13 @@ export function Payment() {
                         placeholder="123"
                         value={formData.cvv}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         maxLength={4}
                         className={`mt-1 block w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                          errors.cvv ? "border-red-500" : "border-gray-300"
+                          shouldShowError("cvv") ? "border-red-500" : "border-gray-300"
                         }`}
                       />
-                      {errors.cvv && (
+                      {shouldShowError("cvv") && (
                         <p className="mt-1 text-sm text-red-500">{errors.cvv}</p>
                       )}
                     </div>
