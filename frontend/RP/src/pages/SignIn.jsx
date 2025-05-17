@@ -1,79 +1,189 @@
 import { Navbar } from "../components/Navbar";
 import { toast } from "react-hot-toast";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { host } from "../api/api";
 
 export function SignIn() {
-  const { register, handleSubmit } = useForm(); //Guardar los datos del form en variables
   const navigate = useNavigate();
-  //Mensajes de error
-  const [passwordError, setPasswordError] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    username: "",
+    gender: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
+
+  const [errors, setErrors] = useState({
+    first_name: "",
+    last_name: "",
+    username: "",
+    gender: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
+
+  const [touched, setTouched] = useState({
+    first_name: false,
+    last_name: false,
+    username: false,
+    gender: false,
+    email: false,
+    password: false,
+    confirmPassword: false
+  });
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const passwordIsValid = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
     return regex.test(password);
   };
 
-  const handlePasswordChange = (event) => {
-    const password = event.target.value;
-    if (!passwordIsValid(password)) {
-      setPasswordError(
-        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número"
-      );
-    } else {
-      setPasswordError("");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Validar el campo en tiempo real si ya ha sido tocado o si se ha intentado enviar
+    if (touched[name] || isSubmitted) {
+      validateField(name, value);
     }
   };
 
-  const handleConfirmPasswordChange = (event) => {
-    const confirmPassword = event.target.value;
-    if (confirmPassword !== document.getElementById("password").value) {
-      setPasswordError("Las contraseñas no coinciden");
-    } else {
-      setPasswordError("");
-    }
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    // Marcar el campo como tocado
+    setTouched({ ...touched, [name]: true });
+    // Validar el campo
+    validateField(name, formData[name]);
   };
 
-  const validatePassword = (data) => {
-    if (!passwordIsValid(data.password)) {
-      setPasswordError(
-        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número"
-      );
-      return false;
+  const validateField = (name, value) => {
+    let errorMessage = "";
+
+    switch (name) {
+      case "first_name":
+        if (!value.trim()) {
+          errorMessage = "El nombre es requerido";
+        } else if (!/^[A-Za-z\s]+$/.test(value)) {
+          errorMessage = "El nombre solo debe contener letras";
+        }
+        break;
+
+      case "last_name":
+        if (!value.trim()) {
+          errorMessage = "El apellido es requerido";
+        } else if (!/^[A-Za-z\s]+$/.test(value)) {
+          errorMessage = "El apellido solo debe contener letras";
+        }
+        break;
+
+      case "username":
+        if (!value.trim()) {
+          errorMessage = "El nombre de usuario es requerido";
+        }
+        break;
+
+      case "gender":
+        if (!value) {
+          errorMessage = "Seleccione un género";
+        }
+        break;
+
+      case "email":
+        if (!value.trim()) {
+          errorMessage = "El correo electrónico es requerido";
+        } else if (!value.includes("@")) {
+          errorMessage = "El correo electrónico no es válido";
+        }
+        break;
+
+      case "password":
+        if (!value) {
+          errorMessage = "La contraseña es requerida";
+        } else if (!passwordIsValid(value)) {
+          errorMessage = "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número";
+        }
+        // Validar confirmación de contraseña si ya se ha ingresado
+        if (formData.confirmPassword && value !== formData.confirmPassword) {
+          setErrors(prev => ({
+            ...prev,
+            confirmPassword: "Las contraseñas no coinciden"
+          }));
+        } else if (formData.confirmPassword) {
+          setErrors(prev => ({
+            ...prev,
+            confirmPassword: ""
+          }));
+        }
+        break;
+
+      case "confirmPassword":
+        if (!value) {
+          errorMessage = "Confirme su contraseña";
+        } else if (value !== formData.password) {
+          errorMessage = "Las contraseñas no coinciden";
+        }
+        break;
+
+      default:
+        break;
     }
-    if (data.password !== document.getElementById("confirmPassword").value) {
-      setPasswordError("Las contraseñas no coinciden");
-      return false;
-    } else {
-      setPasswordError("");
-      return true;
-    }
+
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
+    return errorMessage === "";
   };
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (validatePassword(data) === false) {
-      setError("Contraseña no valida.");
+  const validateForm = () => {
+    let isValid = true;
+    
+    // Marcar todos los campos como tocados
+    const allTouched = Object.keys(formData).reduce(
+      (acc, field) => ({ ...acc, [field]: true }),
+      {}
+    );
+    setTouched(allTouched);
+
+    // Validar cada campo
+    Object.keys(formData).forEach(field => {
+      const isFieldValid = validateField(field, formData[field]);
+      isValid = isValid && isFieldValid;
+    });
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitted(true);
+
+    if (!validateForm()) {
+      setFormError("Por favor, corrija los errores en el formulario.");
       return;
     }
 
-    if (!data.email.includes("@")) {
-      setError("El correo electrónico no es válido");
-      return;
-    } else {
-      setError("");
-    }
+    // Preparar los datos para enviar, sin incluir confirmPassword
+    const dataToSend = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      username: formData.username,
+      gender: formData.gender,
+      email: formData.email,
+      password: formData.password
+    };
 
     try {
-      console.log(data);
+      console.log("Enviando datos:", dataToSend);
       const response = await fetch(`${host}/register/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
@@ -88,15 +198,20 @@ export function SignIn() {
         navigate("/login");
       } else {
         console.error("Error:", body);
-        setError(body.message || "Error al registrar el usuario");
+        setFormError(body.message || "Error al registrar el usuario");
         toast.error("Error al registrar el usuario");
       }
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message || "Error al registrar el usuario");
+      setFormError(error.message || "Error al registrar el usuario");
       toast.error(error.message || "Error al registrar el usuario");
     }
-  });
+  };
+
+  // Helper function to determine if an error should be displayed
+  const shouldShowError = (fieldName) => {
+    return (touched[fieldName] || isSubmitted) && errors[fieldName];
+  };
 
   return (
     <>
@@ -121,57 +236,82 @@ export function SignIn() {
 
             <div className="mt-8">
               <div className="mt-6">
-                <form onSubmit={onSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label
-                      htmlFor="email"
+                      htmlFor="first_name"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Nombre (s)
                     </label>
                     <div className="mt-1">
                       <input
+                        id="first_name"
+                        name="first_name"
                         placeholder="Nombre"
                         type="text"
-                        pattern="[A-Za-z\s]+"
-                        {...register("first_name", { required: true })}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("first_name") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
                       />
+                      {shouldShowError("first_name") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.first_name}</p>
+                      )}
                     </div>
                   </div>
 
                   <div>
                     <label
-                      htmlFor="email"
+                      htmlFor="last_name"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Apellidos
                     </label>
                     <div className="mt-1">
                       <input
+                        id="last_name"
+                        name="last_name"
                         placeholder="Apellido paterno"
                         type="text"
-                        pattern="[A-Za-z\s]+"
-                        {...register("last_name", { required: true })}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("last_name") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
                       />
+                      {shouldShowError("last_name") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.last_name}</p>
+                      )}
                     </div>
                   </div>
 
                   <div>
                     <label
-                      htmlFor="email"
+                      htmlFor="username"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Nombre de usuario
                     </label>
                     <div className="mt-1">
                       <input
+                        id="username"
+                        name="username"
                         placeholder="Nombre de usuario"
                         type="text"
-                        {...register("username", { required: true })}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        value={formData.username}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("username") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
                       />
+                      {shouldShowError("username") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.username}</p>
+                      )}
                     </div>
                   </div>
 
@@ -186,14 +326,21 @@ export function SignIn() {
                       <select
                         id="gender"
                         name="gender"
-                        required
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("gender") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
                       >
                         <option value="">Seleccione su género</option>
                         <option value="male">Masculino</option>
                         <option value="female">Femenino</option>
                         <option value="other">Otro</option>
                       </select>
+                      {shouldShowError("gender") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.gender}</p>
+                      )}
                     </div>
                   </div>
 
@@ -206,35 +353,21 @@ export function SignIn() {
                     </label>
                     <div className="mt-1">
                       <input
+                        id="email"
+                        name="email"
                         placeholder="Correo electrónico"
                         type="email"
                         autoComplete="email"
-                        {...register("email", { required: true })}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        value={formData.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("email") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
                       />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <p className="text-red-500">{passwordError}</p>
-                    <label
-                      onChange={handleConfirmPasswordChange}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Contraseña
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        type="password"
-                        autoComplete="current-password"
-                        onChange={handlePasswordChange}
-                        {...register("password", { required: true })}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
-                      />
-                      <p className="text-gray-400">
-                        La contraseña debe ser minimo 8 caracteres y una
-                        mayuscula{" "}
-                      </p>
+                      {shouldShowError("email") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                      )}
                     </div>
                   </div>
 
@@ -243,23 +376,58 @@ export function SignIn() {
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Corfirmar contraseña
+                      Contraseña
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autoComplete="new-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("password") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
+                      />
+                      {shouldShowError("password") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                      )}
+                      <p className="text-gray-400 text-sm mt-1">
+                        La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Confirmar contraseña
                     </label>
                     <div className="mt-1">
                       <input
                         id="confirmPassword"
                         name="confirmPassword"
                         type="password"
-                        autoComplete="current-password"
-                        required
-                        onChange={handlePasswordChange}
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm"
+                        autoComplete="new-password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={`appearance-none block w-full px-3 py-2 border ${
+                          shouldShowError("confirmPassword") ? "border-red-500" : "border-gray-300"
+                        } rounded-md shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-custom-blue-2 focus:border-custom-blue-2 sm:text-sm`}
                       />
+                      {shouldShowError("confirmPassword") && (
+                        <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
+                      )}
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-red-500 mb-4">{error}</p>
+                    {formError && <p className="text-red-500 mb-4">{formError}</p>}
 
                     <button
                       type="submit"
