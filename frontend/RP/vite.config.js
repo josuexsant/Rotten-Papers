@@ -9,16 +9,9 @@ export default defineConfig({
   strictPort: true,
  },
  server: {
-  port: 8080,
+  port: 8080,          // Frontend en puerto 8080
   strictPort: true,
   host: true,
-  proxy: {
-    // Change '/api' to your actual API path if needed
-    '/': {
-      target: 'http://54.91.180.108:8000',
-      changeOrigin: true,
-      secure: false,
-    },
-  },
+  origin: "http://0.0.0.0:8080",  // Cambiado a 8080
  },
 });
