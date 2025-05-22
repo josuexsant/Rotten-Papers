@@ -12,6 +12,13 @@ export default defineConfig({
   port: 8080,
   strictPort: true,
   host: true,
-  origin: "http://0.0.0.0:8080",
+  proxy: {
+    // Change '/api' to your actual API path if needed
+    '/': {
+      target: 'http://54.91.180.108:8000',
+      changeOrigin: true,
+      secure: false,
+    },
+  },
  },
 });
